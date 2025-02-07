@@ -15,7 +15,7 @@ export default function Home() {
         height: "100vh"
       }}
     >
-      <PageHeader routeName="React Template" />
+      <PageHeader routeName="EPS System" />
 
       <Box
         sx={{
@@ -47,7 +47,7 @@ export default function Home() {
           </Button>
         </Link>
 
-        <Link href="/Register" passHref>
+        {/* <Link href="/Register" passHref>
           <Button
             variant="outlined"
             sx={{
@@ -67,7 +67,7 @@ export default function Home() {
           >
             Register
           </Button>
-        </Link>
+        </Link> */}
 
         <Link href="/Dashboard" passHref>
           <Button

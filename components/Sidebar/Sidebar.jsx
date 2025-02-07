@@ -50,7 +50,7 @@ const Sidebar = () => {
           <List sx={{ mt: 20 }}>
             {[
               { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
-              { text: 'Library', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Library' },
+              { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management' },
               { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
             ].map((item, index) => (
               <ListItem

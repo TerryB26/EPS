@@ -96,7 +96,7 @@ const LoginForm = () => {
                 </Button>
               </form>
               <Typography variant="body2" align="center" style={{ marginTop: '16px' }}>
-                Not registered? <Link href="/Register">Register here</Link>
+                Not registered? <Link href="/">Contact The IT Department</Link>
               </Typography>
             </Box>
           </Box>
