@@ -4,6 +4,7 @@ import { MdMenu, MdHome, MdSettings, MdInfo } from 'react-icons/md';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { IoLibraryOutline,IoPersonCircleOutline } from "react-icons/io5";
+import { RiUserSettingsLine } from "react-icons/ri";
 
 const theme = createTheme({
   palette: {
@@ -51,6 +52,7 @@ const Sidebar = () => {
             {[
               { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
               { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management' },
+              { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management' },
               { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
             ].map((item, index) => (
               <ListItem

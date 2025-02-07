@@ -6,6 +6,7 @@ import Users from '@/components/Users/UsersTable';
 import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
 import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
 import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTitlesTable';
+import RolesTable from '@/components/Users/RolesTable';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -45,12 +46,11 @@ const TabPanel = styled('div')(({ theme }) => ({
 }));
 
 const tabContents = [
-  { label: "Departments", title: "Content for Tab 1", content: <DepartmentsTable /> },
-  { label: "Job Titles", title: "Content for Tab 2", content: <JobTitlesTable /> },
-  { label: "Employment Types", title: "Content for Tab 3",content: <EmploymentTypeTable /> },
+  { label: "Users", title: "Content for Tab 1", content: <Users /> },
+  { label: "User Roles", title: "Content for Tab 2", content: <RolesTable /> },
 ];
 
-const Library = () => {
+const AccountManagement = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -59,7 +59,7 @@ const Library = () => {
 
   return (
     <Root>
-      <PageHeader routeName="Workforce Management"/>
+      <PageHeader routeName="Account Management"/>
       <TabsContainer>
         <Tabs
           value={value}
@@ -84,4 +84,4 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default AccountManagement;
