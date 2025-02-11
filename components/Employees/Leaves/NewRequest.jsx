@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { Modal, Box, Button, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Box, Button, MenuItem, Select, FormControl, InputLabel, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import LeaveRequestForm from '@/components/Employees/Leaves/LeaveRequestForm';
+import DialogForm from '@/components/General/DialogForm';
+import { countWeekdays } from '@/utils/dateUtils';
 
 const StyledButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -28,6 +31,7 @@ const ButtonContainer = styled('div')(({ theme }) => ({
 const NewRequest = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [modalOpen, setModalOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth());
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [startDate, setStartDate] = useState(null);
@@ -64,16 +68,21 @@ const NewRequest = () => {
   };
 
   const handleApply = () => {
-    setCurrentDate(new Date(selectedYear, selectedMonth, 1));
-    setModalOpen(false);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const handleDateMouseDown = (day, event) => {
     event.preventDefault();
     const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    setStartDate(clickedDate);
-    setEndDate(clickedDate);
-    setIsSelecting(true);
+    if (clickedDate > today) {
+      setStartDate(clickedDate);
+      setEndDate(clickedDate);
+      setIsSelecting(true);
+    }
   };
 
   const handleDateMouseEnter = (day) => {
@@ -89,31 +98,40 @@ const NewRequest = () => {
 
   const handleDateClick = (day) => {
     const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    if (startDate && endDate && clickedDate >= startDate && clickedDate <= endDate) {
-      setStartDate(null);
-      setEndDate(null);
-    } else if (startDate && !endDate) {
-      if (clickedDate < startDate) {
-        setEndDate(startDate);
-        setStartDate(clickedDate);
+    if (clickedDate > today) {
+      if (startDate && endDate && clickedDate >= startDate && clickedDate <= endDate) {
+        setStartDate(null);
+        setEndDate(null);
+      } else if (startDate && !endDate) {
+        if (clickedDate < startDate) {
+          setEndDate(startDate);
+          setStartDate(clickedDate);
+        } else {
+          setEndDate(clickedDate);
+        }
       } else {
+        setStartDate(clickedDate);
         setEndDate(clickedDate);
       }
-    } else {
-      setStartDate(clickedDate);
-      setEndDate(clickedDate);
     }
   };
   
   const handleDateDoubleClick = (day) => {
     const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    setStartDate(clickedDate);
-    setEndDate(clickedDate);
+    if (clickedDate > today) {
+      setStartDate(clickedDate);
+      setEndDate(clickedDate);
+    }
   };
 
   const isDateInRange = (date) => {
     if (!startDate || !endDate) return false;
     return date >= startDate && date <= endDate;
+  };
+
+  const calculateNumberOfDays = (start, end) => {
+    if (!start || !end) return '';
+    return countWeekdays(start, end);
   };
 
   const today = new Date();
@@ -155,6 +173,7 @@ const NewRequest = () => {
                 '--day-color': isToday ? '#fff' : '#000',
                 '--day-font-weight': isToday ? 'bold' : 'normal',
                 '--day-border-color': isSelected ? '#D1B0DB' : '#ddd',
+                pointerEvents: isToday ? 'none' : 'auto', // Disable selection for today
               }}
               onMouseDown={(e) => handleDateMouseDown(day, e)}
               onMouseEnter={() => handleDateMouseEnter(day)}
@@ -176,11 +195,23 @@ const NewRequest = () => {
       </div>
 
       <ButtonContainer>
-        <StyledButton variant="contained" color="primary" disabled={!startDate || !endDate}>
+        <StyledButton variant="contained" color="primary" disabled={!startDate || !endDate} onClick={handleApply}>
           Apply
         </StyledButton>
       </ButtonContainer>
 
+      <DialogForm
+        title="Leave Request"
+        content={
+          <>
+              <Paper style={{ fontFamily: 'Roboto', padding: '20px', margin: '20px', boxShadow: '2px 4px 6px rgba(0, 0, 0, 0.5)' }}>
+                  <LeaveRequestForm Date={[startDate,endDate]} NumberOfDays={calculateNumberOfDays(startDate, endDate)} />
+              </Paper>
+          </>
+      }
+        open={dialogOpen}
+        onClose={handleDialogClose}
+      />
     </>
   );
 };

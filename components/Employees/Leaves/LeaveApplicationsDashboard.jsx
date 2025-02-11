@@ -4,6 +4,7 @@ import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RequestsTable from '@/components/Employees/Leaves/RequestsTable';
 import NewRequest from '@/components/Employees/Leaves/NewRequest';
+import LeaveBalance from '@/components/Employees/Leaves/LeaveBalance';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -43,6 +44,7 @@ const TabPanel = styled('div')(({ theme }) => ({
 }));
 
 const tabContents = [
+  { label: "Balances", content: <LeaveBalance />},
   { label: "Pending Requests", content: <RequestsTable WhereStatus="Pending"/> },
   { label: "Approved Requests", content: <RequestsTable WhereStatus="Approved"/> },
   { label: "Rejected Requests", content: <RequestsTable WhereStatus="Rejected"/> },
