@@ -1,97 +1,38 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { Modal, Box, Button, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const CalendarContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-`;
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: "8px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  margin: theme.spacing(1),
+  minWidth: "150px", // Increased size
+  fontWeight: "bold",
+  color: theme.palette.text.primary,
+  border: "1px solid #D1B0DB",
+  textTransform: "none",
+  transition: "all 0.3s",
+  '&:hover': {
+    backgroundColor: "#ECEBF9",
+  },
+}));
 
-const Day = styled.div`
-  background-color: ${(props) => (props.isToday ? 'rgba(0, 123, 255, 0.5)' : '#fff')};
-  color: ${(props) => (props.isToday ? '#fff' : '#000')};
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 60px;
-  text-align: center;
-  font-size: 1.4em;
-  position: relative;
-  font-weight: ${(props) => (props.isToday ? 'bold' : 'normal')};
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 123, 255, 0.1);
-    border-color: rgba(0, 123, 255, 0.5);
-  }
-`;
-
-const DateLabel = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1em;
-  color: ${(props) => (props.isToday ? '#fff' : '#888')};
-  font-weight: bold;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  grid-column: span 7;
-  text-align: center;
-  font-size: 1.8em;
-  margin-bottom: 20px;
-`;
-
-const MonthDisplay = styled.div`
-  background-color: #ECEBF9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px 20px;
-  font-weight: bold;
-  color: #000;
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
-  border-top: 2px solid #D1B0DB;
-  border-left: 2px solid #D1B0DB;
-  border-right: 2px solid #D1B0DB;
-  text-transform: none;
-  transition: all 0.3s;
-  cursor: pointer;
-`;
-
-const WeekDays = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.2em;
-`;
-
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.8em;
-  color: #007bff;
-  margin: 0 5px;
-  &:hover {
-    color: #0056b3;
-  }
-`;
+const ButtonContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  marginTop: theme.spacing(2),
+}));
 
 const NewRequest = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth());
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [isSelecting, setIsSelecting] = useState(false);
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const getDaysInMonth = (year, month) => {
@@ -127,6 +68,54 @@ const NewRequest = () => {
     setModalOpen(false);
   };
 
+  const handleDateMouseDown = (day, event) => {
+    event.preventDefault();
+    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    setStartDate(clickedDate);
+    setEndDate(clickedDate);
+    setIsSelecting(true);
+  };
+
+  const handleDateMouseEnter = (day) => {
+    if (isSelecting) {
+      const hoveredDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      setEndDate(hoveredDate);
+    }
+  };
+
+  const handleDateMouseUp = () => {
+    setIsSelecting(false);
+  };
+
+  const handleDateClick = (day) => {
+    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    if (startDate && endDate && clickedDate >= startDate && clickedDate <= endDate) {
+      setStartDate(null);
+      setEndDate(null);
+    } else if (startDate && !endDate) {
+      if (clickedDate < startDate) {
+        setEndDate(startDate);
+        setStartDate(clickedDate);
+      } else {
+        setEndDate(clickedDate);
+      }
+    } else {
+      setStartDate(clickedDate);
+      setEndDate(clickedDate);
+    }
+  };
+  
+  const handleDateDoubleClick = (day) => {
+    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    setStartDate(clickedDate);
+    setEndDate(clickedDate);
+  };
+
+  const isDateInRange = (date) => {
+    if (!startDate || !endDate) return false;
+    return date >= startDate && date <= endDate;
+  };
+
   const today = new Date();
   const daysInMonth = getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -134,73 +123,64 @@ const NewRequest = () => {
 
   return (
     <>
-      <Header>
-        <IconButton onClick={handlePrevMonth}>
+      <div className="Header" onMouseDown={(e) => e.preventDefault()} onMouseUp={(e) => e.preventDefault()}>
+        <button className="IconButton" onClick={handlePrevMonth}>
           <FaChevronLeft />
-        </IconButton>
-        <MonthDisplay onClick={handleMonthClick}>{month}</MonthDisplay>
-        <IconButton onClick={handleNextMonth}>
+        </button>
+        <div className="MonthDisplay" onClick={handleMonthClick}>{month}</div>
+        <button className="IconButton" onClick={handleNextMonth}>
           <FaChevronRight />
-        </IconButton>
-      </Header>
-      <WeekDays>
+        </button>
+      </div>
+      <div className="WeekDays" onMouseDown={(e) => e.preventDefault()} onMouseUp={(e) => e.preventDefault()}>
         {weekDays.map((day) => (
           <div key={day}>{day}</div>
         ))}
-      </WeekDays>
-      <CalendarContainer>
+      </div>
+      <div className="CalendarContainer" onMouseDown={(e) => e.preventDefault()} onMouseUp={(e) => e.preventDefault()}>
         {days.map((day) => {
+          const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
           const isToday =
             today.getDate() === day &&
             today.getMonth() === currentDate.getMonth() &&
             today.getFullYear() === currentDate.getFullYear();
+          const isSelected = startDate && date.getTime() === startDate.getTime();
+          const isInRange = isDateInRange(date);
           return (
-            <Day key={day} isToday={isToday}>
-              <DateLabel isToday={isToday}>{day}</DateLabel>
-            </Day>
+            <div
+              key={day}
+              className={`Day ${isSelected ? 'selected' : ''} ${isInRange ? 'in-range' : ''}`}
+              style={{
+                '--day-bg-color': isToday ? 'rgba(0, 123, 255, 0.5)' : isSelected || isInRange ? '#ECEBF9' : '#fff',
+                '--day-color': isToday ? '#fff' : '#000',
+                '--day-font-weight': isToday ? 'bold' : 'normal',
+                '--day-border-color': isSelected ? '#D1B0DB' : '#ddd',
+              }}
+              onMouseDown={(e) => handleDateMouseDown(day, e)}
+              onMouseEnter={() => handleDateMouseEnter(day)}
+              onMouseUp={handleDateMouseUp}
+              onClick={() => handleDateClick(day)}
+              onDoubleClick={() => handleDateDoubleClick(day)}
+            >
+              <div
+                className="DateLabel"
+                style={{
+                  '--date-label-color': isToday ? '#fff' : '#888',
+                }}
+              >
+                {day}
+              </div>
+            </div>
           );
         })}
-      </CalendarContainer>
-      <Modal open={modalOpen} onClose={handleModalClose}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 300,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Month</InputLabel>
-            <Select value={selectedMonth} onChange={handleMonthChange}>
-              {Array.from({ length: 12 }, (_, i) => (
-                <MenuItem key={i} value={i}>
-                  {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Year</InputLabel>
-            <Select value={selectedYear} onChange={handleYearChange}>
-              {Array.from({ length: 10 }, (_, i) => (
-                <MenuItem key={i} value={currentDate.getFullYear() - 5 + i}>
-                  {currentDate.getFullYear() - 5 + i}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button variant="contained" color="primary" onClick={handleApply}>
-            Apply
-          </Button>
-        </Box>
-      </Modal>
+      </div>
+
+      <ButtonContainer>
+        <StyledButton variant="contained" color="primary" disabled={!startDate || !endDate}>
+          Apply
+        </StyledButton>
+      </ButtonContainer>
+
     </>
   );
 };

@@ -34,7 +34,7 @@ const AddUsersForm = ({ handleClose, closeAccordion }) => {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setSubmitting(true);
-      let url = "/users/add";
+      let url = "api/Users/add-user";
 
       axios({
         url,

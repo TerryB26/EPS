@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import '@/styles/CalendarStyles.css'
 import Layout from '@/components/General/Layout'
 
 function App({ Component, pageProps }) {
