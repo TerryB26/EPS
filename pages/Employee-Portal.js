@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import PageHeader from "@/components/General/PageHeader";
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Users from '@/components/Users/UsersTable';
-import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
-import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
-import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItlesTable';
-import RolesTable from '@/components/Users/RolesTable';
+import LeaveApplicationsDashboard from '@/components/Employees/Leaves/LeaveApplicationsDashboard';
+
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -46,11 +43,11 @@ const TabPanel = styled('div')(({ theme }) => ({
 }));
 
 const tabContents = [
-  { label: "Users", title: "Content for Tab 1", content: <Users /> },
-  { label: "User Roles", title: "Content for Tab 2", content: <RolesTable /> },
+  { label: "Leave",  content: <LeaveApplicationsDashboard /> },
+  { label: "Payslips",  content: "dfgdfgdfgdfgdfgdfg" },
 ];
 
-const AccountManagement = () => {
+const EmployeePortal = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -59,18 +56,23 @@ const AccountManagement = () => {
 
   return (
     <Root>
-      <PageHeader routeName="Account Management"/>
+      <PageHeader routeName="Employee Leaves"/>
       <TabsContainer>
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="library tabs"
+          aria-label="employee leaves tabs"
           TabIndicatorProps={{ style: { display: 'none' } }}
         >
           {tabContents.map((tab, index) => (
             <TabButton
               key={index}
-              label={tab.label}
+              label={
+                <Box display="flex" alignItems="center">
+                  {tab.icon}
+                  <Box ml={1}>{tab.label}</Box>
+                </Box>
+              }
             />
           ))}
         </Tabs>
@@ -84,4 +86,4 @@ const AccountManagement = () => {
   );
 };
 
-export default AccountManagement;
+export default EmployeePortal;

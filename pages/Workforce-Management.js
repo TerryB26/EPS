@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import PageHeader from "@/components/General/PageHeader";
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Users from '@/components/Users/UsersTable';
 import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
 import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
-import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTitlesTable';
+import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItlesTable';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -46,8 +45,8 @@ const TabPanel = styled('div')(({ theme }) => ({
 
 const tabContents = [
   { label: "Departments", title: "Content for Tab 1", content: <DepartmentsTable /> },
-  { label: "Job Titles", title: "Content for Tab 2", content: <JobTitlesTable /> },
   { label: "Employment Types", title: "Content for Tab 3",content: <EmploymentTypeTable /> },
+  { label: "Job Titles", title: "Content for Tab 3",content: <JobTitlesTable /> },
 ];
 
 const Library = () => {

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import UsersForm from '@/components/Users/AddUsersForm';
-import RolesForm from './RolesForm';
 import DialogForm from '@/components/General/DialogForm';
 import { MdDelete } from "react-icons/md";
 import { IoPencil, IoEyeOutline } from "react-icons/io5";
@@ -22,7 +20,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: '#ECEBF9',
 }));
 
-const AddUserButton = styled(Button)(({ theme }) => ({
+const AddRequestButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   borderRadius: "8px",
@@ -33,18 +31,27 @@ const AddUserButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RolesTable = () => {
+const RequestsTable = ({WhereStatus}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-    { id: 100, name: 'John Doe', email: 'john@example.com' },
+  const [requests] = useState([
+    { id: 1, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
+    { id: 2, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
+    { id: 3, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
+    { id: 4, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
+    { id: 5, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
+    { id: 6, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
+    { id: 7, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
+    { id: 8, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
+    { id: 9, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
+    { id: 10, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Pending' },
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRequests = requests.filter(request =>
+    request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.employeeNumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -77,7 +84,7 @@ const RolesTable = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by User Name'
+          placeholder='Search by Employee Name or Number'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -126,13 +133,13 @@ const RolesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
-          Add Role
-        </AddUserButton>
+        <AddRequestButton variant="contained" onClick={handleDialogOpen}>
+          Add Request
+        </AddRequestButton>
       </Box>
       <DialogForm
-        title="Add Role"
-        content={<RolesForm />}
+        title="Add Request"
+        content={<div>Add Request Form</div>}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -140,26 +147,28 @@ const RolesTable = () => {
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              <TableCell>Employee Number</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>Date of Request</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id} sx={{
+            {filteredRequests.length > 0 ? (
+              filteredRequests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(request => (
+                <TableRow key={request.id} sx={{
                   '&:hover': {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{request.employeeNumber}</TableCell>
+                  <TableCell>{request.name}</TableCell>
+                  <TableCell>{request.dateOfRequest}</TableCell>
+                  <TableCell>{request.status}</TableCell>
                   <TableCell sx={{ width: '150px' }}>
                     <Tooltip title="View">
-                      <IconButton sx={{ color: '#939FBD' }}>
+                      <IconButton sx={{ color: '#82D8FF' }}>
                         <IoEyeOutline />
                       </IconButton>
                     </Tooltip>
@@ -178,7 +187,7 @@ const RolesTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={5} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -192,7 +201,7 @@ const RolesTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredUsers.length}
+          count={filteredRequests.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -203,4 +212,4 @@ const RolesTable = () => {
   );
 };
 
-export default RolesTable;
+export default RequestsTable;

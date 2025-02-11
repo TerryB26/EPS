@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
+import DepartmentsForm from './DepartmentsForm';
+import { MdFormatListBulletedAdd } from "react-icons/md";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -35,10 +36,10 @@ const DepartmentsTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
+
+    { id: 3, name: 'Miked Johnson', email: 'mike@example.com' },
   ]);
+  console.log("🚀 ~ DepartmentsTable ~ users:", users)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const filteredUsers = users.filter(user =>
@@ -125,13 +126,13 @@ const DepartmentsTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
-          Add User
+        <AddUserButton variant="contained" onClick={handleDialogOpen} endIcon={<MdFormatListBulletedAdd />}>
+          Add Department
         </AddUserButton>
       </Box>
       <DialogForm
-        title="Add User"
-        content={<UsersForm />}
+        title="Add A Department"
+        content={<DepartmentsForm />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />

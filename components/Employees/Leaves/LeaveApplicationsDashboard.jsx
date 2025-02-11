@@ -2,25 +2,22 @@ import React, { useState } from 'react';
 import PageHeader from "@/components/General/PageHeader";
 import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Users from '@/components/Users/UsersTable';
-import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
-import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
-import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItlesTable';
-import RolesTable from '@/components/Users/RolesTable';
+import RequestsTable from '@/components/Employees/Leaves/RequestsTable';
+import NewRequest from '@/components/Employees/Leaves/NewRequest';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
 }));
 
 const TabsContainer = styled(Box)(({ theme }) => ({
-  marginTop: "20px",
   display: 'flex',
   justifyContent: 'center',
+  borderBottom: '2px solid #D1B0DB', // Add a straight line under the buttons
 }));
 
 const TabButton = styled(Tab)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  borderRadius: "8px",
+  borderRadius: "8px 8px 0 0", // Make the top corners rounded
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   margin: theme.spacing(1),
   minWidth: "120px",
@@ -46,11 +43,13 @@ const TabPanel = styled('div')(({ theme }) => ({
 }));
 
 const tabContents = [
-  { label: "Users", title: "Content for Tab 1", content: <Users /> },
-  { label: "User Roles", title: "Content for Tab 2", content: <RolesTable /> },
+  { label: "Pending Requests", content: <RequestsTable WhereStatus="Pending"/> },
+  { label: "Approved Requests", content: <RequestsTable WhereStatus="Approved"/> },
+  { label: "Rejected Requests", content: <RequestsTable WhereStatus="Rejected"/> },
+  { label: "New Application", content: <NewRequest /> },
 ];
 
-const AccountManagement = () => {
+const LeaveApplicationsDashboard = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -59,18 +58,22 @@ const AccountManagement = () => {
 
   return (
     <Root>
-      <PageHeader routeName="Account Management"/>
       <TabsContainer>
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="library tabs"
+          aria-label="employee leaves tabs"
           TabIndicatorProps={{ style: { display: 'none' } }}
         >
           {tabContents.map((tab, index) => (
             <TabButton
               key={index}
-              label={tab.label}
+              label={
+                <Box display="flex" alignItems="center">
+                  {tab.icon}
+                  <Box ml={1}>{tab.label}</Box>
+                </Box>
+              }
             />
           ))}
         </Tabs>
@@ -82,6 +85,6 @@ const AccountManagement = () => {
       ))}
     </Root>
   );
-};
+}
 
-export default AccountManagement;
+export default LeaveApplicationsDashboard;

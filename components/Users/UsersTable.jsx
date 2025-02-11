@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
+import { MdDelete } from "react-icons/md";
+import { IoPencil, IoEyeOutline } from "react-icons/io5";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -142,7 +144,7 @@ const Users = () => {
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ width: '100px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
@@ -156,7 +158,23 @@ const Users = () => {
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell sx={{ width: '150px' }}>
+                    <Tooltip title="View">
+                      <IconButton sx={{ color: '#939FBD' }}>
+                        <IoEyeOutline />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <IconButton>
+                        <IoPencil />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton sx={{ color: '#E7858B' }}>
+                        <MdDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (

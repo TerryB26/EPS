@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
+import JobTitlesForm from './JobTitlesForm';
+import { MdFormatListBulletedAdd } from "react-icons/md";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -30,14 +31,12 @@ const AddUserButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const JobTItlesTable = () => {
+const JobTitlesTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
+    { id: 789, name: 'Miked ggJohnson', email: 'migggggke@example.com' },
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -125,13 +124,13 @@ const JobTItlesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
-          Add User
+        <AddUserButton variant="contained" onClick={handleDialogOpen} endIcon={<MdFormatListBulletedAdd />}>
+          Add Job Title
         </AddUserButton>
       </Box>
       <DialogForm
-        title="Add User"
-        content={<UsersForm />}
+        title="Add A Job Title"
+        content={<JobTitlesForm />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -186,4 +185,4 @@ const JobTItlesTable = () => {
   );
 };
 
-export default JobTItlesTable;
+export default JobTitlesTable;

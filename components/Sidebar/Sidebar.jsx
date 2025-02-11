@@ -5,11 +5,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import { IoLibraryOutline,IoPersonCircleOutline } from "react-icons/io5";
 import { RiUserSettingsLine } from "react-icons/ri";
+import { FaRegCalendarPlus, FaUserCog } from "react-icons/fa";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: 'rgb(128, 0, 128)', 
+      main: '#800080', 
     },
   },
 });
@@ -53,6 +54,8 @@ const Sidebar = () => {
               { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
               { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management' },
               { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management' },
+              { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves' },
+              { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal' },
               { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
             ].map((item, index) => (
               <ListItem

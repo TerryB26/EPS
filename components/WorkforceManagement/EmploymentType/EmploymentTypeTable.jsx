@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
+import EmploymentTypeForm from './EmploymentTypeForm';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -36,8 +37,7 @@ const EmploymentTypeTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users] = useState([
     { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
+
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -126,12 +126,12 @@ const EmploymentTypeTable = () => {
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <AddUserButton variant="contained" onClick={handleDialogOpen}>
-          Add User
+          Add Employment Type
         </AddUserButton>
       </Box>
       <DialogForm
-        title="Add User"
-        content={<UsersForm />}
+        title="Add Employment Type"
+        content={<EmploymentTypeForm />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
