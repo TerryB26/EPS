@@ -1,170 +1,87 @@
 import React, { useState } from 'react';
-import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Button, Typography, TablePagination } from '@mui/material';
+import PageHeader from "@/components/General/PageHeader";
+import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
+import LeaveApplicationsDashboard from '@/components/Employees/Leaves/LeaveApplicationsDashboard';
+import PayslipsTable from '@/components/Employees/Payslips/PayslipsTable';
 
-const PaginationContainer = styled('div')(({ theme }) => ({
-  '& .MuiTablePagination-selectRoot': {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  '& .MuiTablePagination-select': {
-    minWidth: '50px',
-  },
+const Root = styled('div')(({ theme }) => ({
+  padding: "20px",
 }));
 
-const CustomTableHead = styled(TableHead)(({ theme }) => ({
-  backgroundColor: '#ECEBF9',
+const TabsContainer = styled(Box)(({ theme }) => ({
+  marginTop: "20px",
+  display: 'flex',
+  justifyContent: 'center',
 }));
 
-const AddPayslipButton = styled(Button)(({ theme }) => ({
+const TabButton = styled(Tab)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  color: theme.palette.text.primary,
   borderRadius: "8px",
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  margin: theme.spacing(1),
+  minWidth: "120px",
+  fontWeight: "bold",
+  color: theme.palette.text.primary,
   textTransform: "none",
-  '&:hover': {
+  transition: "all 0.3s",
+  '&.Mui-selected': {
     backgroundColor: "#ECEBF9",
+    borderTop: "2px solid #D1B0DB",
+    borderLeft: "2px solid #D1B0DB",
+    borderRight: "2px solid #D1B0DB",
+    fontWeight: "bold",
   },
 }));
 
-const payslipsData = [
-  { month: 'January', year: 2025, amount: 3000 },
-  { month: 'February', year: 2025, amount: 3200 },
-  { month: 'March', year: 2025, amount: 3100 },
-  // Add more payslips data as needed
+const TabPanel = styled('div')(({ theme }) => ({
+  padding: theme.spacing(2),
+  backgroundColor: "#f9f9f9",
+  borderRadius: "8px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  marginTop: theme.spacing(2),
+}));
+const tabContents = [
+  { label: "Leave",  content: <LeaveApplicationsDashboard /> },
+  { label: "Payslips",  content: <PayslipsTable /> },
 ];
 
-const PayslipsTable = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+const EmployeePortal = () => {
+  const [value, setValue] = useState(0);
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
-
-  const handleClearSearch = () => {
-    setSearchQuery('');
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const filteredPayslips = payslipsData.filter((payslip) =>
-    payslip.month.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <div style={{ padding: "20px" }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <TextField
-          label="Search by Month"
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          fullWidth
-          style={{ marginRight: '20px' }}
-          InputProps={{
-            style: {
-              height: '40px',
-            },
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#550000',
-              },
-              '&:hover fieldset': {
-                borderColor: '#ff0000',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#550000',
-              },
-            },
-          }}
-        />
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleClearSearch}
-          startIcon={<SearchOffIcon sx={{ color: '#550000' }} />}
-          sx={{
-            height: '40px',
-            backgroundColor: 'white',
-            border: '1px solid #550000',
-            color: '#550000',
-            '&:hover': {
-              backgroundColor: 'white',
-              border: '1px solid #ff0000',
-              color: '#ff0000',
-            },
-          }}
+    <Root>
+      <PageHeader routeName="Employee Leaves"/>
+      <TabsContainer>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="employee leaves tabs"
+          TabIndicatorProps={{ style: { display: 'none' } }}
         >
-          Clear
-        </Button>
-      </Box>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddPayslipButton variant="contained">
-          Add Payslip
-        </AddPayslipButton>
-      </Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <CustomTableHead>
-            <TableRow>
-              <TableCell>Month</TableCell>
-              <TableCell>Year</TableCell>
-              <TableCell>Amount</TableCell>
-            </TableRow>
-          </CustomTableHead>
-          <TableBody>
-            {filteredPayslips.length > 0 ? (
-              filteredPayslips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((payslip, index) => (
-                <TableRow key={index} sx={{
-                  '&:hover': {
-                    backgroundColor: '#E4F2FF',
-                  },
-                }}>
-                  <TableCell>{payslip.month}</TableCell>
-                  <TableCell>{payslip.year}</TableCell>
-                  <TableCell>{payslip.amount}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={3} align="center">
-                  <Typography variant="body1" color="textSecondary">
-                    No records to display
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <PaginationContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredPayslips.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </PaginationContainer>
-    </div>
+          {tabContents.map((tab, index) => (
+            <TabButton
+              key={index}
+              label={
+                <Box display="flex" alignItems="center">
+                  {tab.icon}
+                  <Box ml={1}>{tab.label}</Box>
+                </Box>
+              }
+            />
+          ))}
+        </Tabs>
+      </TabsContainer>
+      {tabContents.map((tab, index) => (
+        <TabPanel key={index} hidden={value !== index}>
+          {tab.content}
+        </TabPanel>
+      ))}
+    </Root>
   );
 };
 
-export default PayslipsTable;
+export default EmployeePortal;
