@@ -6,6 +6,8 @@ import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
 import { MdDelete } from "react-icons/md";
 import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import { RxUpdate } from "react-icons/rx";
+import UpdateUserSalaries from '@/components/Users/Updates/UpdateUserSalaries';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -42,6 +44,9 @@ const Users = () => {
     { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogWidth, setDialogWidth] = useState('md');
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -65,12 +70,18 @@ const Users = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (content, title, width = 'md') => {
+    setDialogContent(content);
+    setDialogTitle(title);
+    setDialogWidth(width);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    setDialogContent(null);
+    setDialogTitle('');
+    setDialogWidth('md');
   };
 
   return (
@@ -127,15 +138,16 @@ const Users = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
+        <AddUserButton variant="contained" onClick={() => handleDialogOpen(<UsersForm />, 'Add User')}>
           Add User
         </AddUserButton>
       </Box>
       <DialogForm
-        title="Add User"
-        content={<UsersForm />}
+        title={dialogTitle}
+        content={dialogContent}
         open={isDialogOpen}
         onClose={handleDialogClose}
+        width={dialogWidth}
       />
       <TableContainer component={Paper}>
         <Table>
@@ -165,8 +177,8 @@ const Users = () => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Edit">
-                      <IconButton>
-                        <IoPencil />
+                      <IconButton onClick={() => handleDialogOpen(<UpdateUserSalaries userId={user.id} />, 'Edit User', 'lg')}>
+                        <RxUpdate />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
