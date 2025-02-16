@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
-import JobTitlesForm from './JobTitlesForm';
-import { MdFormatListBulletedAdd } from "react-icons/md";
+import JobTitlesForm from '@/components/WorkforceManagement/JobTitles/JobTItlesForm';
+import { MdDelete } from "react-icons/md";
+import { IoPencil } from "react-icons/io5";
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -20,7 +23,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: '#ECEBF9',
 }));
 
-const AddUserButton = styled(Button)(({ theme }) => ({
+const AddJobTitlesButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   borderRadius: "8px",
@@ -35,14 +38,27 @@ const JobTitlesTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-    { id: 789, name: 'Miked ggJohnson', email: 'migggggke@example.com' },
-  ]);
+  const [jobTitles, setJobTitles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogWidth, setDialogWidth] = useState('md');
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchJobTitles = async () => {
+    try {
+      const response = await axios.get('/api/WorkforceManagement/JobTitles/');
+      setJobTitles(response.data);
+    } catch (error) {
+      console.error('Error fetching job titles:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobTitles();
+  }, []);
+
+  const filteredJobTitles = jobTitles.filter(jobTitle =>
+    jobTitle.jobtitlename.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -62,12 +78,49 @@ const JobTitlesTable = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (content, title, width = 'md') => {
+    setDialogContent(content);
+    setDialogTitle(title);
+    setDialogWidth(width);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    setDialogContent(null);
+    setDialogTitle('');
+    setDialogWidth('md');
+    fetchJobTitles(); // Refetch job titles after closing the dialog
+  };
+
+  const handleDeleteJobTitle = async (jobTitleId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this job title?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      preConfirm: async () => {
+        Swal.showLoading();
+        try {
+          await axios.delete(`/api/WorkforceManagement/JobTitles/delete-jobTitle`, { data: { jobtitleid: jobTitleId } });
+          Swal.fire(
+            'Deleted!',
+            'Job title has been deleted.',
+            'success'
+          );
+          fetchJobTitles(); // Refetch job titles after deletion
+        } catch (error) {
+          Swal.fire(
+            'Error!',
+            'There was an error deleting the job title.',
+            'error'
+          );
+        }
+      }
+    });
   };
 
   return (
@@ -75,7 +128,7 @@ const JobTitlesTable = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by User Name'
+          placeholder='Search by Job Title Name'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -124,43 +177,59 @@ const JobTitlesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen} endIcon={<MdFormatListBulletedAdd />}>
+        <AddJobTitlesButton variant="contained" onClick={() => handleDialogOpen(<JobTitlesForm handleClose={handleDialogClose} />, 'Add Job Title')}>
           Add Job Title
-        </AddUserButton>
+        </AddJobTitlesButton>
       </Box>
       <DialogForm
-        title="Add A Job Title"
-        content={<JobTitlesForm />}
+        title={dialogTitle}
+        content={dialogContent}
         open={isDialogOpen}
         onClose={handleDialogClose}
+        width={dialogWidth}
       />
       <TableContainer component={Paper}>
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Title Name</TableCell>
+              <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id} sx={{
+            {filteredJobTitles.length > 0 ? (
+              filteredJobTitles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(jobTitle => (
+                <TableRow key={jobTitle.jobtitleid} sx={{
                   '&:hover': {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{jobTitle.jobtitlename}</TableCell>
+                  <TableCell sx={{ width: '150px' }}>
+                    <Tooltip title="Edit">
+                      <IconButton onClick={() => handleDialogOpen(
+                        <JobTitlesForm 
+                          handleClose={handleDialogClose} 
+                          jobTitleId={jobTitle.jobtitleid} 
+                          jobTitleName={jobTitle.jobtitlename} 
+                        />, 
+                        'Edit Job Title', 
+                        'lg'
+                      )}>
+                        <IoPencil />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteJobTitle(jobTitle.jobtitleid)}>
+                        <MdDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={2} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -174,7 +243,7 @@ const JobTitlesTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredUsers.length}
+          count={filteredJobTitles.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

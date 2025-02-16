@@ -1,5 +1,10 @@
-import { Pool } from 'pg';
-import { queryKeys } from './queries';
+import pkg from 'pg';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
+const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -8,11 +13,15 @@ const pool = new Pool({
   },
 });
 
-export const query = async (key, params) => {
-  const text = queryKeys[key];
-  if (!text) {
-    throw new Error(`Query key "${key}" not found`);
+export const query = async (text, params) => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(text, params);
+    return res;
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+    throw err;
+  } finally {
+    client.release();
   }
-  const res = await pool.query(text, params);
-  return res;
 };

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, Tooltip, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
 import DepartmentsForm from './DepartmentsForm';
-import { MdFormatListBulletedAdd } from "react-icons/md";
+import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
+import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -20,7 +23,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: '#ECEBF9',
 }));
 
-const AddUserButton = styled(Button)(({ theme }) => ({
+const AddDepartmentsButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   borderRadius: "8px",
@@ -35,16 +38,25 @@ const DepartmentsTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-
-    { id: 3, name: 'Miked Johnson', email: 'mike@example.com' },
-  ]);
-  console.log("🚀 ~ DepartmentsTable ~ users:", users)
+  const [departments, setDepartments] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState(null);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchDepartments = async () => {
+    try {
+      const response = await axios.get('/api/WorkforceManagement/Departments/');
+      setDepartments(response.data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
+  const filteredDepartments = departments.filter(department =>
+    department.departmentname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -64,12 +76,44 @@ const DepartmentsTable = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (department = null) => {
+    setSelectedDepartment(department);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    fetchDepartments(); // Refetch departments after closing the dialog
+  };
+
+  const handleDeleteDepartment = async (departmentID) => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this department?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      preConfirm: async () => {
+        Swal.showLoading();
+        try {
+          await axios.delete(`/api/WorkforceManagement/Departments/delete-department`, { data: { departmentID } });
+          Swal.fire(
+            'Deleted!',
+            'Department has been deleted.',
+            'success'
+          );
+          fetchDepartments(); // Refetch departments after deletion
+        } catch (error) {
+          Swal.fire(
+            'Error!',
+            'There was an error deleting the department.',
+            'error'
+          );
+        }
+      }
+    });
   };
 
   return (
@@ -77,7 +121,7 @@ const DepartmentsTable = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by User Name'
+          placeholder='Search by Department Name'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -126,13 +170,13 @@ const DepartmentsTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen} endIcon={<MdFormatListBulletedAdd />}>
+        <AddDepartmentsButton variant="contained" onClick={() => handleDialogOpen()} endIcon={<MdFormatListBulletedAdd />}>
           Add Department
-        </AddUserButton>
+        </AddDepartmentsButton>
       </Box>
       <DialogForm
-        title="Add A Department"
-        content={<DepartmentsForm />}
+        title={selectedDepartment ? "Edit Department" : "Add Department"}
+        content={<DepartmentsForm handleClose={handleDialogClose} departmentData={selectedDepartment} />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -140,29 +184,38 @@ const DepartmentsTable = () => {
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Department</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id} sx={{
+            {filteredDepartments.length > 0 ? (
+              filteredDepartments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(department => (
+                <TableRow key={department.departmentid} sx={{
                   '&:hover': {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{department.departmentname}</TableCell>
+                  <TableCell>{department.description}</TableCell>
+                  <TableCell sx={{ width: '150px' }}>
+                    <Tooltip title="Edit">
+                      <IconButton onClick={() => handleDialogOpen(department)}>
+                        <IoPencil />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteDepartment(department.departmentid)}>
+                        <MdDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={3} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -176,7 +229,7 @@ const DepartmentsTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredUsers.length}
+          count={filteredDepartments.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

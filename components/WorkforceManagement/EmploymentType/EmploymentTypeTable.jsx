@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
 import EmploymentTypeForm from './EmploymentTypeForm';
+import { MdDelete } from "react-icons/md";
+import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -20,7 +23,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: '#ECEBF9',
 }));
 
-const AddUserButton = styled(Button)(({ theme }) => ({
+const AddEmpTypesButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   borderRadius: "8px",
@@ -35,15 +38,27 @@ const EmploymentTypeTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-
-  ]);
+  const [EmpTypes, setEmpTypes] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogWidth, setDialogWidth] = useState('md');
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchEmpTypes = async () => {
+    try {
+      const response = await axios.get('/api/WorkforceManagement/EmploymentType/');
+      setEmpTypes(response.data);
+    } catch (error) {
+      console.error('Error fetching employment types:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmpTypes();
+  }, []);
+
+  const filteredEmpTypes = EmpTypes.filter(empType =>
+    empType.employmenttypename.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -63,12 +78,49 @@ const EmploymentTypeTable = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (content, title, width = 'md') => {
+    setDialogContent(content);
+    setDialogTitle(title);
+    setDialogWidth(width);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    setDialogContent(null);
+    setDialogTitle('');
+    setDialogWidth('md');
+    fetchEmpTypes(); // Refetch employment types after closing the dialog
+  };
+
+  const handleDeleteEmploymentType = async (employmentTypeID) => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this employment type?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      preConfirm: async () => {
+        Swal.showLoading();
+        try {
+          await axios.delete(`/api/WorkforceManagement/EmploymentType/delete-employmentType`, { data: { employmenttypeid: employmentTypeID } });
+          Swal.fire(
+            'Deleted!',
+            'Employment type has been deleted.',
+            'success'
+          );
+          fetchEmpTypes(); // Refetch employment types after deletion
+        } catch (error) {
+          Swal.fire(
+            'Error!',
+            'There was an error deleting the employment type.',
+            'error'
+          );
+        }
+      }
+    });
   };
 
   return (
@@ -76,7 +128,7 @@ const EmploymentTypeTable = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by User Name'
+          placeholder='Search by Employment Type Name'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -125,43 +177,59 @@ const EmploymentTypeTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
+        <AddEmpTypesButton variant="contained" onClick={() => handleDialogOpen(<EmploymentTypeForm handleClose={handleDialogClose} />, 'Add Employment Type')}>
           Add Employment Type
-        </AddUserButton>
+        </AddEmpTypesButton>
       </Box>
       <DialogForm
-        title="Add Employment Type"
-        content={<EmploymentTypeForm />}
+        title={dialogTitle}
+        content={dialogContent}
         open={isDialogOpen}
         onClose={handleDialogClose}
+        width={dialogWidth}
       />
       <TableContainer component={Paper}>
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id} sx={{
+            {filteredEmpTypes.length > 0 ? (
+              filteredEmpTypes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(empType => (
+                <TableRow key={empType.employmenttypeid} sx={{
                   '&:hover': {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{empType.employmenttypename}</TableCell>
+                  <TableCell sx={{ width: '150px' }}>
+                  <Tooltip title="Edit">
+                    <IconButton onClick={() => handleDialogOpen(
+                      <EmploymentTypeForm 
+                        handleClose={handleDialogClose} 
+                        employmentTypeId={empType.employmenttypeid} 
+                        employmentTypeName={empType.employmenttypename} 
+                      />, 
+                      'Edit Employment Type', 
+                      'lg'
+                    )}>
+                      <IoPencil />
+                    </IconButton>
+                  </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteEmploymentType(empType.employmenttypeid)}>
+                        <MdDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={2} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -175,7 +243,7 @@ const EmploymentTypeTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredUsers.length}
+          count={filteredEmpTypes.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

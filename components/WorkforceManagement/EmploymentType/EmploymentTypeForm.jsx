@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box } from '@mui/material';
@@ -8,49 +8,59 @@ import RequiredField from "@/components/General/RequiredField";
 
 const validationObj = {
   employmentType: yup.string().typeError("Please enter a valid employment type.").required("Employment type is required"),
-  description: yup.string().typeError("Please enter a valid description.").required("Description is required"),
 };
 
 const validationSchema = yup.object(validationObj);
 
-const EmploymentTypeForm = ({ handleClose, closeAccordion }) => {
+const EmploymentTypeForm = ({ handleClose, employmentTypeId, employmentTypeName }) => {
+  console.log("🚀 ~ EmploymentTypeForm ~ employmentTypeId:", employmentTypeId)
   const [submitting, setSubmitting] = useState(false);
 
-  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm } = useFormik({
+  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
-      employmentType: "",
-      description: "",
+      employmentType: employmentTypeName || "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setSubmitting(true);
-      let url = "/employmenttypes/add";
+      const url = employmentTypeId ? "/api/WorkforceManagement/EmploymentType/edit-employmentType" : "/api/WorkforceManagement/EmploymentType/add-employmentType";
+      const data = employmentTypeId ? { ...values, employmenttypeid: employmentTypeId } : values;
 
       axios({
         url,
         method: "POST",
-        data: { ...values }
+        data: data
       }).then((res) => {
         setSubmitting(false);
         handleClose();
         MySwal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'Employment type added successfully',
+          text: employmentTypeId ? 'Employment type updated successfully' : 'Employment type added successfully',
           timer: 1000,
           showConfirmButton: false,
         });
         resetForm();
-        closeAccordion();
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({
           icon: 'error',
-          html: `${e?.response?.data ? e?.response?.data : e}`,
+          title: 'Error',
+          text: e?.response?.data?.error || 'An error occurred',
         });
       });
     },
   });
+
+  useEffect(() => {
+    if (employmentTypeId && !employmentTypeName) {
+      axios.get(`/api/WorkforceManagement/EmploymentType/${employmentTypeId}`).then((response) => {
+        setValues({ employmentType: response.data.employmenttypename });
+      }).catch((error) => {
+        console.error('Error fetching employment type:', error);
+      });
+    }
+  }, [employmentTypeId, employmentTypeName, setValues]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -65,26 +75,6 @@ const EmploymentTypeForm = ({ handleClose, closeAccordion }) => {
           onBlur={handleBlur}
           error={touched.employmentType && Boolean(errors.employmentType)}
           helperText={touched.employmentType && errors.employmentType}
-        />
-      </Box>
-      <Box mb={2}>
-        <TextField
-          fullWidth
-          id="description"
-          name="description"
-          label={<RequiredField title="Description" />}
-          value={values.description}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.description && Boolean(errors.description)}
-          helperText={touched.description && errors.description}
-          multiline
-          rows={4}
-          InputProps={{
-            sx: {
-              resize: 'vertical',
-            },
-          }}
         />
       </Box>
       <Box display="flex" justifyContent="flex-end">

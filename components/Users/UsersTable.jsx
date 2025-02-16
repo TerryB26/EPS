@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -38,15 +38,24 @@ const Users = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-    { id: 3, name: 'Mike Johnson', email: 'mike@example.com' },
-  ]);
+  const [users, setUsers] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogWidth, setDialogWidth] = useState('md');
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/Users');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -70,7 +79,7 @@ const Users = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = (content, title, width = 'md') => {
+  const handleDialogOpen = (content, title, width = 'xl') => {
     setDialogContent(content);
     setDialogTitle(title);
     setDialogWidth(width);
@@ -153,7 +162,6 @@ const Users = () => {
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell sx={{ width: '100px' }}>Actions</TableCell>
@@ -167,7 +175,6 @@ const Users = () => {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell sx={{ width: '150px' }}>

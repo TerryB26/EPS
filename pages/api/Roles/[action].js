@@ -6,21 +6,19 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { jobtitleid, jobTitle: jobtitlename } = req.body;
-
-  const table = 'public."jobtitles"';
+  const { roleID, roleName } = req.body;
 
   try {
     switch (action) {
-      case 'add-jobTitle':
+      case 'add-role':
         if (method === 'POST') {
-          const insertjobTitleQuery = `
-            INSERT INTO ${table} ("jobtitleid", "jobtitlename", "createdon", "updatedon")
+          const insertRoleQuery = `
+            INSERT INTO public."roles" ("roleid", "rolename", "createdon", "updatedon")
             VALUES ('${uuidv4()}', $1, NOW(), NOW())
             RETURNING *;
           `;
-          const result = await query(insertjobTitleQuery, [jobtitlename]);
-          response = { message: 'Job title added successfully', jobTitle: result.rows[0] };
+          const result = await query(insertRoleQuery, [roleName]);
+          response = { message: 'Role added successfully', role: result.rows[0] };
         } else {
           res.setHeader('Allow', ['POST']);
           status = 405;
@@ -28,16 +26,16 @@ export default async function handler(req, res) {
         }
         break;
 
-      case 'edit-jobTitle':
+        case 'edit-role':
         if (method === 'POST') {
-          const updatejobTitleQuery = `
-            UPDATE ${table}
-            SET "jobtitlename" = $1, "updatedon" = NOW()
-            WHERE "jobtitleid" = $2
+          const updateRoleQuery = `
+            UPDATE public."roles"
+            SET "rolename" = $1, "updatedon" = NOW()
+            WHERE "roleid" = $2
             RETURNING *;
           `;
-          const result = await query(updatejobTitleQuery, [jobtitlename, jobtitleid]);
-          response = { message: 'Job title updated successfully', jobTitle: result.rows[0] };
+          const result = await query(updateRoleQuery, [roleName, roleID]);
+          response = { message: 'Role updated successfully', role: result.rows[0] };
         } else {
           res.setHeader('Allow', ['POST']);
           status = 405;
@@ -45,13 +43,13 @@ export default async function handler(req, res) {
         }
         break;
 
-      case 'delete-jobTitle':
+      case 'delete-role':
         if (method === 'DELETE') {
-          const deletejobTitleQuery = `
-            DELETE FROM ${table} WHERE "jobtitleid" = $1 RETURNING *;
+          const deleteRoleQuery = `
+            DELETE FROM public."roles" WHERE "roleid" = $1 RETURNING *;
           `;
-          const result = await query(deletejobTitleQuery, [jobtitleid]);
-          response = { message: 'Job title deleted successfully', jobTitle: result.rows[0] };
+          const result = await query(deleteRoleQuery, [roleID]);
+          response = { message: 'Role deleted successfully', role: result.rows[0] };
         } else {
           res.setHeader('Allow', ['DELETE']);
           status = 405;

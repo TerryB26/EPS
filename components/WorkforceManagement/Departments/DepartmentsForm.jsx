@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box } from '@mui/material';
@@ -13,10 +13,10 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
-const DepartmentsForm = ({ handleClose, closeAccordion }) => {
+const DepartmentsForm = ({ handleClose, departmentData }) => {
   const [submitting, setSubmitting] = useState(false);
 
-  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm } = useFormik({
+  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
       departmentName: "",
       description: "",
@@ -24,24 +24,24 @@ const DepartmentsForm = ({ handleClose, closeAccordion }) => {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setSubmitting(true);
-      let url = "/departments/add";
+      const url = departmentData ? "/api/WorkforceManagement/Departments/edit-department" : "/api/WorkforceManagement/Departments/add-department";
+      const data = departmentData ? { ...values, departmentID: departmentData.departmentid } : values;
 
       axios({
         url,
         method: "POST",
-        data: { ...values }
+        data: data
       }).then((res) => {
         setSubmitting(false);
         handleClose();
         MySwal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'Department added successfully',
+          text: departmentData ? 'Department updated successfully' : 'Department added successfully',
           timer: 1000,
           showConfirmButton: false,
         });
         resetForm();
-        closeAccordion();
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({
@@ -51,6 +51,12 @@ const DepartmentsForm = ({ handleClose, closeAccordion }) => {
       });
     },
   });
+
+  useEffect(() => {
+    if (departmentData) {
+      setValues({ departmentName: departmentData.departmentname, description: departmentData.description });
+    }
+  }, [departmentData, setValues]);
 
   return (
     <form onSubmit={handleSubmit}>

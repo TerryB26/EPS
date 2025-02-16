@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import UsersForm from '@/components/Users/AddUsersForm';
 import RolesForm from './RolesForm';
 import DialogForm from '@/components/General/DialogForm';
 import { MdDelete } from "react-icons/md";
 import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import Swal from 'sweetalert2';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -37,14 +38,25 @@ const RolesTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [users] = useState([
-    { id: 100, name: 'John Doe', email: 'john@example.com' },
-  ]);
+  const [roles, setRoles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get('/api/Roles');
+      setRoles(response.data);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const filteredRoles = roles.filter(role =>
+    role.rolename.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -64,12 +76,44 @@ const RolesTable = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = () => {
+  const handleDialogOpen = (role = null) => {
+    setSelectedRole(role);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    fetchRoles(); // Refetch roles after closing the dialog
+  };
+
+  const handleDeleteRole = async (roleID) => {
+    const result = await Swal.fire({
+      title: 'Are you sure you want to delete this role?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      preConfirm: async () => {
+        Swal.showLoading();
+        try {
+          await axios.delete(`/api/Roles/delete-role`, { data: { roleID } });
+          Swal.fire(
+            'Deleted!',
+            'Role has been deleted.',
+            'success'
+          );
+          fetchRoles(); // Refetch roles after deletion
+        } catch (error) {
+          Swal.fire(
+            'Error!',
+            'There was an error deleting the role.',
+            'error'
+          );
+        }
+      }
+    });
   };
 
   return (
@@ -77,7 +121,7 @@ const RolesTable = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by User Name'
+          placeholder='Search by Role Name'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -108,7 +152,7 @@ const RolesTable = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleClearSearch}
+          onClick={() => handleDialogOpen()}
           startIcon={<SearchOffIcon sx={{ color: '#550000' }} />}
           sx={{
             height: '40px',
@@ -126,13 +170,13 @@ const RolesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={handleDialogOpen}>
+        <AddUserButton variant="contained" onClick={() => handleDialogOpen()}>
           Add Role
         </AddUserButton>
       </Box>
       <DialogForm
-        title="Add Role"
-        content={<RolesForm />}
+        title={selectedRole ? "Edit Role" : "Add Role"}
+        content={<RolesForm handleClose={handleDialogClose} roleData={selectedRole} />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -140,36 +184,27 @@ const RolesTable = () => {
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>Role Name</TableCell>
               <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow key={user.id} sx={{
+            {filteredRoles.length > 0 ? (
+              filteredRoles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(role => (
+                <TableRow key={role.roleid} sx={{
                   '&:hover': {
                     backgroundColor: '#E4F2FF',
                   },
                 }}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{role.rolename}</TableCell>
                   <TableCell sx={{ width: '150px' }}>
-                    <Tooltip title="View">
-                      <IconButton sx={{ color: '#939FBD' }}>
-                        <IoEyeOutline />
-                      </IconButton>
-                    </Tooltip>
                     <Tooltip title="Edit">
-                      <IconButton>
+                      <IconButton onClick={() => handleDialogOpen(role)}>
                         <IoPencil />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }}>
+                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteRole(role.roleid)}>
                         <MdDelete />
                       </IconButton>
                     </Tooltip>
@@ -178,7 +213,7 @@ const RolesTable = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={3} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -192,7 +227,7 @@ const RolesTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredUsers.length}
+          count={filteredRoles.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

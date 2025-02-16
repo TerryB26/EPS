@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box } from '@mui/material';
@@ -12,57 +12,68 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
-const JobTitlesForm = ({ handleClose, closeAccordion }) => {
+const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName }) => {
   const [submitting, setSubmitting] = useState(false);
 
-  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm } = useFormik({
+  const formik = useFormik({
     initialValues: {
-      jobTitle: "",
+      jobTitle: jobTitleName || "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setSubmitting(true);
-      let url = "/jobtitles/add";
+      const url = jobTitleId ? "/api/WorkforceManagement/JobTitles/edit-jobTitle" : "/api/WorkforceManagement/JobTitles/add-jobTitle";
+      const data = jobTitleId ? { ...values, jobtitleid: jobTitleId } : values;
 
       axios({
         url,
         method: "POST",
-        data: { ...values }
+        data: data
       }).then((res) => {
         setSubmitting(false);
-        handleClose();
         MySwal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'Job title added successfully',
+          text: jobTitleId ? 'Job title updated successfully' : 'Job title added successfully',
           timer: 1000,
           showConfirmButton: false,
         });
         resetForm();
-        closeAccordion();
+        handleClose(); // Ensure handleClose is called after successful submission
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({
           icon: 'error',
-          html: `${e?.response?.data ? e?.response?.data : e}`,
+          title: 'Error',
+          text: e?.response?.data?.error || 'An error occurred',
         });
       });
     },
   });
 
+  useEffect(() => {
+    if (jobTitleId && !jobTitleName) {
+      axios.get(`/api/WorkforceManagement/JobTitles/${jobTitleId}`).then((response) => {
+        formik.setValues({ jobTitle: response.data.jobtitlename });
+      }).catch((error) => {
+        console.error('Error fetching job title:', error);
+      });
+    }
+  }, [jobTitleId, jobTitleName]);
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <Box mb={2}>
         <TextField
           fullWidth
           id="jobTitle"
           name="jobTitle"
           label={<RequiredField title="Job Title" />}
-          value={values.jobTitle}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.jobTitle && Boolean(errors.jobTitle)}
-          helperText={touched.jobTitle && errors.jobTitle}
+          value={formik.values.jobTitle}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.jobTitle && Boolean(formik.errors.jobTitle)}
+          helperText={formik.touched.jobTitle && formik.errors.jobTitle}
         />
       </Box>
       <Box display="flex" justifyContent="flex-end">

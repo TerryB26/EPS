@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box } from '@mui/material';
@@ -10,34 +10,34 @@ const validationSchema = yup.object({
   roleName: yup.string().typeError("Please enter a valid role name.").required("Role name is required"),
 });
 
-const RolesForm = ({ handleClose, closeAccordion }) => {
+const RolesForm = ({ handleClose, roleData }) => {
   const [submitting, setSubmitting] = useState(false);
 
-  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm } = useFormik({
+  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
       roleName: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setSubmitting(true);
-      let url = "/roles/add";
+      const url = roleData ? "/api/Roles/edit-role" : "/api/Roles/add-role";
+      const data = roleData ? { ...values, roleID: roleData.roleid } : values;
 
       axios({
         url,
         method: "POST",
-        data: { ...values }
+        data: data
       }).then((res) => {
         setSubmitting(false);
         handleClose();
         MySwal.fire({
           icon: 'success',
           title: 'Success',
-          text: 'Role added successfully',
+          text: roleData ? 'Role updated successfully' : 'Role added successfully',
           timer: 1000,
           showConfirmButton: false,
         });
         resetForm();
-        closeAccordion();
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({
@@ -47,6 +47,12 @@ const RolesForm = ({ handleClose, closeAccordion }) => {
       });
     },
   });
+
+  useEffect(() => {
+    if (roleData) {
+      setValues({ roleName: roleData.rolename });
+    }
+  }, [roleData, setValues]);
 
   return (
     <form onSubmit={handleSubmit}>
