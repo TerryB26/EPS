@@ -8,6 +8,7 @@ import { MdDelete } from "react-icons/md";
 import { IoPencil } from "react-icons/io5";
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { FaFemale,FaMale  } from "react-icons/fa";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
