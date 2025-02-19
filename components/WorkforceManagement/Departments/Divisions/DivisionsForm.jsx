@@ -1,0 +1,85 @@
+import React, { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { TextField, Button, Box } from '@mui/material';
+import axios from 'axios';
+import MySwal from 'sweetalert2';
+import RequiredField from "@/components/General/RequiredField";
+
+const validationObj = {
+  divisionName: yup.string().typeError("Please enter a valid Division name.").required("Division name is required"),
+};
+
+const validationSchema = yup.object(validationObj);
+
+const DivisionsForm = ({ handleClose, divisionData, DepartmentID }) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
+    initialValues: {
+      depdivisionid: divisionData ? divisionData.depdivisionid : "",
+      divisionName: divisionData ? divisionData.depdivisioname : "",
+      departmentid: DepartmentID,
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, { resetForm }) => {
+      setSubmitting(true);
+      const url = values.depdivisionid ? "/api/WorkforceManagement/Departments/Divisions/edit-division" : "/api/WorkforceManagement/Departments/Divisions/add-division";
+      const data = { ...values };
+
+      axios({
+        url,
+        method: "POST",
+        data: data
+      }).then((res) => {
+        setSubmitting(false);
+        handleClose();
+        MySwal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: values.depdivisionid ? 'Division updated successfully' : 'Division added successfully',
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        resetForm();
+      }).catch(e => {
+        setSubmitting(false);
+        MySwal.fire({
+          icon: 'error',
+          html: `${e?.response?.data ? e?.response?.data : e}`,
+        });
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (divisionData) {
+      setValues({ depdivisionid: divisionData.depdivisionid, divisionName: divisionData.depdivisioname, departmentid: DepartmentID });
+    }
+  }, [divisionData, setValues, DepartmentID]);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Box mb={2}>
+        <TextField
+          fullWidth
+          id="divisionName"
+          name="divisionName"
+          label={<RequiredField title="Division Name" />}
+          value={values.divisionName}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.divisionName && Boolean(errors.divisionName)}
+          helperText={touched.divisionName && errors.divisionName}
+        />
+      </Box>
+      <Box display="flex" justifyContent="flex-end">
+        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
+          {submitting ? 'Submitting...' : 'Submit'}
+        </Button>
+      </Box>
+    </form>
+  );
+};
+
+export default DivisionsForm;

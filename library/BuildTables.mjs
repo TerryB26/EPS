@@ -62,6 +62,16 @@ const createTables = async () => {
         UpdatedBy UUID
       );
 
+      CREATE TABLE IF NOT EXISTS DepDivision (
+        DepDivisionID UUID PRIMARY KEY,
+        DepartmentID UUID REFERENCES Departments(DepartmentID),
+        DepDivisioName VARCHAR(100) NOT NULL,
+        CreatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UpdatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CreatedBy UUID,
+        UpdatedBy UUID
+      );
+
       CREATE TABLE IF NOT EXISTS EmploymentTypes (
         EmploymentTypeID UUID PRIMARY KEY,
         EmploymentTypeName VARCHAR(100) NOT NULL,

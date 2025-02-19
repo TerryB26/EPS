@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box, Stepper, Step, StepLabel, Typography, Grid } from '@mui/material';
@@ -25,6 +25,21 @@ const validationSchema = yup.object(validationObj);
 const AddUsersForm = ({ handleClose, closeAccordion, routeName }) => {
   const [submitting, setSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const [jobTitles, setJobTitles] = useState([]);
+
+  const fetchJobTitles = async () => {
+    try {
+      const response = await axios.get('/api/WorkforceManagement/JobTitles/');
+      console.log("🚀 ~ fetchJobTitles ~ response:", response)
+      setJobTitles(response.data);
+    } catch (error) {
+      console.error('Error fetching job titles:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobTitles();
+  }, []);
 
   const steps = ['Employee Details', 'Recruitment Details', 'Review & Submit'];
 

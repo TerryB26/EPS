@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, Tooltip, IconButton, Collapse } from '@mui/material';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, Tooltip, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
-import DepartmentsForm from './DepartmentsForm';
+import DivisionsForm from './DivisionsForm';
 import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
-import { IoPencil, IoChevronDownCircleOutline } from "react-icons/io5";
+import { IoPencil, IoEyeOutline } from "react-icons/io5";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import DivisionsTable from '@/components/WorkforceManagement/Departments/Divisions/DivisionsTable';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -35,30 +34,30 @@ const AddDepartmentsButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const DepartmentsTable = () => {
+const DivisionsTable = ({ DepartmentID }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [departments, setDepartments] = useState([]);
+  const [divisions, setDivisions] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const [expandedRows, setExpandedRows] = useState({});
+  const [selectedDivision, setSelectedDivision] = useState(null);
 
-  const fetchDepartments = async () => {
+  const fetchDivisions = async () => {
     try {
-      const response = await axios.get('/api/WorkforceManagement/Departments/');
-      setDepartments(response.data);
+      const response = await axios.get('/api/WorkforceManagement/Departments/Divisions/');
+      const filteredDivisions = response.data.filter(division => division.departmentid === DepartmentID);
+      setDivisions(filteredDivisions);
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      console.error('Error fetching divisions:', error);
     }
   };
 
   useEffect(() => {
-    fetchDepartments();
-  }, []);
+    fetchDivisions();
+  }, [DepartmentID]);
 
-  const filteredDepartments = departments.filter(department =>
-    department.departmentname.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDivisions = divisions.filter(division =>
+    division.depdivisioname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
@@ -78,19 +77,19 @@ const DepartmentsTable = () => {
     setSearchQuery(event.target.value);
   };
 
-  const handleDialogOpen = (department = null) => {
-    setSelectedDepartment(department);
+  const handleDialogOpen = (division = null) => {
+    setSelectedDivision(division);
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    fetchDepartments(); // Refetch departments after closing the dialog
+    fetchDivisions(); // Refetch divisions after closing the dialog
   };
 
-  const handleDeleteDepartment = async (departmentID) => {
+  const handleDeleteDivision = async (depdivisionid) => {
     const result = await Swal.fire({
-      title: 'Are you sure you want to delete this department?',
+      title: 'Are you sure you want to delete this division?',
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
@@ -100,17 +99,17 @@ const DepartmentsTable = () => {
       preConfirm: async () => {
         Swal.showLoading();
         try {
-          await axios.delete(`/api/WorkforceManagement/Departments/delete-department`, { data: { departmentID } });
+          await axios.delete(`/api/WorkforceManagement/Departments/Divisions/delete-division`, { data: { depdivisionid } });
           Swal.fire(
             'Deleted!',
-            'Department has been deleted.',
+            'Division has been deleted.',
             'success'
           );
-          fetchDepartments(); // Refetch departments after deletion
+          fetchDivisions(); // Refetch divisions after deletion
         } catch (error) {
           Swal.fire(
             'Error!',
-            'There was an error deleting the department.',
+            'There was an error deleting the division.',
             'error'
           );
         }
@@ -118,19 +117,12 @@ const DepartmentsTable = () => {
     });
   };
 
-  const handleRowClick = (departmentID) => {
-    setExpandedRows(prevState => ({
-      ...prevState,
-      [departmentID]: !prevState[departmentID]
-    }));
-  };
-
   return (
     <div style={{ padding: "20px" }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by Department Name'
+          placeholder='Search by Division Name'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -180,12 +172,12 @@ const DepartmentsTable = () => {
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <AddDepartmentsButton variant="contained" onClick={() => handleDialogOpen()} endIcon={<MdFormatListBulletedAdd />}>
-          Add Department
+          Add Division
         </AddDepartmentsButton>
       </Box>
       <DialogForm
-        title={selectedDepartment ? "Edit Department" : "Add Department"}
-        content={<DepartmentsForm handleClose={handleDialogClose} departmentData={selectedDepartment} />}
+        title={selectedDivision ? "Edit Division" : "Add Division"}
+        content={<DivisionsForm handleClose={handleDialogClose} divisionData={selectedDivision} DepartmentID={DepartmentID} />}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -193,57 +185,38 @@ const DepartmentsTable = () => {
         <Table>
           <CustomTableHead>
             <TableRow>
-              <TableCell />
-              <TableCell>Department</TableCell>
+              <TableCell>Division</TableCell>
               <TableCell>Description</TableCell>
               <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
-            {filteredDepartments.length > 0 ? (
-              filteredDepartments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(department => (
-                <React.Fragment key={department.departmentid}>
-                  <TableRow sx={{
-                    '&:hover': {
-                      backgroundColor: '#E4F2FF',
-                    },
-                  }}>
-                    <TableCell>
-                      <IconButton onClick={() => handleRowClick(department.departmentid)}>
-                        <IoChevronDownCircleOutline />
+            {filteredDivisions.length > 0 ? (
+              filteredDivisions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(division => (
+                <TableRow key={division.depdivisionid} sx={{
+                  '&:hover': {
+                    backgroundColor: '#E4F2FF',
+                  },
+                }}>
+                  <TableCell>{division.depdivisioname}</TableCell>
+                  <TableCell>{division.description}</TableCell>
+                  <TableCell sx={{ width: '150px' }}>
+                    <Tooltip title="Edit">
+                      <IconButton onClick={() => handleDialogOpen(division)}>
+                        <IoPencil />
                       </IconButton>
-                    </TableCell>
-                    <TableCell>{department.departmentname}</TableCell>
-                    <TableCell>{department.description}</TableCell>
-                    <TableCell sx={{ width: '150px' }}>
-                      <Tooltip title="Edit">
-                        <IconButton onClick={() => handleDialogOpen(department)}>
-                          <IoPencil />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteDepartment(department.departmentid)}>
-                          <MdDelete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={4} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                      <Collapse in={expandedRows[department.departmentid]} timeout="auto" unmountOnExit>
-                        <Box margin={1}>
-                          <Paper style={{ fontFamily: 'Roboto', padding: '20px', margin: '20px', boxShadow: '2px 4px 6px rgba(0, 0, 0, 0.5)' }}>
-                            <DivisionsTable DepartmentID={department.departmentid} />
-                          </Paper>
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </React.Fragment>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteDivision(division.depdivisionid)}>
+                        <MdDelete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} align="center">
+                <TableCell colSpan={3} align="center">
                   <Typography variant="body1" color="textSecondary">
                     No records to display
                   </Typography>
@@ -257,7 +230,7 @@ const DepartmentsTable = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredDepartments.length}
+          count={filteredDivisions.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -268,4 +241,4 @@ const DepartmentsTable = () => {
   );
 };
 
-export default DepartmentsTable;
+export default DivisionsTable;
