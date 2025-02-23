@@ -8,6 +8,7 @@ import { MdDelete } from "react-icons/md";
 import { IoPencil, IoEyeOutline } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
 import UpdateUserSalaries from '@/components/Users/Updates/UpdateUserSalaries';
+import axios from 'axios';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -44,16 +45,16 @@ const Users = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogWidth, setDialogWidth] = useState('md');
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('/api/Users');
-        setUsers(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/api/Users/');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -147,7 +148,7 @@ const Users = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={() => handleDialogOpen(<UsersForm />, 'Add User')}>
+        <AddUserButton variant="contained" onClick={() => handleDialogOpen(<UsersForm handleClose={handleDialogClose} fetchUsers={fetchUsers} />, 'Add User')}>
           Add User
         </AddUserButton>
       </Box>

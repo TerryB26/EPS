@@ -10,14 +10,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.0",
+    "@mui/lab": "^6.0.0-beta.28",
     "@mui/material": "^6.4.2",
+    "@mui/x-date-pickers": "^7.27.0",
     "@prisma/client": "^6.3.1",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "chart.js": "^4.4.7",
+    "date-fns": "^3.6.0",
     "docx": "^9.1.1",
     "docx-pdf": "^0.0.1",
     "docx-templates": "^4.13.0",
