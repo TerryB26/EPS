@@ -12,6 +12,7 @@ import PageHeader from '../General/PageHeader';
 import { getDateOfBirthFromID, validateIDNumber, getGenderFromID } from '@/utils/IDChecker';
 import PropDebugger from '@/utils/Debugger';
 import { FaFemale, FaMale } from "react-icons/fa";
+import FileUpload from '@/components/General/Files/FileUpload';
 
 const validationObj = {
   firstName: yup.string().typeError("Please enter a valid first name.").required("First name is required"),
@@ -393,45 +394,57 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
     </Box>,
 
     <Box mb={2} mt={8} key="step3">
-    <Grid container spacing={2} mb={4}>
-      <Grid item xs={6}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label={<RequiredField title="Start Date" />}
-            value={values.startDate}
-            onChange={(newValue) => setFieldValue('startDate', newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                onBlur={handleBlur}
-                error={touched.startDate && Boolean(errors.startDate)}
-                helperText={touched.startDate && errors.startDate}
-              />
-            )}
-          />
-        </LocalizationProvider>
+      <Grid container spacing={2} mb={4} sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item xs={12} md={6} sx={{ flexGrow: 1, pr: 2 }}>
+        <FormControl fullWidth> 
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label={<RequiredField title="Start Date" />}
+              value={values.startDate}
+              onChange={(newValue) => setFieldValue('startDate', newValue)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  sx={{ width: "100%" }} // Ensure it expands
+                  onBlur={handleBlur}
+                  error={touched.startDate && Boolean(errors.startDate)}
+                  helperText={touched.startDate && errors.startDate}
+                />
+              )}
+            />
+          </LocalizationProvider>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12} md={6} sx={{ flexGrow: 1, pl: 2 }}>
+        <FormControl fullWidth> 
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label={<RequiredField title="End Date" />}
+              value={values.endDate}
+              onChange={(newValue) => setFieldValue('endDate', newValue)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  sx={{ width: "100%" }} // Ensure it expands
+                  onBlur={handleBlur}
+                  error={touched.endDate && Boolean(errors.endDate)}
+                  helperText={touched.endDate && errors.endDate}
+                />
+              )}
+            />
+          </LocalizationProvider>
+          </FormControl>
+        </Grid>
       </Grid>
-      <Grid item xs={6}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            label={<RequiredField title="End Date" />}
-            value={values.endDate}
-            onChange={(newValue) => setFieldValue('endDate', newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                onBlur={handleBlur}
-                error={touched.endDate && Boolean(errors.endDate)}
-                helperText={touched.endDate && errors.endDate}
-              />
-            )}
-          />
-        </LocalizationProvider>
+
+      <Grid mt={4}>
+        <FileUpload />
       </Grid>
-    </Grid>
     </Box>,
+
 
     <Box mb={2} mt={8} key="step4">
     <Grid container spacing={2} mb={4}>
