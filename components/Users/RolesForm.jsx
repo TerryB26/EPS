@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Box } from '@mui/material';
 import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from "@/components/General/FormButtons";
 
 const validationSchema = yup.object({
   roleName: yup.string().typeError("Please enter a valid role name.").required("Role name is required"),
@@ -12,6 +13,10 @@ const validationSchema = yup.object({
 
 const RolesForm = ({ handleClose, roleData }) => {
   const [submitting, setSubmitting] = useState(false);
+  
+  const handleClearForm = () => {
+    resetForm();
+  };
 
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
@@ -69,11 +74,9 @@ const RolesForm = ({ handleClose, roleData }) => {
           helperText={touched.roleName && errors.roleName}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+      
+        <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
+    
     </form>
   );
 };
