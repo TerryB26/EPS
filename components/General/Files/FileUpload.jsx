@@ -5,13 +5,16 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { MdDelete, MdExpandCircleDown } from "react-icons/md";
 
-const FileUpload = ({ title = "Documents", documentType = "pdf", allowMultiple = true, onFileUpload, triggerFileUpload, ApiUrl="" }) => {
+const FileUpload = ({ title = "Documents", documentType = "pdf", allowMultiple = true, onFileUpload, triggerFileUpload, ApiUrl="" ,EmployeeNumber = ""}) => {
+  console.log("🚀 ~ FileUpload ~ EmployeeNumber:", EmployeeNumber)
+
   const [file, setFile] = useState(null);
 
   const handleFileUpload = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-
+    formData.append('EmployeeNumber', EmployeeNumber);
+  
     try {
       const response = await axios.post(ApiUrl, formData, {
         headers: {

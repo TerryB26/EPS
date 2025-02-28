@@ -20,3 +20,17 @@ export const getDateOfBirthFromID = (idNumber) => {
     const genderDigit = parseInt(idNumber.charAt(6), 10);
     return genderDigit < 5 ? 'Female' : 'Male';
   };
+
+  // ...existing code...
+
+  export const generateEmployeeNumber = (idNumber) => {
+    const idRegex = /^\d{3}(\d{4})\d{6}$/;
+    if (!idRegex.test(idNumber)) {
+      throw new Error("Invalid ID number format");
+    }
+  
+    const [, idSegment] = idNumber.match(idRegex);
+    const randomDigits = Math.floor(100 + Math.random() * 900); 
+  
+    return `EMP-${idSegment}-${randomDigits}`;
+  };

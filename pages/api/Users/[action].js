@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   let response = {};
   const {
     firstName, lastName, email, phoneNumber, IDNumber, DOB, gender, jobTitle,
-    department, division, employmentType, startDate, endDate, salary, bonus, role,fileName: empcontractname
+    department, division, employmentType, startDate, endDate, salary, bonus, role,fileName: empcontractname, EmployeeNumber: employeenumber
   } = req.body;
 
   const password = 'password1234';
@@ -29,10 +29,10 @@ export default async function handler(req, res) {
             const userId = userResult.rows[0].userid;
 
             const insertEmployeeQuery = `
-              INSERT INTO public.employees (employeeid, userid, departmentid, depdivisionid, jobtitleid, employmenttypeid, employedon, employmentenddate, createdon, updatedon, empcontractname)
-              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8);
+              INSERT INTO public.employees (employeeid, userid, departmentid, depdivisionid, jobtitleid, employmenttypeid, employedon, employmentenddate, createdon, updatedon, empcontractname, employeenumber)
+              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8, $9);
             `;
-            await query(insertEmployeeQuery, [userId, department, division, jobTitle, employmentType, startDate, endDate, empcontractname]);
+            await query(insertEmployeeQuery, [userId, department, division, jobTitle, employmentType, startDate, endDate, empcontractname, employeenumber]);
 
             const insertUserRoleQuery = `
               INSERT INTO public.userroles (userroleid, userid, roleid, createdon, updatedon)

@@ -27,18 +27,24 @@ export default function handler(req, res) {
       return res.status(500).json({ error: 'Error parsing the files' });
     }
 
-    const userId = fields.userId;
-    const userUploadDir = path.join(baseUploadDir, userId);
+    const employeeNumber = Array.isArray(fields.EmployeeNumber) ? fields.EmployeeNumber[0] : fields.EmployeeNumber;
 
-    // Ensure the user-specific directory exists
-    if (!fs.existsSync(userUploadDir)) {
-      fs.mkdirSync(userUploadDir, { recursive: true });
+    if (!employeeNumber) {
+      console.error('EmployeeNumber is missing');
+      return res.status(400).json({ error: 'EmployeeNumber is missing' });
+    }
+
+    const employeeUploadDir = path.join(baseUploadDir, employeeNumber);
+
+    // Ensure the employee-specific directory exists
+    if (!fs.existsSync(employeeUploadDir)) {
+      fs.mkdirSync(employeeUploadDir, { recursive: true });
     }
 
     // Handle single file upload
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
     const oldPath = file.filepath;
-    const newPath = path.join(userUploadDir, file.newFilename);
+    const newPath = path.join(employeeUploadDir, file.newFilename);
 
     fs.rename(oldPath, newPath, (err) => {
       if (err) {
@@ -46,7 +52,6 @@ export default function handler(req, res) {
         return res.status(500).json({ error: 'Error moving the file' });
       }
 
-      console.log('Files uploaded successfully', files);
       res.status(200).json({ message: 'Files uploaded successfully', files });
     });
   });

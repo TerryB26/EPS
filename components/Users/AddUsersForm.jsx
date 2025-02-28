@@ -9,7 +9,7 @@ import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
 import PageHeader from '../General/PageHeader';
-import { getDateOfBirthFromID, validateIDNumber, getGenderFromID } from '@/utils/IDChecker';
+import { getDateOfBirthFromID, validateIDNumber, getGenderFromID, generateEmployeeNumber } from '@/utils/IDChecker';
 import PropDebugger from '@/utils/Debugger';
 import { FaFemale, FaMale } from "react-icons/fa";
 import FileUpload from '@/components/General/Files/FileUpload';
@@ -92,6 +92,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       bonus: "",
       role: "",
       fileName: "",
+      EmployeeNumber: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
@@ -137,11 +138,14 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
     if (validateIDNumber(idNumber)) {
       const dob = getDateOfBirthFromID(idNumber);
       const gender = getGenderFromID(idNumber);
+      const EmployeeNumber = generateEmployeeNumber(idNumber);
       setFieldValue('DOB', dob.toISOString().split('T')[0]);
       setFieldValue('gender', gender);
+      setFieldValue('EmployeeNumber', EmployeeNumber);
     } else {
       setFieldValue('DOB', '');
       setFieldValue('gender', '');
+      setFieldValue('EmployeeNumber', '');
     }
   };
 
@@ -453,7 +457,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       </Grid>
 
       <Grid mt={4}>
-        <FileUpload allowMultiple={false} onFileUpload={handleFileUpload} triggerFileUpload={triggerFileUpload} ApiUrl="/api/EmpContracts/upload"/>
+        <FileUpload allowMultiple={false} onFileUpload={handleFileUpload} triggerFileUpload={triggerFileUpload} ApiUrl="/api/EmpContracts/upload" EmployeeNumber={values.EmployeeNumber}/>
       </Grid>
     </Box>,
 
