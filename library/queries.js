@@ -6,9 +6,24 @@ export const queryKeys = {
   GET_JTitles: 'SELECT * FROM public."jobtitles"',
   GET_EMPTypes: 'SELECT * FROM public."employmenttypes"',
   GET_USER_BY_ID: 'SELECT * FROM public."User" WHERE id = $1',
-  INSERT_ROLE: `
-    INSERT INTO public."roles" ("RoleID", "RoleName", "CreatedOn", "UpdatedOn")
-    VALUES (uuid_generate_v4(), $1, NOW(), NOW())
-    RETURNING *;
+  GET_FULL_EMP_DETAILS: 
+  `
+  SELECT 
+    u.userid,e.employeeid, u."name", u.surname, u.email, u.phone, 
+    u.dateofbirth, u.gender, u.idnumber, 
+      r.rolename, 
+     d.departmentname, 
+     dd.depdivisioname,jt.jobtitlename,
+     e.empcontractname, 
+     et.employmenttypename, 
+    e.employedon, e.employmentenddate  
+FROM public.users u
+LEFT JOIN public.userroles ur ON u.userid = ur.userid
+LEFT JOIN public.roles r ON ur.roleid = r.roleid
+LEFT JOIN public.employees e ON u.userid = e.userid
+LEFT JOIN public.employmenttypes et ON e.employmenttypeid = et.employmenttypeid
+LEFT JOIN public.departments d ON e.departmentid = d.departmentid
+LEFT JOIN public.depdivision dd ON e.depdivisionid = dd.depdivisionid
+LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   `,
 };

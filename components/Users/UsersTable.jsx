@@ -5,10 +5,11 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
 import { MdDelete } from "react-icons/md";
-import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import { IoEyeOutline } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
 import UpdateUserSalaries from '@/components/Users/Updates/UpdateUserSalaries';
 import axios from 'axios';
+import FullEmpDetails from '@/components/Employees/FullEmpDetails';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -179,11 +180,11 @@ const Users = () => {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell sx={{ width: '150px' }}>
-                    <Tooltip title="View">
-                      <IconButton sx={{ color: '#939FBD' }}>
-                        <IoEyeOutline />
-                      </IconButton>
-                    </Tooltip>
+                  <Tooltip title="View">
+                    <IconButton sx={{ color: '#939FBD' }} onClick={() => handleDialogOpen(<FullEmpDetails UserID={user.userid} />, 'View User Details', 'lg')}>
+                      <IoEyeOutline />
+                    </IconButton>
+                  </Tooltip>
                     <Tooltip title="Edit">
                       <IconButton onClick={() => handleDialogOpen(<UpdateUserSalaries userId={user.id} />, 'Edit User', 'lg')}>
                         <RxUpdate />
