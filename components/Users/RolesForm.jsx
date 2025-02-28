@@ -74,9 +74,7 @@ const RolesForm = ({ handleClose, roleData }) => {
           helperText={touched.roleName && errors.roleName}
         />
       </Box>
-      
-        <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
-    
+      <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>
   );
 };

@@ -55,7 +55,7 @@ const FormButtons = ({ handleClose, handleClearForm, submitting }) => {
         </Button>
 
         <LoadingButton
-          type="submit"
+          type="submit"  // Ensure the button triggers form submission
           loading={submitting}
           variant="contained"
           sx={{ 

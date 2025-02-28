@@ -13,6 +13,7 @@ import { getDateOfBirthFromID, validateIDNumber, getGenderFromID } from '@/utils
 import PropDebugger from '@/utils/Debugger';
 import { FaFemale, FaMale } from "react-icons/fa";
 import FileUpload from '@/components/General/Files/FileUpload';
+import FormButtons from "@/components/General/FormButtons";
 
 const validationObj = {
   firstName: yup.string().typeError("Please enter a valid first name.").required("First name is required"),
@@ -42,6 +43,10 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
   const [divisions, setDivisions] = useState([]);
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [userRoles, setuserRoles] = useState([]);
+  const [triggerFileUpload, setTriggerFileUpload] = useState(false); // Add this state
+  const handleClearForm = () => {
+    resetForm();
+  };
 
   useEffect(() => {
     const endpoints = [
@@ -86,6 +91,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       salary: "",
       bonus: "",
       role: "",
+      fileName: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
@@ -108,7 +114,9 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
           showConfirmButton: false,
         });
         resetForm();
+        setTriggerFileUpload(true);
         // closeAccordion();
+       // handleFileUpload();
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({
@@ -118,6 +126,10 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       });
     },
   });
+
+  const handleFileUpload = (file) => {
+    setFieldValue('fileName', file.name);
+  };
 
   const handleIDNumberChange = (e) => {
     handleChange(e);
@@ -428,7 +440,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
                 <TextField
                   {...params}
                   fullWidth
-                  sx={{ width: "100%" }} // Ensure it expands
+                  sx={{ width: "100%" }}
                   onBlur={handleBlur}
                   error={touched.endDate && Boolean(errors.endDate)}
                   helperText={touched.endDate && errors.endDate}
@@ -441,7 +453,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       </Grid>
 
       <Grid mt={4}>
-        <FileUpload />
+        <FileUpload allowMultiple={false} onFileUpload={handleFileUpload} triggerFileUpload={triggerFileUpload} ApiUrl="/api/EmpContracts/upload"/>
       </Grid>
     </Box>,
 
@@ -499,10 +511,9 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
               </Step>
             ))}
           </Stepper>
-
-          <Box mt={2} >
+  
+          <Box mt={2}>
             <PageHeader routeName={steps[activeStep]} />
-
             {stepContents[activeStep]}
           </Box>
           <Box display="flex" justifyContent="space-between" mt={2}>
@@ -510,9 +521,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
               Back
             </Button>
             {activeStep === steps.length - 1 ? (
-              <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-                {submitting ? 'Submitting...' : 'Submit'}
-              </Button>
+              <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
             ) : (
               <Button color="primary" variant="contained" onClick={handleNext}>
                 Next
