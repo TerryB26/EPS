@@ -507,42 +507,51 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
   <PropDebugger propsToDebug={{ values, errors }} />
   <Box mt={2}>
       <form onSubmit={handleSubmit}>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => (
-              <Step key={index}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-          <Box mt={2}>
-            <PageHeader routeName={steps[activeStep]} />
-            {stepContents[activeStep]}
-          </Box>
-          <Box display="flex" justifyContent="space-between" mt={2}>
-            {activeStep === steps.length - 1 ? (
-              <Box display="flex" justifyContent="flex-end">
-                <FormButtons 
-                  handleClose={handleClose} 
-                  handleClearForm={handleClearForm} 
-                  submitting={submitting}
-                  showStepperBack={true}
-                  handleBack={handleBack}
-                  activeStep={activeStep}
-                />
-              </Box>
-            ) : (
-              <Box display="flex" justifyContent="space-between" width="100%">
-                <Button disabled={activeStep === 0} onClick={handleBack}>
-                  Back
-                </Button>
-                <Button color="primary" variant="contained" onClick={handleNext}>
-                  Next
-                </Button>
-              </Box>
-            )}
-          </Box>
-        </form>
+        <PageHeader routeName={steps[activeStep]} />
+        {stepContents[activeStep]}
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+          {activeStep === steps.length - 1 ? (
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <FormButtons
+                handleClose={handleClose}
+                handleClearForm={handleClearForm}
+                submitting={submitting}
+                showStepperBack={true}
+                handleBack={handleBack}
+                activeStep={activeStep}
+              />
+            </Box>
+          ) : (
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                variant="outlined"
+                sx={{ minWidth: 100 }}
+              >
+                Back
+              </Button>
+              <Button
+                onClick={handleNext}
+                variant="contained"
+                color="primary"
+                sx={{ minWidth: 100 }}
+              >
+                Next
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </form>
   </Box>
 </div>
   );
