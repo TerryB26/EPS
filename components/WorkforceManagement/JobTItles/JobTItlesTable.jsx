@@ -8,7 +8,7 @@ import { MdDelete } from "react-icons/md";
 import { IoPencil } from "react-icons/io5";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { FaFemale,FaMale  } from "react-icons/fa";
+import { MdFormatListBulletedAdd } from "react-icons/md";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -43,7 +43,6 @@ const JobTitlesTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogWidth, setDialogWidth] = useState('md');
 
   const fetchJobTitles = async () => {
     try {
@@ -82,7 +81,6 @@ const JobTitlesTable = () => {
   const handleDialogOpen = (content, title, width = 'md') => {
     setDialogContent(content);
     setDialogTitle(title);
-    setDialogWidth(width);
     setIsDialogOpen(true);
   };
 
@@ -90,8 +88,7 @@ const JobTitlesTable = () => {
     setIsDialogOpen(false);
     setDialogContent(null);
     setDialogTitle('');
-    setDialogWidth('md');
-    fetchJobTitles(); // Refetch job titles after closing the dialog
+    fetchJobTitles();
   };
 
   const handleDeleteJobTitle = async (jobTitleId) => {
@@ -112,7 +109,7 @@ const JobTitlesTable = () => {
             'Job title has been deleted.',
             'success'
           );
-          fetchJobTitles(); // Refetch job titles after deletion
+          fetchJobTitles();
         } catch (error) {
           Swal.fire(
             'Error!',
@@ -178,7 +175,7 @@ const JobTitlesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddJobTitlesButton variant="contained" onClick={() => handleDialogOpen(<JobTitlesForm handleClose={handleDialogClose} />, 'Add Job Title')}>
+        <AddJobTitlesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<JobTitlesForm handleClose={handleDialogClose} />, 'Add Job Title')}>
           Add Job Title
         </AddJobTitlesButton>
       </Box>
@@ -187,7 +184,7 @@ const JobTitlesTable = () => {
         content={dialogContent}
         open={isDialogOpen}
         onClose={handleDialogClose}
-        width={dialogWidth}
+        width='sm'
       />
       <TableContainer component={Paper}>
         <Table>

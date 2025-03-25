@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
 import EmploymentTypeForm from './EmploymentTypeForm';
-import { MdDelete } from "react-icons/md";
+import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
 import { IoPencil, IoEyeOutline } from "react-icons/io5";
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -42,7 +42,6 @@ const EmploymentTypeTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogWidth, setDialogWidth] = useState('md');
 
   const fetchEmpTypes = async () => {
     try {
@@ -81,7 +80,6 @@ const EmploymentTypeTable = () => {
   const handleDialogOpen = (content, title, width = 'md') => {
     setDialogContent(content);
     setDialogTitle(title);
-    setDialogWidth(width);
     setIsDialogOpen(true);
   };
 
@@ -89,8 +87,7 @@ const EmploymentTypeTable = () => {
     setIsDialogOpen(false);
     setDialogContent(null);
     setDialogTitle('');
-    setDialogWidth('md');
-    fetchEmpTypes(); // Refetch employment types after closing the dialog
+    fetchEmpTypes();
   };
 
   const handleDeleteEmploymentType = async (employmentTypeID) => {
@@ -177,7 +174,7 @@ const EmploymentTypeTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddEmpTypesButton variant="contained" onClick={() => handleDialogOpen(<EmploymentTypeForm handleClose={handleDialogClose} />, 'Add Employment Type')}>
+        <AddEmpTypesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<EmploymentTypeForm handleClose={handleDialogClose} />, 'Add Employment Type')}>
           Add Employment Type
         </AddEmpTypesButton>
       </Box>
@@ -186,7 +183,7 @@ const EmploymentTypeTable = () => {
         content={dialogContent}
         open={isDialogOpen}
         onClose={handleDialogClose}
-        width={dialogWidth}
+        width='sm'
       />
       <TableContainer component={Paper}>
         <Table>
