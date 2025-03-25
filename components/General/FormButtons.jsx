@@ -11,7 +11,7 @@ const FormButtons = ({
   handleClose,
   handleClearForm,
   submitting,
-  showStepperBack = true,
+  showStepperBack = false,
   handleBack,
   activeStep,
 }) => {

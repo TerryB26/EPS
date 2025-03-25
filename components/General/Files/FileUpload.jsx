@@ -9,7 +9,6 @@ import { IoCloudUploadOutline } from 'react-icons/io5';
 import { MdDelete, MdExpandCircleDown, MdVisibility } from 'react-icons/md';
 import DialogForm from '@/components/General/DialogForm';
 
-// Utility function to format file size
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 B';
   const k = 1024;
@@ -83,7 +82,6 @@ const FileUpload = ({
 
   return (
     <Box sx={styles.container}>
-      {/* Dropzone */}
       <Box
         {...getRootProps()}
         sx={[styles.dropzone, isDragActive && styles.dropzoneHover]}
@@ -97,7 +95,6 @@ const FileUpload = ({
         </Typography>
       </Box>
 
-      {/* File Preview Accordion */}
       {files.length > 0 && (
         <Accordion sx={styles.accordion}>
           <AccordionSummary
@@ -149,8 +146,6 @@ const FileUpload = ({
           </AccordionDetails>
         </Accordion>
       )}
-
-      {/* Dialog for File Preview */}
       <DialogForm
         title={selectedFile?.name || 'File Preview'}
         content={
@@ -178,7 +173,6 @@ const FileUpload = ({
   );
 };
 
-// Styles using MUI's sx prop
 const styles = {
   container: {
     maxWidth: '600px',

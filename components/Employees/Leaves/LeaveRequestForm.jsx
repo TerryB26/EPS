@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { TextField, Button, Box, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from '@/components/General/FormButtons';
 
 const validationSchema = yup.object({
   leaveType: yup.string().required("Leave type is required"),
@@ -102,9 +103,7 @@ const LeaveRequestForm = ({ Date, NumberOfDays }) => {
         />
       </Box>
       <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit">
-          Submit
-        </Button>
+        <FormButtons />
       </Box>
     </form>
   );

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-import RolesForm from './RolesForm';
 import DialogForm from '@/components/General/DialogForm';
-import { MdDelete } from "react-icons/md";
-import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { IoPencil } from "react-icons/io5";
+import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
+import RolesForm from './RolesForm';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -83,7 +83,7 @@ const RolesTable = () => {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    fetchRoles(); // Refetch roles after closing the dialog
+    fetchRoles();
   };
 
   const handleDeleteRole = async (roleID) => {
@@ -170,7 +170,7 @@ const RolesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={() => handleDialogOpen()}>
+        <AddUserButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen()}>
           Add Role
         </AddUserButton>
       </Box>
@@ -179,6 +179,7 @@ const RolesTable = () => {
         content={<RolesForm handleClose={handleDialogClose} roleData={selectedRole} />}
         open={isDialogOpen}
         onClose={handleDialogClose}
+        width ='sm'
       />
       <TableContainer component={Paper}>
         <Table>
