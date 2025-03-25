@@ -43,7 +43,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
   const [divisions, setDivisions] = useState([]);
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [userRoles, setuserRoles] = useState([]);
-  const [triggerFileUpload, setTriggerFileUpload] = useState(false); // Add this state
+  const [triggerFileUpload, setTriggerFileUpload] = useState(false); 
   const handleClearForm = () => {
     resetForm();
   };
@@ -302,9 +302,8 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       <Grid container spacing={2} mb={4}>
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel id="jobTitle-label" shrink><RequiredField title="Job Title" /></InputLabel>
+            <RequiredField title="Job Title" boldTitle={true}/>
             <Select
-              labelId="jobTitle-label"
               id="jobTitle"
               name="jobTitle"
               value={values.jobTitle}
@@ -327,7 +326,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         </Grid>
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel id="department-label" shrink><RequiredField title="Department" /></InputLabel>
+          <RequiredField title="Department" boldTitle={true}/>
             <Select
               labelId="department-label"
               id="department"
@@ -335,7 +334,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
               value={values.department}
               onChange={(e) => {
                 handleChange(e);
-                setFieldValue('division', ''); // Reset division when department changes
+                setFieldValue('division', ''); 
               }}
               onBlur={handleBlur}
               error={touched.department && Boolean(errors.department)}
@@ -357,7 +356,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       <Grid container spacing={2} mb={4}>
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel id="division-label" shrink><RequiredField title="Division" /></InputLabel>
+          <RequiredField title="Division" boldTitle={true}/>
             <Select
               labelId="division-label"
               id="division"
@@ -383,7 +382,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         </Grid>
         <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel id="employmentType-label" shrink><RequiredField title="Employment Type" /></InputLabel>
+            <RequiredField title="Employment Type" boldTitle={true}/>
             <Select
               labelId="employmentType-label"
               id="employmentType"
@@ -415,7 +414,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         <FormControl fullWidth> 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label={<RequiredField title="Start Date" />}
+              label={<RequiredField title="Start Date" boldTitle={true} />}
               value={values.startDate}
               onChange={(newValue) => setFieldValue('startDate', newValue)}
               renderInput={(params) => (
@@ -437,7 +436,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         <FormControl fullWidth> 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label={<RequiredField title="End Date" />}
+              label={<RequiredField title="End Date" boldTitle={true}/>}
               value={values.endDate}
               onChange={(newValue) => setFieldValue('endDate', newValue)}
               renderInput={(params) => (
@@ -469,7 +468,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
           fullWidth
           id="salary"
           name="salary"
-          label={<RequiredField title="Salary" />}
+          label={<RequiredField title="Salary" boldTitle={true}/>}
           value={values.salary}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -482,7 +481,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
           fullWidth
           id="bonus"
           name="bonus"
-          label={<RequiredField title="Bonus" />}
+          label={<RequiredField title="Bonus" boldTitle={true}/>}
           value={values.bonus}
           onChange={handleChange}
           onBlur={handleBlur}

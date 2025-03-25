@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import UsersForm from '@/components/Users/AddUsersForm';
 import DialogForm from '@/components/General/DialogForm';
-import { MdDelete } from "react-icons/md";
+import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
 import { IoEyeOutline } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
 import UpdateUserSalaries from '@/components/Users/Updates/UpdateUserSalaries';
@@ -149,7 +149,7 @@ const Users = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" onClick={() => handleDialogOpen(<UsersForm handleClose={handleDialogClose} fetchUsers={fetchUsers} />, 'Add User')}>
+        <AddUserButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<UsersForm handleClose={handleDialogClose} fetchUsers={fetchUsers} />, 'Add User')}>
           Add User
         </AddUserButton>
       </Box>

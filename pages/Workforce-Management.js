@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
 import PageHeader from "@/components/General/PageHeader";
-import { Tabs, Tab, Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
 import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
 import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItlesTable';
+import { Box, Tab, Tabs } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
