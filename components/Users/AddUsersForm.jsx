@@ -504,9 +504,9 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
 
   return (
     <div>
-      <PropDebugger propsToDebug={{ values, errors }} />
-      <Box mt={2}>
-        <form onSubmit={handleSubmit}>
+  <PropDebugger propsToDebug={{ values, errors }} />
+  <Box mt={2}>
+      <form onSubmit={handleSubmit}>
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => (
               <Step key={index}>
@@ -514,26 +514,37 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
               </Step>
             ))}
           </Stepper>
-  
+
           <Box mt={2}>
             <PageHeader routeName={steps[activeStep]} />
             {stepContents[activeStep]}
           </Box>
           <Box display="flex" justifyContent="space-between" mt={2}>
-            <Button disabled={activeStep === 0} onClick={handleBack}>
-              Back
-            </Button>
             {activeStep === steps.length - 1 ? (
-              <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
+              <Box display="flex" justifyContent="flex-end">
+                <FormButtons 
+                  handleClose={handleClose} 
+                  handleClearForm={handleClearForm} 
+                  submitting={submitting}
+                  showStepperBack={true}
+                  handleBack={handleBack}
+                  activeStep={activeStep}
+                />
+              </Box>
             ) : (
-              <Button color="primary" variant="contained" onClick={handleNext}>
-                Next
-              </Button>
+              <Box display="flex" justifyContent="space-between" width="100%">
+                <Button disabled={activeStep === 0} onClick={handleBack}>
+                  Back
+                </Button>
+                <Button color="primary" variant="contained" onClick={handleNext}>
+                  Next
+                </Button>
+              </Box>
             )}
           </Box>
         </form>
-      </Box>
-    </div>
+  </Box>
+</div>
   );
 };
 
