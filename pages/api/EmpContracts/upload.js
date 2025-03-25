@@ -10,7 +10,6 @@ export const config = {
 
 const baseUploadDir = path.join(process.cwd(), 'EmployeeFiles', 'Contracts');
 
-// Ensure the base directory exists
 if (!fs.existsSync(baseUploadDir)) {
   fs.mkdirSync(baseUploadDir, { recursive: true });
 }
@@ -36,12 +35,10 @@ export default function handler(req, res) {
 
     const employeeUploadDir = path.join(baseUploadDir, employeeNumber);
 
-    // Ensure the employee-specific directory exists
     if (!fs.existsSync(employeeUploadDir)) {
       fs.mkdirSync(employeeUploadDir, { recursive: true });
     }
 
-    // Handle single file upload
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
     const oldPath = file.filepath;
     const newPath = path.join(employeeUploadDir, file.newFilename);

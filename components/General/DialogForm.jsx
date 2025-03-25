@@ -12,7 +12,7 @@ const DialogForm = ({ title, content, open, onClose, width = "md" }) => {
             aria-label="close"
             onClick={onClose}
             sx={{
-              color: (theme) => theme.palette.grey[500],
+              color: '#3c0919',
               fontSize: 25,
               cursor: 'pointer',
             }}
