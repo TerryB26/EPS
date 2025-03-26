@@ -28,9 +28,6 @@ const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
         setSubmitting(true);
-        // Handle form submission
-        console.log("🚀 ~ Login ~ values:", values)
-
         resetForm();
         setSubmitting(false);
     },
