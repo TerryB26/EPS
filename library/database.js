@@ -7,7 +7,11 @@ dotenv.config();
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  host: process.env.DBHOST,
+  port: process.env.DBPORT,
+  database: process.env.DBNAME,
+  user: process.env.DBUSER,
+  password: process.env.DBPASSWORD,
   ssl: {
     rejectUnauthorized: false,
   },

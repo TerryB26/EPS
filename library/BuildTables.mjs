@@ -7,10 +7,14 @@ dotenv.config();
 
 const { Pool } = pkg;
 
-console.log("🚀 ~ Connecting to database with connection string:", process.env.DATABASE_URL);
+console.log("🚀 ~ Connecting to database with host:", process.env.DBHOST);
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  host: process.env.DBHOST,
+  port: process.env.DBPORT,
+  database: process.env.DBNAME,
+  user: process.env.DBUSER,
+  password: process.env.DBPASSWORD,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -18,6 +22,7 @@ const pool = new Pool({
 
 const createTables = async () => {
   const client = await pool.connect();
+  console.log("🚀 ~ createTables ~ client:", client)
   try {
     const queryText = `
       CREATE TABLE IF NOT EXISTS Users (
@@ -118,15 +123,7 @@ const seedTables = async () => {
       INSERT INTO Users (UserID, Name, Surname, Email, Password, Phone, DateOfBirth, CreatedBy, UpdatedBy)
       VALUES 
         ('${uuidv4()}', 'John', 'Doe', 'john.doe@example.com', 'password123', '1234567890', '1980-01-01', NULL, NULL),
-        ('${uuidv4()}', 'Jane', 'Smith', 'jane.smith@example.com', 'password123', '0987654321', '1990-02-02', NULL, NULL),
-        ('${uuidv4()}', 'Alice', 'Johnson', 'alice.johnson@example.com', 'password123', '1112223333', '1985-03-03', NULL, NULL),
-        ('${uuidv4()}', 'Bob', 'Brown', 'bob.brown@example.com', 'password123', '4445556666', '1975-04-04', NULL, NULL),
-        ('${uuidv4()}', 'Charlie', 'Davis', 'charlie.davis@example.com', 'password123', '7778889999', '1995-05-05', NULL, NULL),
-        ('${uuidv4()}', 'Diana', 'Evans', 'diana.evans@example.com', 'password123', '0001112222', '1988-06-06', NULL, NULL),
-        ('${uuidv4()}', 'Eve', 'Foster', 'eve.foster@example.com', 'password123', '3334445555', '1992-07-07', NULL, NULL),
-        ('${uuidv4()}', 'Frank', 'Green', 'frank.green@example.com', 'password123', '6667778888', '1983-08-08', NULL, NULL),
-        ('${uuidv4()}', 'Grace', 'Harris', 'grace.harris@example.com', 'password123', '9990001111', '1991-09-09', NULL, NULL),
-        ('${uuidv4()}', 'Hank', 'Ivy', 'hank.ivy@example.com', 'password123', '2223334444', '1987-10-10', NULL, NULL);
+        ('${uuidv4()}', 'Jane', 'Smith', 'jane.smith@example.com', 'password123', '0987654321', '1990-02-02', NULL, NULL);
 
       INSERT INTO Roles (RoleID, RoleName, CreatedBy, UpdatedBy)
       VALUES 
@@ -150,8 +147,7 @@ const seedTables = async () => {
 
       INSERT INTO Employees (EmployeeID, UserID, DepartmentID, EmploymentTypeID, EmployedOn, CreatedBy, UpdatedBy)
       VALUES 
-        ('${uuidv4()}', (SELECT UserID FROM Users WHERE Email = 'john.doe@example.com'), (SELECT DepartmentID FROM Departments WHERE DepartmentName = 'HR'), (SELECT EmploymentTypeID FROM EmploymentTypes WHERE EmploymentTypeName = 'Full-Time'), '2020-01-01', NULL, NULL),
-        ('${uuidv4()}', (SELECT UserID FROM Users WHERE Email = 'jane.smith@example.com'), (SELECT DepartmentID FROM Departments WHERE DepartmentName = 'Engineering'), (SELECT EmploymentTypeID FROM EmploymentTypes WHERE EmploymentTypeName = 'Part-Time'), '2021-02-02', NULL, NULL);
+        ('${uuidv4()}', (SELECT UserID FROM Users WHERE Email = 'john.doe@example.com'), (SELECT DepartmentID FROM Departments WHERE DepartmentName = 'HR'), (SELECT EmploymentTypeID FROM EmploymentTypes WHERE EmploymentTypeName = 'Full-Time'), '2020-01-01', NULL, NULL);
     `;
     await client.query(queryText);
     console.log("Tables seeded successfully");
