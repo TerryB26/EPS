@@ -10,11 +10,7 @@ const { Pool } = pkg;
 console.log("🚀 ~ Connecting to database with host:", process.env.DBHOST);
 
 const pool = new Pool({
-  host: process.env.DBHOST,
-  port: process.env.DBPORT,
-  database: process.env.DBNAME,
-  user: process.env.DBUSER,
-  password: process.env.DBPASSWORD,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -22,7 +18,7 @@ const pool = new Pool({
 
 const createTables = async () => {
   const client = await pool.connect();
-  console.log("🚀 ~ createTables ~ client:", client)
+
   try {
     const queryText = `
       CREATE TABLE IF NOT EXISTS Users (
