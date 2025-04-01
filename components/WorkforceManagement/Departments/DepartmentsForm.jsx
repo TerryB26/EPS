@@ -5,6 +5,8 @@ import { TextField, Button, Box, FormHelperText } from '@mui/material';
 import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from "@/components/General/FormButtons";
+
 
 const validationObj = {
   departmentName: yup.string().typeError("Please enter a valid department name.").required("Department name is required"),
@@ -12,6 +14,10 @@ const validationObj = {
 };
 
 const validationSchema = yup.object(validationObj);
+
+const handleClearForm = () => {
+  resetForm();
+};
 
 const DepartmentsForm = ({ handleClose, departmentData }) => {
   const [submitting, setSubmitting] = useState(false);
@@ -93,11 +99,7 @@ const DepartmentsForm = ({ handleClose, departmentData }) => {
           }}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+      <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>
   );
 };

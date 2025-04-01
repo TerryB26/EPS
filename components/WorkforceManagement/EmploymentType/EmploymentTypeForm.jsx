@@ -5,6 +5,7 @@ import { TextField, Button, Box } from '@mui/material';
 import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from "@/components/General/FormButtons";
 
 const validationObj = {
   employmentType: yup.string().typeError("Please enter a valid employment type.").required("Employment type is required"),
@@ -12,8 +13,11 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
+const handleClearForm = () => {
+  resetForm();
+};
+
 const EmploymentTypeForm = ({ handleClose, employmentTypeId, employmentTypeName }) => {
-  console.log("🚀 ~ EmploymentTypeForm ~ employmentTypeId:", employmentTypeId)
   const [submitting, setSubmitting] = useState(false);
 
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
@@ -77,11 +81,7 @@ const EmploymentTypeForm = ({ handleClose, employmentTypeId, employmentTypeName 
           helperText={touched.employmentType && errors.employmentType}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+      <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>
   );
 };

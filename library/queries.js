@@ -26,4 +26,5 @@ LEFT JOIN public.departments d ON e.departmentid = d.departmentid
 LEFT JOIN public.depdivision dd ON e.depdivisionid = dd.depdivisionid
 LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   `,
+  GET_SYSTEMDOCS: 'SELECT * FROM public."systemdocs"',
 };

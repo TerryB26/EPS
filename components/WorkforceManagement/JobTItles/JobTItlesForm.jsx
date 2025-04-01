@@ -5,6 +5,8 @@ import { TextField, Button, Box } from '@mui/material';
 import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from "@/components/General/FormButtons";
+
 
 const validationObj = {
   jobTitle: yup.string().typeError("Please enter a valid job title.").required("Job title is required"),
@@ -12,8 +14,13 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
+const handleClearForm = () => {
+  resetForm();
+};
+
 const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName }) => {
   const [submitting, setSubmitting] = useState(false);
+
 
   const formik = useFormik({
     initialValues: {
@@ -76,11 +83,7 @@ const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName }) => {
           helperText={formik.touched.jobTitle && formik.errors.jobTitle}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+      <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>
   );
 };

@@ -85,7 +85,7 @@ const DepartmentsTable = () => {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    fetchDepartments(); // Refetch departments after closing the dialog
+    fetchDepartments();
   };
 
   const handleDeleteDepartment = async (departmentID) => {
@@ -119,9 +119,8 @@ const DepartmentsTable = () => {
   };
 
   const handleRowClick = (departmentID) => {
-    setExpandedRows(prevState => ({
-      ...prevState,
-      [departmentID]: !prevState[departmentID]
+    setExpandedRows((prevState) => ({
+      [departmentID]: !prevState[departmentID], 
     }));
   };
 

@@ -5,12 +5,18 @@ import { TextField, Button, Box } from '@mui/material';
 import axios from 'axios';
 import MySwal from 'sweetalert2';
 import RequiredField from "@/components/General/RequiredField";
+import FormButtons from "@/components/General/FormButtons";
+
 
 const validationObj = {
   divisionName: yup.string().typeError("Please enter a valid Division name.").required("Division name is required"),
 };
 
 const validationSchema = yup.object(validationObj);
+
+const handleClearForm = () => {
+  resetForm();
+};
 
 const DivisionsForm = ({ handleClose, divisionData, DepartmentID }) => {
   const [submitting, setSubmitting] = useState(false);
@@ -73,11 +79,7 @@ const DivisionsForm = ({ handleClose, divisionData, DepartmentID }) => {
           helperText={touched.divisionName && errors.divisionName}
         />
       </Box>
-      <Box display="flex" justifyContent="flex-end">
-        <Button color="primary" variant="contained" type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit'}
-        </Button>
-      </Box>
+      <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>
   );
 };

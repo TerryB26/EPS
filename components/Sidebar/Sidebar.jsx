@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { IoLibraryOutline,IoPersonCircleOutline } from "react-icons/io5";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { FaRegCalendarPlus, FaUserCog } from "react-icons/fa";
+import { IoDocumentsOutline } from "react-icons/io5";
 
 const theme = createTheme({
   palette: {
@@ -56,7 +57,8 @@ const Sidebar = () => {
               { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management' },
               { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves' },
               { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal' },
-              { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
+              // { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
+              { text: 'System Docs', icon: <IoDocumentsOutline color="rgb(128, 0, 128)" />, path: '/System-Documents' },
             ].map((item, index) => (
               <ListItem
                 button={true}
