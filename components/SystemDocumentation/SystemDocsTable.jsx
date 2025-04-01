@@ -119,7 +119,8 @@ const SystemDocsTable = () => {
 
   const handleDownloadDoc = async (documentuuid, documentname) => {
     try {
-      const response = await axios.get(`/api/SystemDocs/Download-doc?documentuuid=${encodeURIComponent(documentuuid)}&documentname=${encodeURIComponent(documentname)}`, {
+      const response = await axios.get(`/api/SystemDocs/Download-doc?documentuuid=${encodeURIComponent(documentuuid)}&documentname=${encodeURIComponent(documentname)}`, 
+      {
         responseType: 'blob',
       });
 
