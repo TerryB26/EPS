@@ -51,4 +51,5 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
     ON lr.leaverequestid = lrs.leaverequestid;
 `,
   GET_LEAVE_ATTATCHMENTS: "SELECT * FROM public.leaveattatchments",
+  GET_LEAVE_REQ_TYPES: "SELECT * FROM public.leaverequesttypes",
 };
