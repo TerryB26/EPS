@@ -28,6 +28,28 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   `,
   GET_SYSTEMDOCS: 'SELECT * FROM public."systemdocs"',
   GET_LEAVE_STATUSES: 'SELECT * FROM public.leavestatus',
+  GET_LEAVE_REQUESTS: `
+  SELECT 
+    lr.leaverequestid, 
+    lr.employeeid, 
+    lr.statusid, 
+    lr.leaveduration, 
+    lr.fromdate, 
+    lr.tilldate, 
+    lr.createdon AS request_createdon, 
+    lr.createdby AS request_createdby, 
+    lr.updatedon AS request_updatedon, 
+    lr.updatedby AS request_updatedby,
+    lrs.leavereasonid, 
+    lrs.employeereason, 
+    lrs.leaveresponse, 
+    lrs.createdon AS reason_createdon, 
+    lrs.createdby AS reason_createdby, 
+    lrs.updatedon AS reason_updatedon, 
+    lrs.updatedby AS reason_updatedby
+  FROM public.leaverequests lr
+  LEFT JOIN public.leavereasons lrs 
+    ON lr.leaverequestid = lrs.leaverequestid;
+`,
+GET_LEAVE_ATTATCHMENTS: 'SELECT * FROM public.leaveattatchments',
 };
-
-/*public.eployeeleaverequests, public.leavereasons, public.leaveattatchments */
