@@ -27,4 +27,7 @@ LEFT JOIN public.depdivision dd ON e.depdivisionid = dd.depdivisionid
 LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   `,
   GET_SYSTEMDOCS: 'SELECT * FROM public."systemdocs"',
+  GET_LEAVE_STATUSES: 'SELECT * FROM public.leavestatus',
 };
+
+/*public.eployeeleaverequests, public.leavereasons, public.leaveattatchments */
