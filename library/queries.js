@@ -6,8 +6,7 @@ export const queryKeys = {
   GET_JTitles: 'SELECT * FROM public."jobtitles"',
   GET_EMPTypes: 'SELECT * FROM public."employmenttypes"',
   GET_USER_BY_ID: 'SELECT * FROM public."User" WHERE id = $1',
-  GET_FULL_EMP_DETAILS: 
-  `
+  GET_FULL_EMP_DETAILS: `
   SELECT 
     u.userid,e.employeeid, u."name", u.surname, u.email, u.phone, 
     u.dateofbirth, u.gender, u.idnumber, 
@@ -27,7 +26,7 @@ LEFT JOIN public.depdivision dd ON e.depdivisionid = dd.depdivisionid
 LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   `,
   GET_SYSTEMDOCS: 'SELECT * FROM public."systemdocs"',
-  GET_LEAVE_STATUSES: 'SELECT * FROM public.leavestatus',
+  GET_LEAVE_STATUSES: "SELECT * FROM public.leavestatus",
   GET_LEAVE_REQUESTS: `
   SELECT 
     lr.leaverequestid, 
@@ -51,5 +50,5 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   LEFT JOIN public.leavereasons lrs 
     ON lr.leaverequestid = lrs.leaverequestid;
 `,
-GET_LEAVE_ATTATCHMENTS: 'SELECT * FROM public.leaveattatchments',
+  GET_LEAVE_ATTATCHMENTS: "SELECT * FROM public.leaveattatchments",
 };
