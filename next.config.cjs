@@ -3,12 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
     return [
-      // Proxy only specific external API paths
       {
-        source: '/api/Flexify/:path*', // External API requests
-        destination: 'http://185.220.204.117:2606/Flexify/api/:path*', // Backend server
+        source: '/api/Flexify/:path*',
+        destination: 'http://185.220.204.117:2606/Flexify/api/:path*',
       },
-      // Internal API paths remain handled by Next.js
     ];
   },
 };

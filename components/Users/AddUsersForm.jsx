@@ -116,8 +116,6 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         });
         resetForm();
         setTriggerFileUpload(true);
-        // closeAccordion();
-       // handleFileUpload();
       }).catch(e => {
         setSubmitting(false);
         MySwal.fire({

@@ -14,7 +14,7 @@ export const queryKeys = {
       r.rolename, 
      d.departmentname, 
      dd.depdivisioname,jt.jobtitlename,
-     e.empcontractname, 
+     e.empcontractname, e.employeenumber,
      et.employmenttypename, 
     e.employedon, e.employmentenddate  
 FROM public.users u

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Paper, Box, Typography, IconButton, Divider } from '@mui/material';
+import { Paper, Box, Typography, IconButton, Divider, Tooltip } from '@mui/material';
 import PageHeader from '@/components/General/PageHeader';
-import { MdOutlineBadge, MdOutlineWorkOutline, MdDateRange, MdOutlineModeEdit, MdAttachMoney, MdBusiness, MdSupervisorAccount, MdHistory, MdAccountBalance, MdFilePresent } from "react-icons/md";
+import { MdOutlineBadge, MdOutlineWorkOutline, MdDateRange, MdOutlineModeEdit, MdAttachMoney, MdBusiness, MdSupervisorAccount, MdHistory, MdAccountBalance, MdFilePresent, MdDownloading  } from "react-icons/md";
 import { GrMoney } from "react-icons/gr";
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+
 
 const FullEmpDetails = ({ UserID }) => {
   const [userDetails, setUserDetails] = useState(null); 
@@ -12,6 +14,7 @@ const FullEmpDetails = ({ UserID }) => {
     try {
       const response = await axios.get('/api/FullEmpDetails');
       const user = response.data.find(detail => detail.userid === UserID);
+      console.log("🚀 ~ fetchDetails ~ user:", user)
       setUserDetails(user);
     } catch (error) {
       console.error('Error fetching user details:', error);
@@ -23,7 +26,11 @@ const FullEmpDetails = ({ UserID }) => {
   }, [UserID]);
 
   if (!userDetails) {
-    return <Typography>Loading...</Typography>; 
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '20vh' }}>
+        <CircularProgressWithLabel />
+      </Box>
+    );
   }
 
   const handleEditClick = () => {
@@ -42,9 +49,43 @@ const FullEmpDetails = ({ UserID }) => {
             <Typography sx={{ border: '1px solid #D1B0DB', background: '#ECEBF9', borderRadius: '8px', paddingY: '2px', paddingX: '8px', display: 'inline-flex', alignItems: 'center', marginBottom: '8px' }}>
               <MdDateRange style={{ marginRight: '8px' }} /> {new Date(userDetails.employedon).toDateString()} - {userDetails.employmentenddate ? new Date(userDetails.employmentenddate).toDateString() : 'Present'}
             </Typography>
-            <Typography sx={{ border: '1px solid #D1B0DB', background: '#ECEBF9', borderRadius: '8px', paddingY: '2px', paddingX: '8px', display: 'inline-flex', alignItems: 'center' }}>
-              <MdOutlineBadge style={{ marginRight: '8px' }} /> {userDetails.employeeid}
+            <Typography sx={{ border: '1px solid #D1B0DB', background: '#ECEBF9', borderRadius: '8px', paddingY: '2px', paddingX: '8px', display: 'inline-flex', alignItems: 'center', marginBottom: '8px'}}>
+              <MdOutlineBadge style={{ marginRight: '8px' }} /> {userDetails.employeenumber}
             </Typography>
+            <Tooltip title="Download Employment Contract">
+              <Typography
+                sx={{
+                  border: '1px solid #D1B0DB',
+                  background: '#ECEBF9',
+                  borderRadius: '8px',
+                  paddingY: '2px',
+                  paddingX: '8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  cursor: 'pointer', 
+                }}
+                onClick={async () => {
+                  try {
+                    const response = await axios.post(
+                      '/api/EmpContracts/downloadContract', 
+                      { employeeNumber: userDetails.employeenumber, contractName: userDetails.empcontractname },
+                      { responseType: 'blob' } 
+                    );
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `Employment_Contract_${userDetails.employeenumber}.pdf`); 
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                  } catch (error) {
+                    console.error('Error downloading contract:', error);
+                  }
+                }}
+              >
+                <MdDownloading style={{ marginRight: '8px' }} /> Employment Contract
+              </Typography>
+            </Tooltip>
           </Box>
 
           {/* Earnings Section */}

@@ -17,7 +17,7 @@ if (!fs.existsSync(baseUploadDir)) {
 export default function handler(req, res) {
   const form = formidable({
     keepExtensions: true,
-    filename: (name, ext, part) => `${Date.now()}_${part.originalFilename}`,
+    filename: (name, ext, part) => part.originalFilename, 
   });
 
   form.parse(req, (err, fields, files) => {
