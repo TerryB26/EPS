@@ -43,9 +43,9 @@ const TabPanel = styled('div')(({ theme }) => ({
 }));
 
 const tabContents = [
-  { label: "Leave Requests", icon: <FaRegQuestionCircle size={20} />, content: <RequestsTable /> },
-  { label: "Approved Requests", icon: <FaRegCheckCircle size={20} color="green" />, content: "Approved Requests Content" },
-  { label: "Rejected Requests", icon: <FaRegTimesCircle size={20} color="red" />, content: "Rejected Requests Content" },
+  { label: "Leave Requests", Status: "Pending", icon: <FaRegQuestionCircle size={20} />, content: <RequestsTable Status="Pending"/> },
+  { label: "Approved Requests", Status: "Approved", icon: <FaRegCheckCircle size={20} color="green" />, content: <RequestsTable Status="Approved"/> },
+  { label: "Rejected Requests", Status: "Rejected", icon: <FaRegTimesCircle size={20} color="red" />, content: <RequestsTable Status="Rejected"/> },
 ];
 
 const EmployeeLeaves = () => {

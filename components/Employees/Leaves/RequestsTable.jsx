@@ -32,11 +32,12 @@ const AddRequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RequestsTable = ({ WhereStatus }) => {
+const RequestsTable = ({ Status }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [requests, setRequests] = useState([]);
+  console.log("🚀 ~ RequestsTable ~ requests:", requests)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null); // Track the expanded row by leaverequestid
 
@@ -44,7 +45,8 @@ const RequestsTable = ({ WhereStatus }) => {
   const fetchRequests = async () => {
     try {
       const response = await axios.get('/api/Leaves/LeaveRequests');
-      setRequests(response.data);
+      const filteredData = response.data.filter(request => request.leave_status === Status);
+      setRequests(filteredData);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
     }
