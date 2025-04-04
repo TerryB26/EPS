@@ -277,12 +277,13 @@ const NewRequest = () => {
             <LeaveRequestForm
               Date={[startDate, endDate]}
               NumberOfDays={calculateNumberOfDays(startDate, endDate)}
+              handleClose={handleDialogClose}
             />
           </Box>
         }
         open={dialogOpen}
         onClose={handleDialogClose}
-        width="sm"
+        width="md"
       />
     </CalendarWrapper>
   );
