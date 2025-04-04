@@ -37,7 +37,6 @@ const RequestsTable = ({ Status }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [requests, setRequests] = useState([]);
-  console.log("🚀 ~ RequestsTable ~ requests:", requests)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null); // Track the expanded row by leaverequestid
 
@@ -182,7 +181,7 @@ const RequestsTable = ({ Status }) => {
                     <TableCell>{request.leave_status}</TableCell>
                     <TableCell>{request.request_createdon}</TableCell>
                     <TableCell sx={{ width: '150px' }}>
-                      <Tooltip title={expandedRow === request.leaverequestid ? "Collapse" : "Expand Details"}>
+                      <Tooltip title={expandedRow === request.leaverequestid ? "Collapse Details" : "Expand Details"}>
                         <IconButton
                           sx={{ color: '#black' }}
                           onClick={() => handleExpandRow(request.leaverequestid)}
