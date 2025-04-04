@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip, Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
-import { MdDelete } from "react-icons/md";
-import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import FullRequestDetails from '@/components/Employees/Leaves/FullRequestDetails';
+import axios from 'axios';
+import { MdOutlineExpandCircleDown } from "react-icons/md";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -31,33 +32,37 @@ const AddRequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RequestsTable = ({WhereStatus}) => {
+const RequestsTable = ({ WhereStatus }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [requests] = useState([
-    { id: 1, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
-    { id: 2, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
-    { id: 3, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
-    { id: 4, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
-    { id: 5, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
-    { id: 6, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
-    { id: 7, employeeNumber: 'E001', name: 'John Doe', dateOfRequest: '2025-02-01', status: 'Pending' },
-    { id: 8, employeeNumber: 'E002', name: 'Jane Smith', dateOfRequest: '2025-02-02', status: 'Approved' },
-    { id: 9, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Rejected' },
-    { id: 10, employeeNumber: 'E003', name: 'Mike Johnson', dateOfRequest: '2025-02-03', status: 'Pending' },
-  ]);
+  const [requests, setRequests] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [expandedRow, setExpandedRow] = useState(null); // Track the expanded row by leaverequestid
+
+  // Fetch leave requests from the API
+  const fetchRequests = async () => {
+    try {
+      const response = await axios.get('/api/Leaves/LeaveRequests');
+      setRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching leave requests:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
   const filteredRequests = requests.filter(request =>
-    request.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    request.employeeNumber.toLowerCase().includes(searchQuery.toLowerCase())
+    request.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.employeenumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-  
+
   const handleClearSearch = () => {
     setSearchQuery('');
   };
@@ -79,12 +84,17 @@ const RequestsTable = ({WhereStatus}) => {
     setIsDialogOpen(false);
   };
 
+  // Handle row expansion
+  const handleExpandRow = (leaverequestid) => {
+    setExpandedRow(expandedRow === leaverequestid ? null : leaverequestid); // Toggle expansion
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <TextField
           label="Search"
-          placeholder='Search by Employee Name or Number'
+          placeholder='Search by Employee Number or Email'
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -148,42 +158,53 @@ const RequestsTable = ({WhereStatus}) => {
           <CustomTableHead>
             <TableRow>
               <TableCell>Employee Number</TableCell>
-              <TableCell>Name</TableCell>
+              <TableCell>Leave Type</TableCell>
+              <TableCell>Leave Status</TableCell>
               <TableCell>Date of Request</TableCell>
-              <TableCell>Status</TableCell>
               <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
           <TableBody>
             {filteredRequests.length > 0 ? (
               filteredRequests.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(request => (
-                <TableRow key={request.id} sx={{
-                  '&:hover': {
-                    backgroundColor: '#E4F2FF',
-                  },
-                }}>
-                  <TableCell>{request.employeeNumber}</TableCell>
-                  <TableCell>{request.name}</TableCell>
-                  <TableCell>{request.dateOfRequest}</TableCell>
-                  <TableCell>{request.status}</TableCell>
-                  <TableCell sx={{ width: '150px' }}>
-                    <Tooltip title="View">
-                      <IconButton sx={{ color: '#82D8FF' }}>
-                        <IoEyeOutline />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                      <IconButton>
-                        <IoPencil />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }}>
-                        <MdDelete />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
+                <React.Fragment key={request.leaverequestid}>
+                  <TableRow
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#E4F2FF',
+                      },
+                    }}
+                  >
+                    <TableCell>{request.employeenumber}</TableCell>
+                    <TableCell>{request.leave_type_name}</TableCell>
+                    <TableCell>{request.leave_status}</TableCell>
+                    <TableCell>{request.request_createdon}</TableCell>
+                    <TableCell sx={{ width: '150px' }}>
+                      <Tooltip title={expandedRow === request.leaverequestid ? "Collapse" : "Expand Details"}>
+                        <IconButton
+                          sx={{ color: '#black' }}
+                          onClick={() => handleExpandRow(request.leaverequestid)}
+                        >
+                          <MdOutlineExpandCircleDown
+                            style={{
+                              transform: expandedRow === request.leaverequestid ? 'rotate(180deg)' : 'rotate(0deg)',
+                              transition: 'transform 0.3s',
+                            }}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+                    <Collapse in={expandedRow === request.leaverequestid} timeout="auto" unmountOnExit>
+                      <Box sx={{ margin: 2 }}>
+                        <FullRequestDetails requestID={request.leaverequestid} />
+                      </Box>
+                    </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
               ))
             ) : (
               <TableRow>

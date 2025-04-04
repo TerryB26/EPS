@@ -30,25 +30,38 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   GET_LEAVE_REQUESTS: `
   SELECT 
     lr.leaverequestid, 
-    lr.employeeid, 
     lr.statusid, 
     lr.leaveduration, 
-    lr.fromdate, 
-    lr.tilldate, 
-    lr.createdon AS request_createdon, 
+    TO_CHAR(lr.fromdate, 'DD FMMonth YYYY') AS from_date, 
+    TO_CHAR(lr.tilldate, 'DD FMMonth YYYY') AS till_date, 
+    TO_CHAR(lr.createdon, 'DD FMMonth YYYY') AS request_createdon, 
     lr.createdby AS request_createdby, 
-    lr.updatedon AS request_updatedon, 
+    TO_CHAR(lr.updatedon, 'DD FMMonth YYYY') AS request_updatedon, 
     lr.updatedby AS request_updatedby,
     lrs.leavereasonid, 
     lrs.employeereason, 
     lrs.leaveresponse, 
-    lrs.createdon AS reason_createdon, 
+    TO_CHAR(lrs.createdon, 'DD FMMonth YYYY') AS reason_createdon, 
     lrs.createdby AS reason_createdby, 
-    lrs.updatedon AS reason_updatedon, 
-    lrs.updatedby AS reason_updatedby
+    TO_CHAR(lrs.updatedon, 'DD FMMonth YYYY') AS reason_updatedon, 
+    lrs.updatedby AS reason_updatedby,
+    u."name", 
+    u.surname, 
+    u.email, 
+    e.employeenumber, 
+    lrt.requesttype AS leave_type_name, 
+    ls.status AS leave_status
   FROM public.leaverequests lr
   LEFT JOIN public.leavereasons lrs 
-    ON lr.leaverequestid = lrs.leaverequestid;
+    ON lr.leaverequestid = lrs.leaverequestid
+  LEFT JOIN public.employees e 
+    ON lr.employeeid = e.employeeid
+  LEFT JOIN public.users u 
+    ON e.userid = u.userid
+  LEFT JOIN public.leaverequesttypes lrt 
+    ON lr.requesttypeid = lrt.requesttypeid
+  LEFT JOIN public.leavestatus ls 
+    ON lr.statusid = ls.leaveid;
 `,
   GET_LEAVE_ATTATCHMENTS: "SELECT * FROM public.leaveattatchments",
   GET_LEAVE_REQ_TYPES: "SELECT * FROM public.leaverequesttypes",
