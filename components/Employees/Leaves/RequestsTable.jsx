@@ -38,9 +38,8 @@ const RequestsTable = ({ Status }) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [requests, setRequests] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [expandedRow, setExpandedRow] = useState(null); // Track the expanded row by leaverequestid
+  const [expandedRow, setExpandedRow] = useState(null);
 
-  // Fetch leave requests from the API
   const fetchRequests = async () => {
     try {
       const response = await axios.get('/api/Leaves/LeaveRequests');

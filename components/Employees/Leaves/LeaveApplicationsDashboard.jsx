@@ -45,9 +45,9 @@ const TabPanel = styled('div')(({ theme }) => ({
 
 const tabContents = [
   { label: "Balances", content: <LeaveBalance />},
-  { label: "Pending Requests", content: <RequestsTable WhereStatus="Pending"/> },
-  { label: "Approved Requests", content: <RequestsTable WhereStatus="Approved"/> },
-  { label: "Rejected Requests", content: <RequestsTable WhereStatus="Rejected"/> },
+  { label: "Pending Requests", content: <RequestsTable Status="Pending"/> },
+  { label: "Approved Requests", content: <RequestsTable Status="Approved"/> },
+  { label: "Rejected Requests", content: <RequestsTable Status="Rejected"/> },
   { label: "New Application", content: <NewRequest /> },
 ];
 

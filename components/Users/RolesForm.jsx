@@ -45,9 +45,16 @@ const RolesForm = ({ handleClose, roleData }) => {
         resetForm();
       }).catch(e => {
         setSubmitting(false);
+        const errorMessage =
+          e.response?.data?.error || 
+          e.response?.data || 
+          e.message || 
+          'An unknown error occurred'; 
+  
         MySwal.fire({
           icon: 'error',
-          html: `${e?.response?.data ? e?.response?.data : e}`,
+          title: 'Error',
+          text: errorMessage,
         });
       });
     },
