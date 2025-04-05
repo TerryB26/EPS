@@ -104,6 +104,57 @@ export default async function handler(req, res) {
         // Logic for updating a request (not implemented yet)
         break;
 
+        case 'download-attatchment': {
+          let body;
+        
+          if (req.headers['content-type'] === 'application/json') {
+            body = await new Promise((resolve, reject) => {
+              let data = '';
+              req.on('data', (chunk) => {
+                data += chunk;
+              });
+              req.on('end', () => {
+                try {
+                  resolve(JSON.parse(data));
+                } catch (err) {
+                  reject(err);
+                }
+              });
+            });
+          } else {
+            body = req.body; 
+          }
+        
+          const { leaverequestid, attachment_filename, employeenumber } = body;
+        
+          if (!leaverequestid || !attachment_filename || !employeenumber) {
+            status = 400;
+            response = { error: 'Missing required parameters' };
+            break;
+          }
+        
+          const filePath = path.join(process.cwd(), 'EmployeeFiles', 'LeaveDocs', leaverequestid, attachment_filename);
+        
+          if (!fs.existsSync(filePath)) {
+            status = 404;
+            response = { error: 'File not found' };
+            break;
+          }
+        
+          try {
+            const fileStream = fs.createReadStream(filePath);
+            res.setHeader('Content-Disposition', `attachment; filename="${attachment_filename}"`);
+            res.setHeader('Content-Type', 'application/octet-stream');
+            fileStream.pipe(res);
+            return; 
+          } catch (error) {
+            console.error('Error downloading the file:', error);
+            status = 500;
+            response = { error: 'Failed to download the file' };
+          }
+          break;
+        }
+
       default:
         status = 400;
         response = { error: 'Invalid action' };

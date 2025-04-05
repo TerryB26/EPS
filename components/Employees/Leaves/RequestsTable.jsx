@@ -154,7 +154,7 @@ const RequestsTable = ({ Status }) => {
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ maxHeight: '600px', overflowY: 'auto' }}>
         <Table>
           <CustomTableHead>
             <TableRow>
@@ -199,7 +199,7 @@ const RequestsTable = ({ Status }) => {
                   <TableRow>
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
                     <Collapse in={expandedRow === request.leaverequestid} timeout="auto" unmountOnExit>
-                      <Box sx={{ margin: 2 }}>
+                      <Box sx={{ margin: 2, maxHeight: '440px', overflowY: 'auto', border: '1px solid #ECEBF9', borderRadius: '8px', padding: '8px' }}>
                         <FullRequestDetails requestID={request.leaverequestid} />
                       </Box>
                     </Collapse>

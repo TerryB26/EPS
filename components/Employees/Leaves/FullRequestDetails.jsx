@@ -4,6 +4,7 @@ import { Box, Typography, Paper, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { FaUser, FaCalendarAlt } from 'react-icons/fa';
 import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+import { IoCloudDownloadOutline } from "react-icons/io5";
 
 const DetailPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -37,10 +38,6 @@ const DetailItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   marginBottom: theme.spacing(2),
-  transition: 'transform 0.2s ease',
-  '&:hover': {
-    transform: 'translateX(8px)',
-  },
 }));
 
 const DetailLabel = styled(Typography)(({ theme }) => ({
@@ -70,39 +67,32 @@ const FullRequestDetails = ({ requestID }) => {
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await axios.post('/api/Leaves/Requests/download-attatchment', {
+        leaverequestid: request.leaverequestid,
+        attachment_filename: request.attachment_filename,
+        employeenumber: request.employeenumber,
+      }, {
+        responseType: 'blob', 
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${request.employeenumber}_${request.attachment_filename}` || 'document.pdf'); 
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading the document:', error);
+    }
+  };
+  
+
   useEffect(() => {
     fetchRequests();
   }, [requestID]);
-
-  const Header = styled(Box)(({ theme, status }) => {
-    let borderColor, bgColor;
-  
-    switch (status) {
-      case 'Pending':
-        borderColor = '#FFC107'; 
-        bgColor = 'rgba(255, 193, 7, 0.5)';
-        break;
-      case 'Approved':
-        borderColor = '#003366'; 
-        bgColor = 'rgba(0, 51, 102, 0.5)';
-        break;
-      case 'Rejected':
-        borderColor = '#FF0000';
-        bgColor = 'rgba(255, 0, 0, 0.5)';
-        break;
-      default:
-        borderColor = '#ECEBF9'; 
-        bgColor = '#ECEBF9';
-    }
-  
-    return {
-      backgroundColor: bgColor,
-      border: `2px solid ${borderColor}`,
-      borderRadius: '12px',
-      padding: theme.spacing(2),
-      margin: '-32px -32px 32px -32px',
-    };
-  });
 
   if (!request) {
     return (
@@ -169,6 +159,28 @@ const FullRequestDetails = ({ requestID }) => {
             <DetailLabel>To:</DetailLabel>
             <DetailValue>{request.till_date}</DetailValue>
           </DetailItem>
+        </Grid>
+
+        {/* Attatchment Details */}
+        <Grid item xs={12} sm={6}>
+        <DetailItem
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            border: '2px solid #D0B0DA',
+            backgroundColor: 'rgba(236, 235, 249, 0.4)',
+            borderRadius: '8px',
+            padding: '8px 12px',
+            cursor: 'pointer',
+          }}
+          onClick={handleDownload}
+        >
+          <IoCloudDownloadOutline size={20} style={{ marginRight: '8px' }} />
+          <Typography variant="body1" sx={{ color: '#1F2937', fontWeight: '600' }}>
+            {request.attachment_filename || 'No attachment available'}
+          </Typography>
+        </DetailItem>
+
         </Grid>
       </Grid>
   

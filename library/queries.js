@@ -50,7 +50,8 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
     u.email, 
     e.employeenumber, 
     lrt.requesttype AS leave_type_name, 
-    ls.status AS leave_status
+    ls.status AS leave_status,
+    la.filename AS attachment_filename
   FROM public.leaverequests lr
   LEFT JOIN public.leavereasons lrs 
     ON lr.leaverequestid = lrs.leaverequestid
@@ -61,7 +62,9 @@ LEFT JOIN public.jobtitles jt ON e.jobtitleid = jt.jobtitleid;
   LEFT JOIN public.leaverequesttypes lrt 
     ON lr.requesttypeid = lrt.requesttypeid
   LEFT JOIN public.leavestatus ls 
-    ON lr.statusid = ls.leaveid;
+    ON lr.statusid = ls.leaveid
+  LEFT JOIN public.leaveattatchments la
+    ON lr.leaverequestid = la.leaverequestid;
 `,
   GET_LEAVE_ATTATCHMENTS: "SELECT * FROM public.leaveattatchments",
   GET_LEAVE_REQ_TYPES: "SELECT * FROM public.leaverequesttypes",
