@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import PageHeader from "@/components/General/PageHeader";
 import GeneratePayslip from '@/components/Employees/Payslips/GeneratePayslip';
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+import PageHeader from "@/components/General/PageHeader";
+import { Box } from '@mui/material';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const PayslipsTable = () => {
   const [User, setUser] = useState(null);
@@ -24,6 +26,14 @@ const PayslipsTable = () => {
     useEffect(() => {
       fetchRequests();
     }, []);
+
+    if (!User) {
+      return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '20vh' }}>
+          <CircularProgressWithLabel />
+        </Box>
+      );
+    }
   
 
 
