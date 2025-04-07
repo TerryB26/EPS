@@ -54,7 +54,7 @@ const EmployeePortal = () => {
   };
   return (
     <Root>
-      <PageHeader routeName="Employee Leaves"/>
+      <PageHeader routeName="Employee Portal"/>
       <TabsContainer>
         <Tabs
           value={value}
