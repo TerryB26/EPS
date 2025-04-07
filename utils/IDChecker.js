@@ -88,3 +88,17 @@ export const calculateTakeHomePay = (idNumber, monthlySalary) => {
     age: age,
   };
 };
+
+export const isEligibleForBonus = (startDate) => {
+  const currentDate = new Date();
+  const start = new Date(startDate);
+
+  const monthsWithCompany = (currentDate.getFullYear() - start.getFullYear()) * 12 + (currentDate.getMonth() - start.getMonth());
+
+  const isDecember = currentDate.getMonth() === 11; 
+  const eligible = monthsWithCompany >= 8 && isDecember;
+
+  return eligible;
+};
+
+
