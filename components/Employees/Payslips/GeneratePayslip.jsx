@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { styled } from '@mui/material/styles';
 import { IoDownloadOutline } from "react-icons/io5";
 import { calculateTakeHomePay } from '@/utils/IDChecker';
+import axios from 'axios';
 
 
 const PaginationContainer = styled('div')(({ theme }) => ({
@@ -64,12 +65,44 @@ const PayslipTable = ({ User }) => {
     setFilteredYear(event.target.value);
   };
 
-  const handleDownload = (month, year) => {
-    console.log("🚀 ~ handleDownload ~ year:", year)
-    console.log("🚀 ~ handleDownload ~ month:", month)
-    console.log("🚀 ~ useEffect ~ takeHomePayDetails:", takeHomePayDetails)
-
-    // Implement download logic here
+  const handleDownload = async (month, year) => {
+    console.log("🚀 ~ handleDownload ~ year:", year);
+    console.log("🚀 ~ handleDownload ~ month:", month);
+    console.log("🚀 ~ useEffect ~ takeHomePayDetails:", takeHomePayDetails);
+  
+    try {
+      const response = await axios.post('/api/Payslips/getPaySlip', {
+        takeHomePayDetails,
+        year,
+        month,
+        User,
+      }, {
+        responseType: 'blob', // Ensure the response is treated as a binary Blob
+      });
+  
+      if (response.status === 200) {
+        // Create a Blob from the response data
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const url = window.URL.createObjectURL(blob);
+  
+        // Create a temporary anchor element to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `Payslip_${month}_${year}.docx`); // Set the filename
+        document.body.appendChild(link);
+        link.click();
+  
+        // Clean up
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+  
+        console.log("Payslip downloaded successfully.");
+      } else {
+        console.error("Failed to download payslip:", response);
+      }
+    } catch (error) {
+      console.error("Error downloading payslip:", error);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
