@@ -7,13 +7,11 @@ import { useEffect, useState } from 'react';
 
 const PayslipsTable = () => {
   const [User, setUser] = useState(null);
-  console.log("🚀 ~ PayslipsTable ~ User:", User)
   const userid = '02016688-52cb-4a48-874a-d78e4eaff7df';
 
   const fetchRequests = async () => {
     try {
       const response = await axios.get('/api/FullEmpDetails');
-      console.log("🚀 ~ fetchRequests ~ response:", response)
       const matchedRequest = response.data.find(
         (req) => req.userid === userid
       );

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, Box, IconButton, Tooltip, Typography, TablePagination } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { IoDownloadOutline } from "react-icons/io5";
+import { calculateTakeHomePay } from '@/utils/IDChecker';
+
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -23,6 +25,7 @@ const PayslipTable = ({ User }) => {
   const [monthsSinceEmployment, setMonthsSinceEmployment] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [takeHomePayDetails, setTakeHomePayDetails] = useState(null);
 
   useEffect(() => {
     if (!User || !User.employedon) return;
@@ -30,28 +33,31 @@ const PayslipTable = ({ User }) => {
     const employmentDate = new Date(User.employedon);
     const currentDate = new Date();
 
-    // Calculate available years
     const years = [];
     for (let year = employmentDate.getFullYear(); year <= currentDate.getFullYear(); year++) {
       years.push(year);
     }
     setAvailableYears(years);
 
-    // Calculate months since employment (only if the last day of the month has passed)
     const months = [];
     let current = new Date(employmentDate);
-    current.setDate(1); // Start from the first day of the month
+    current.setDate(1); 
     while (current <= currentDate) {
-      const lastDayOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0); // Get the last day of the current month
+      const lastDayOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0); 
       if (currentDate > lastDayOfMonth) {
         months.push({
           month: current.toLocaleString('default', { month: 'long' }),
           year: current.getFullYear(),
         });
       }
-      current.setMonth(current.getMonth() + 1); // Move to the next month
+      current.setMonth(current.getMonth() + 1);
     }
     setMonthsSinceEmployment(months);
+
+    const takeHomePayDetails = calculateTakeHomePay(User.idnumber, User.basicsalary);
+    setTakeHomePayDetails(takeHomePayDetails);
+
+    
   }, [User]);
 
   const handleYearFilterChange = (event) => {
@@ -59,7 +65,10 @@ const PayslipTable = ({ User }) => {
   };
 
   const handleDownload = (month, year) => {
-    console.log(`Downloading payslip for ${month} ${year}`);
+    console.log("🚀 ~ handleDownload ~ year:", year)
+    console.log("🚀 ~ handleDownload ~ month:", month)
+    console.log("🚀 ~ useEffect ~ takeHomePayDetails:", takeHomePayDetails)
+
     // Implement download logic here
   };
 

@@ -104,7 +104,7 @@ const RolesTable = () => {
             'Role has been deleted.',
             'success'
           );
-          fetchRoles(); // Refetch roles after deletion
+          fetchRoles(); 
         } catch (error) {
           Swal.fire(
             'Error!',
@@ -200,14 +200,25 @@ const RolesTable = () => {
                   <TableCell>{role.rolename}</TableCell>
                   <TableCell sx={{ width: '150px' }}>
                     <Tooltip title="Edit">
-                      <IconButton onClick={() => handleDialogOpen(role)}>
-                        <IoPencil />
-                      </IconButton>
+                      <span>
+                        <IconButton 
+                          onClick={() => handleDialogOpen(role)} 
+                          disabled={role.rolename === "Developer" || role.rolename === "System Administrator"}
+                        >
+                          <IoPencil />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteRole(role.roleid)}>
-                        <MdDelete />
-                      </IconButton>
+                      <span>
+                        <IconButton 
+                          sx={{ color: '#E7858B' }} 
+                          onClick={() => handleDeleteRole(role.roleid)} 
+                          disabled={role.rolename === "Developer" || role.rolename === "System Administrator"}
+                        >
+                          <MdDelete />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   </TableCell>
                 </TableRow>
