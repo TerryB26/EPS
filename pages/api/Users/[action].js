@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   let response = {};
   const {
     firstName, lastName, email, phoneNumber, IDNumber, DOB, gender, jobTitle,
-    department, division, employmentType, startDate, endDate, salary, bonus, role,fileName: empcontractname, EmployeeNumber: employeenumber
+    department, division, employmentType, startDate, endDate, salary: basicsalary, bonus, role,fileName: empcontractname, EmployeeNumber: employeenumber, leavetypes
   } = req.body;
 
   const password = 'password1234';
@@ -39,6 +39,22 @@ export default async function handler(req, res) {
               VALUES ('${uuidv4()}', $1, $2, NOW(), NOW());
             `;
             await query(insertUserRoleQuery, [userId, role]);
+
+            const insertEmployeeSalaryQuery = `
+              INSERT INTO public.salaries (empsalaryid, employeeid, basicsalary, createdon, updatedon)
+              VALUES ('${uuidv4()}', $1, $2, NOW(), NOW());
+            `;
+            await query(insertEmployeeSalaryQuery, [userId, basicsalary]);
+
+            if (Array.isArray(leavetypes)) {
+              for (const leave of leavetypes) {
+                const insertLeaveBalanceQuery = `
+                  INSERT INTO public.employeeleavebalance (empleavebalanceid, leavetypeid, remainingbalance, employeeid)
+                  VALUES ('${uuidv4()}', '${leave.requesttypeid}', '${leave.balance}', '${userId}');
+                `;
+                await query(insertLeaveBalanceQuery); 
+              }
+            }
 
             await query('COMMIT');
             response = { message: 'User added successfully' };

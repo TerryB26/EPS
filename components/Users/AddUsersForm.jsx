@@ -29,7 +29,6 @@ const validationObj = {
   employmentType: yup.string().required("Employment type is required"),
   startDate: yup.date().typeError("Please enter a valid start date").required("Start date is required"),
   salary: yup.number().typeError("Please enter a valid salary").required("Salary is required"),
-  bonus: yup.number().typeError("Please enter a valid bonus").required("Bonus is required"),
   role: yup.string().required("Role is required"),
 };
 
@@ -43,6 +42,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
   const [divisions, setDivisions] = useState([]);
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [userRoles, setuserRoles] = useState([]);
+  const [leavetypes, setleavetypes] = useState([]);
   const [triggerFileUpload, setTriggerFileUpload] = useState(false); 
   const handleClearForm = () => {
     resetForm();
@@ -54,7 +54,8 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       { url: 'api/WorkforceManagement/Departments/', setter: setDepartments },
       { url: 'api/WorkforceManagement/Departments/Divisions/', setter: setDivisions },
       { url: 'api/WorkforceManagement/EmploymentType/', setter: setEmploymentTypes },
-      { url: 'api/Roles/', setter: setuserRoles }
+      { url: 'api/Roles/', setter: setuserRoles },
+      { url: 'api/Leaves/LeaveTypes', setter: setleavetypes }
     ];
   
     const fetchData = async () => {
@@ -89,7 +90,6 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       startDate: null,
       endDate: null,
       salary: "",
-      bonus: "",
       role: "",
       fileName: "",
       EmployeeNumber: "",
@@ -102,7 +102,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
       axios({
         url,
         method: "POST",
-        data: { ...values }
+        data: { ...values, leavetypes }
       }).then((res) => {
         setSubmitting(false);
         handleClose();
@@ -481,7 +481,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
           helperText={touched.salary && errors.salary}
         />
       </Grid>
-      <Grid item xs={6}>
+      {/* <Grid item xs={6}>
         <TextField
           fullWidth
           id="bonus"
@@ -493,7 +493,7 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
           error={touched.bonus && Boolean(errors.bonus)}
           helperText={touched.bonus && errors.bonus}
         />
-      </Grid>
+      </Grid> */}
     </Grid>
 
     </Box>

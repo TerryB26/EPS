@@ -70,4 +70,15 @@ export const queryKeys = {
 `,
   GET_LEAVE_ATTATCHMENTS: "SELECT * FROM public.leaveattatchments",
   GET_LEAVE_REQ_TYPES: "SELECT * FROM public.leaverequesttypes",
+  GET_LEAVE_BALANCE: `
+    SELECT 
+      elb.empleavebalanceid, 
+      elb.leavetypeid, 
+      elb.remainingbalance, 
+      lrt.requesttype, 
+      lrt.description
+    FROM public.employeeleavebalance elb
+    LEFT JOIN public.leaverequesttypes lrt 
+      ON elb.leavetypeid = lrt.requesttypeid
+  `,
 };
