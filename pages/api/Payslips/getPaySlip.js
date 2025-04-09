@@ -1,10 +1,7 @@
-console.log("🚀 ~ handler ~ req.body:")
 import path from 'path';
 import fs from 'fs';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
-import libre from 'libreoffice-convert'; 
-import { promisify } from 'util';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -36,9 +33,9 @@ export default async function handler(req, res) {
         PayslipDate: `${month} ${year}`,
     });
 
-    // Generate the DOCX file
+
     let fileBuffer = doc.getZip().generate({ type: 'nodebuffer' });
-      // Send DOCX
+
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
       res.setHeader('Content-Disposition', `attachment; filename="${User.name}_report.docx"`);
       res.send(fileBuffer);
@@ -48,23 +45,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
-
-/*
-EmpNetSal
-TotalDeductions
-CompMedicalAid
-EmpTaxAmount
-GrossSalary
-EmpTaxAmount
-GrossSalary
-BonusSalary
-OvertimePay
-OvertimePay
-EMPDepartment
-EMPJobTitle
-EMPNumber
-EMPNameSurname
-PayslipDate
-
-
-*/

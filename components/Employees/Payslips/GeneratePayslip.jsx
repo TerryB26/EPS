@@ -65,11 +65,7 @@ const PayslipTable = ({ User }) => {
     setFilteredYear(event.target.value);
   };
 
-  const handleDownload = async (month, year) => {
-    console.log("🚀 ~ handleDownload ~ year:", year);
-    console.log("🚀 ~ handleDownload ~ month:", month);
-    console.log("🚀 ~ useEffect ~ takeHomePayDetails:", takeHomePayDetails);
-  
+  const handleDownload = async (month, year) => {  
     try {
       const response = await axios.post('/api/Payslips/getPaySlip', {
         takeHomePayDetails,
@@ -77,22 +73,19 @@ const PayslipTable = ({ User }) => {
         month,
         User,
       }, {
-        responseType: 'blob', // Ensure the response is treated as a binary Blob
+        responseType: 'blob',
       });
   
       if (response.status === 200) {
-        // Create a Blob from the response data
         const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
         const url = window.URL.createObjectURL(blob);
   
-        // Create a temporary anchor element to trigger the download
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `Payslip_${month}_${year}.docx`); // Set the filename
+        link.setAttribute('download', `Payslip_${month}_${year}.docx`);
         document.body.appendChild(link);
         link.click();
   
-        // Clean up
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
   
