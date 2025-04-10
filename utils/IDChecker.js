@@ -37,9 +37,9 @@ export const calculateTakeHomePay = (idNumber, monthlySalary) => {
   if (!validateIDNumber(idNumber)) {
     throw new Error("Invalid ID number format");
   }
-  if (typeof monthlySalary !== "number" || monthlySalary <= 0) {
-    throw new Error("Salary must be a positive number");
-  }
+  // if (typeof monthlySalary !== "number" || monthlySalary <= 0) {
+  //   throw new Error("Salary must be a positive number");
+  // }
 
   const dob = getDateOfBirthFromID(idNumber);
   const today = new Date();

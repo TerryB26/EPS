@@ -1,34 +1,23 @@
-import React, { useState,useEffect } from 'react';
-import { IconButton, Box, Grid, Dialog, DialogTitle, DialogContent, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, TableSortLabel, TablePagination} from "@mui/material";
-import PageHeader from "@/components/General/PageHeader";
+import DialogForm from '@/components/General/DialogForm';
 import InfoCard from "@/components/General/InfoCard";
-import { MdOutlineAdsClick, MdNavigateBefore, MdNavigateNext, MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import PageHeader from "@/components/General/PageHeader";
 import BarGraph from '@/components/Statistics/BarGraph';
 import PieChart from '@/components/Statistics/PieChart';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-import DialogForm from '@/components/General/DialogForm';
-import { LuCloudDownload } from "react-icons/lu";
-import axios from 'axios';
-import { FaRegFileWord } from "react-icons/fa6";
-import { FaRegFilePdf } from "react-icons/fa";
 import { fetchData } from '@/library/apiClient';
 import { queryKeys } from '@/library/queries';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from "@mui/material";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { FaRegFileWord } from "react-icons/fa6";
+import { MdOutlineAdsClick } from "react-icons/md";
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+
 
 const DashboardView = () => {
 
     const dummyData = [
         { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
-        { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
-        { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-        { user: 'Jane Smith', age: 34, transactions: 8, totalAmount: 2300 },
-        { user: 'Alice Johnson', age: 45, transactions: 3, totalAmount: 1200 },
-        { user: 'Bob Brown', age: 23, transactions: 7, totalAmount: 1900 },
       ];
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -38,6 +27,9 @@ const DashboardView = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5); 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');  
+    const [loading, setLoading] = useState(true);
+    const [DashboardData, setDashboardData] = useState([]);
+    const { pending, approved, rejected, all_requests, total_employees } = DashboardData[0];
     
     const handleIconClick = (title) => {
         setDialogTitle(title);
@@ -98,7 +90,6 @@ const DashboardView = () => {
             { responseType: "blob" } 
           );
       
-          // Create a blob from the response data
           const blob = new Blob([response.data], {
             type:
               Type === "pdf"
@@ -121,16 +112,29 @@ const DashboardView = () => {
         }
       };
 
+      const fetchDashData = async () => {
+        setLoading(true); 
+        try {
+          const response = await axios.get('/api/DashboardStats');
+          setDashboardData(response.data);
+        } catch (error) {
+          console.error('Error fetching Dashboard Data:', error);
+        } finally {
+          setLoading(false); 
+        }
+      };
+    
       useEffect(() => {
-        const fetchUsers = async () => {
-          try {
-            const data = await fetchData(queryKeys.GET_USERS);
-          } catch (error) {
-            console.error('Failed to fetch users:', error);
-          }
-        };
-        fetchUsers();
+        fetchDashData();
       }, []);
+
+      if (loading) {
+        return (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+            <CircularProgressWithLabel />
+          </Box>
+        );
+      }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -147,10 +151,10 @@ const DashboardView = () => {
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
                     onClick={() => handleIconClick('Card 1')}
                   />
-                  1
+                  Total Users
                 </>
               }
-              innerText="10"
+              innerText={total_employees}
             />
           </Grid>
           <Grid item xs={12} md={3} key="Total2">
@@ -161,10 +165,10 @@ const DashboardView = () => {
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
                     onClick={() => handleIconClick('Card 2')}
                   />
-                  2
+                  Pending Leave Requests
                 </>
               }
-              innerText="20"
+              innerText={pending}
             />
           </Grid>
           <Grid item xs={12} md={3} key="Total3">
@@ -175,10 +179,10 @@ const DashboardView = () => {
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
                     onClick={() => handleIconClick('Card 3')}
                   />
-                  3
+                  Rejected Leave Requests
                 </>
               }
-              innerText="30"
+              innerText={rejected}
             />
           </Grid>
           <Grid item xs={12} md={3} key="Total4">
@@ -189,10 +193,10 @@ const DashboardView = () => {
                     style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
                     onClick={() => handleIconClick('Card 4')}
                   />
-                  4
+                  All Leave Requests
                 </>
               }
-              innerText="40"
+              innerText={all_requests}
             />
           </Grid>
 
@@ -208,14 +212,14 @@ const DashboardView = () => {
 
         <Grid item xs={12} md={6}>
           <InfoCard
-            header="Chart 2"
+            header="Leave Requests"
             innerText={
-                <PieChart />
+                <PieChart Data={DashboardData[0]}/>
               }
           />
         </Grid>
 
-        <Grid item xs={12} md={12}>
+        {/* <Grid item xs={12} md={12}>
             <InfoCard
               header="Table Info"
               innerText={
@@ -352,7 +356,7 @@ const DashboardView = () => {
                 </Box>
               }
             />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <DialogForm

@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import PageHeader from "@/components/General/PageHeader";
-import { Tabs, Tab, Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import RequestsTable from '@/components/Employees/Leaves/RequestsTable';
-import NewRequest from '@/components/Employees/Leaves/NewRequest';
 import LeaveBalance from '@/components/Employees/Leaves/LeaveBalance';
+import NewRequest from '@/components/Employees/Leaves/NewRequest';
+import RequestsTable from '@/components/Employees/Leaves/RequestsTable';
+import { Box, Tab, Tabs } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -13,12 +12,12 @@ const Root = styled('div')(({ theme }) => ({
 const TabsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
-  borderBottom: '2px solid #D1B0DB', // Add a straight line under the buttons
+  borderBottom: '2px solid #D1B0DB', 
 }));
 
 const TabButton = styled(Tab)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  borderRadius: "8px 8px 0 0", // Make the top corners rounded
+  borderRadius: "8px 8px 0 0",
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   margin: theme.spacing(1),
   minWidth: "120px",
@@ -50,7 +49,6 @@ const tabContents = [
   { label: "Rejected Requests", content: <RequestsTable Status="Rejected"/> },
   { label: "New Application", content: <NewRequest /> },
 ];
-
 const LeaveApplicationsDashboard = () => {
   const [value, setValue] = useState(0);
 

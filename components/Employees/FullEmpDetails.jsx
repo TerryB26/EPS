@@ -9,15 +9,18 @@ import CircularProgressWithLabel from '@/components/General/CircularProgressWith
 
 const FullEmpDetails = ({ UserID }) => {
   const [userDetails, setUserDetails] = useState(null); 
+  const [loading, setLoading] = useState(true);
 
   const fetchDetails = async () => {
+    setLoading(true); 
     try {
       const response = await axios.get('/api/FullEmpDetails');
       const user = response.data.find(detail => detail.userid === UserID);
-      console.log("🚀 ~ fetchDetails ~ user:", user)
       setUserDetails(user);
     } catch (error) {
       console.error('Error fetching user details:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -25,9 +28,9 @@ const FullEmpDetails = ({ UserID }) => {
     fetchDetails();
   }, [UserID]);
 
-  if (!userDetails) {
+  if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '20vh' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
         <CircularProgressWithLabel />
       </Box>
     );

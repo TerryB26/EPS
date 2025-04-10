@@ -34,7 +34,7 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
-const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => {
+const AddUsersForm = ({ handleClose,fetchUsers }) => {
   const [submitting, setSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [jobTitles, setJobTitles] = useState([]);
@@ -464,7 +464,6 @@ const AddUsersForm = ({ handleClose,fetchUsers, closeAccordion, routeName }) => 
         <FileUpload allowMultiple={false} onFileUpload={handleFileUpload} triggerFileUpload={triggerFileUpload} ApiUrl="/api/EmpContracts/upload" EmployeeNumber={values.EmployeeNumber}/>
       </Grid>
     </Box>,
-
 
     <Box mb={2} mt={8} key="step4">
     <Grid container spacing={2} mb={4}>

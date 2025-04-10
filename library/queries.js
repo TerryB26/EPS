@@ -81,4 +81,15 @@ export const queryKeys = {
     LEFT JOIN public.leaverequesttypes lrt 
       ON elb.leavetypeid = lrt.requesttypeid
   `,
+  DASH_STATS:`
+  SELECT 
+    COUNT(CASE WHEN ls.status = 'Pending' THEN 1 END) as Pending,
+    COUNT(CASE WHEN ls.status = 'Approved' THEN 1 END) as Approved,
+    COUNT(CASE WHEN ls.status = 'Rejected' THEN 1 END) as Rejected,
+    COUNT(lr.statusid) as All_Requests,
+    COUNT(DISTINCT e.employeeid) as Total_Employees
+  FROM public.employees e
+  LEFT JOIN public.leaverequests lr ON e.employeeid = lr.employeeid
+  LEFT JOIN public.leavestatus ls ON lr.statusid = ls.leaveid;
+  `,
 };

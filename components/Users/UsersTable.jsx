@@ -10,6 +10,7 @@ import { RxUpdate } from "react-icons/rx";
 import UpdateUserSalaries from '@/components/Users/Updates/UpdateUserSalaries';
 import axios from 'axios';
 import FullEmpDetails from '@/components/Employees/FullEmpDetails';
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -41,18 +42,21 @@ const Users = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [users, setUsers] = useState([]);
-  console.log("🚀 ~ Users ~ users:", users)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogWidth, setDialogWidth] = useState('md');
+  const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
+  setLoading(true); 
     try {
       const response = await axios.get('/api/Users/');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -95,6 +99,15 @@ const Users = () => {
     setDialogTitle('');
     setDialogWidth('md');
   };
+
+    if (loading) {
+      return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+          <CircularProgressWithLabel />
+        </Box>
+      );
+    }
+  
 
   return (
     <div style={{ padding: "20px" }}>
