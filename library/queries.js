@@ -82,14 +82,34 @@ export const queryKeys = {
       ON elb.leavetypeid = lrt.requesttypeid
   `,
   DASH_STATS:`
-  SELECT 
+WITH department_count AS (
+    SELECT COUNT(*) as total_depts 
+    FROM public.departments
+),
+division_count AS (
+    SELECT COUNT(*) as total_divisions 
+    FROM public.depdivision 
+),
+jt_count AS (
+    SELECT COUNT(*) as total_jobTitles 
+    FROM public.jobtitles 
+),
+roles_count AS (
+    SELECT COUNT(*) as total_roles 
+    FROM public.roles
+)
+SELECT 
     COUNT(CASE WHEN ls.status = 'Pending' THEN 1 END) as Pending,
     COUNT(CASE WHEN ls.status = 'Approved' THEN 1 END) as Approved,
     COUNT(CASE WHEN ls.status = 'Rejected' THEN 1 END) as Rejected,
     COUNT(lr.statusid) as All_Requests,
-    COUNT(DISTINCT e.employeeid) as Total_Employees
-  FROM public.employees e
-  LEFT JOIN public.leaverequests lr ON e.employeeid = lr.employeeid
-  LEFT JOIN public.leavestatus ls ON lr.statusid = ls.leaveid;
+    COUNT(DISTINCT e.employeeid) as Total_Employees,
+    (SELECT total_depts FROM department_count) as Total_Departments,
+    (SELECT total_divisions FROM division_count) as Total_Divisions,
+    (SELECT Total_Roles FROM roles_count) as Total_Roles,
+    (SELECT total_jobTitles FROM jt_count) as Total_JobTitles
+FROM public.employees e
+LEFT JOIN public.leaverequests lr ON e.employeeid = lr.employeeid
+LEFT JOIN public.leavestatus ls ON lr.statusid = ls.leaveid;
   `,
 };

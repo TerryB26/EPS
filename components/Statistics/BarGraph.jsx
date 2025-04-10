@@ -19,15 +19,33 @@ ChartJS.register(
   Legend
 );
 
-const BarGraph = () => {
+const BarGraph = ({ Data }) => {
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: ["Departments", "Divisions", "Job Titles", "Roles", "Employees"],
     datasets: [
       {
-        label: "Sales",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        label: "Counts",
+        data: [
+          Data.total_departments,
+          Data.total_divisions,
+          Data.total_jobtitles,
+          Data.total_roles,
+          Data.total_employees,
+        ], 
+        backgroundColor: [
+          "rgba(75, 192, 192, 0.2)", 
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)", 
+          "rgba(54, 162, 235, 0.2)", 
+          "rgba(255, 99, 132, 0.2)", 
+        ],
+        borderColor: [
+          "rgba(75, 192, 192, 1)", 
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)", 
+          "rgba(54, 162, 235, 1)", 
+          "rgba(255, 99, 132, 1)", 
+        ],
         borderWidth: 1,
       },
     ],
@@ -42,7 +60,16 @@ const BarGraph = () => {
       },
       title: {
         display: true,
-        text: "Monthly Sales Data",
+        text: "Organizational Overview",
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1, 
+          precision: 0, 
+        },
+        beginAtZero: true,
       },
     },
   };

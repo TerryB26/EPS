@@ -29,7 +29,8 @@ const DashboardView = () => {
     const [dialogTitle, setDialogTitle] = useState('');  
     const [loading, setLoading] = useState(true);
     const [DashboardData, setDashboardData] = useState([]);
-    const { pending, approved, rejected, all_requests, total_employees } = DashboardData[0];
+    console.log("🚀 ~ DashboardView ~ DashboardData:", DashboardData)
+    const { pending = 0, approved = 0, rejected = 0, all_requests = 0, total_employees = 0 } = DashboardData[0] || {};
     
     const handleIconClick = (title) => {
         setDialogTitle(title);
@@ -205,7 +206,7 @@ const DashboardView = () => {
           <InfoCard
             header="Chart 1"
             innerText={
-              <BarGraph />
+              <BarGraph Data={DashboardData[0]} />
             }
           />
         </Grid>
@@ -214,7 +215,7 @@ const DashboardView = () => {
           <InfoCard
             header="Leave Requests"
             innerText={
-                <PieChart Data={DashboardData[0]}/>
+                <PieChart Data={DashboardData[0]} />
               }
           />
         </Grid>
