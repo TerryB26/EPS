@@ -100,9 +100,48 @@ export default async function handler(req, res) {
         break;
       }
 
-      case 'update-request':
-        // Logic for updating a request (not implemented yet)
+      case 'update-request': {
+        let body;
+      
+        if (req.headers['content-type'] === 'application/json') {
+          body = await new Promise((resolve, reject) => {
+            let data = '';
+            req.on('data', (chunk) => {
+              data += chunk;
+            });
+            req.on('end', () => {
+              try {
+                resolve(JSON.parse(data));
+              } catch (err) {
+                reject(err);
+              }
+            });
+          });
+        } else {
+          body = req.body; 
+        }
+      
+        const { requestID, leaveStatus, reason } = body;
+            
+        await query(
+          `UPDATE public.leaverequests
+           SET statusid = $1, updatedon = NOW()
+           WHERE leaverequestid = $2`,
+          [leaveStatus, requestID]
+        );
+      
+        if (reason) {
+          await query(
+            `UPDATE public.leavereasons
+             SET leaveresponse = $1, updatedon = NOW()
+             WHERE leaverequestid = $2`,
+            [reason, requestID]
+          );
+        }
+      
+        response = { message: 'Leave request updated successfully' };
         break;
+      }
 
         case 'download-attatchment': {
           let body;

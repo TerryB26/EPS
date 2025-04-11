@@ -1,35 +1,21 @@
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
 import DialogForm from '@/components/General/DialogForm';
 import InfoCard from "@/components/General/InfoCard";
 import PageHeader from "@/components/General/PageHeader";
 import BarGraph from '@/components/Statistics/BarGraph';
 import PieChart from '@/components/Statistics/PieChart';
-import { fetchData } from '@/library/apiClient';
-import { queryKeys } from '@/library/queries';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from "@mui/material";
+import Users from '@/components/Users/UsersTable';
+import { Box, Grid } from "@mui/material";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaRegFileWord } from "react-icons/fa6";
 import { MdOutlineAdsClick } from "react-icons/md";
-import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
 
 
 const DashboardView = () => {
-
-    const dummyData = [
-        { user: 'John Doe', age: 28, transactions: 5, totalAmount: 1500 },
-      ];
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState('user');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5); 
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');  
     const [loading, setLoading] = useState(true);
     const [DashboardData, setDashboardData] = useState([]);
-    console.log("🚀 ~ DashboardView ~ DashboardData:", DashboardData)
     const { pending = 0, approved = 0, rejected = 0, all_requests = 0, total_employees = 0 } = DashboardData[0] || {};
     
     const handleIconClick = (title) => {
@@ -39,78 +25,6 @@ const DashboardView = () => {
     
       const handleClose = () => {
         setDialogOpen(false);
-      };
-
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-      };
-    
-      const handleClearSearch = () => {
-        setSearchTerm('');
-      };
-    
-      const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-      };
-    
-      const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-      };
-    
-      const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-      };
-    
-      const filteredData = dummyData.filter((row) =>
-        row.user.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    
-      const sortedData = filteredData.sort((a, b) => {
-        if (orderBy === 'user') {
-          return order === 'asc'
-            ? a.user.localeCompare(b.user)
-            : b.user.localeCompare(a.user);
-        } else {
-          return order === 'asc'
-            ? a[orderBy] - b[orderBy]
-            : b[orderBy] - a[orderBy];
-        }
-      });
-
-      const paginatedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
-      const handleDownload = async (UserData, Type) => {
-        try {
-          const url = Type === "pdf" ? "/api/GenPDFReport" : "/api/GenWordReport";
-          const response = await axios.post(
-            url,
-            { userData: UserData, Type: Type }, 
-            { responseType: "blob" } 
-          );
-      
-          const blob = new Blob([response.data], {
-            type:
-              Type === "pdf"
-                ? "application/pdf"
-                : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-          });
-      
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.setAttribute("download", `${UserData.user}_report.${Type}`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      
-          // Clean up
-          window.URL.revokeObjectURL(downloadUrl);
-        } catch (error) {
-          console.error("Error downloading file:", error);
-        }
       };
 
       const fetchDashData = async () => {
@@ -204,7 +118,7 @@ const DashboardView = () => {
         {/* Charts */}
         <Grid item xs={12} md={6}>
           <InfoCard
-            header="Chart 1"
+            header="Organization Data"
             innerText={
               <BarGraph Data={DashboardData[0]} />
             }
@@ -220,144 +134,16 @@ const DashboardView = () => {
           />
         </Grid>
 
-        {/* <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={12}>
             <InfoCard
-              header="Table Info"
+              header="Users"
               innerText={
                 <Box p={2}>
-                  <Box p={2} display="flex" alignItems="center">
-                    <TextField
-                      label="Search"
-                      placeholder='Search by User Name'
-                      variant="outlined"
-                      value={searchTerm}
-                      onChange={handleSearchChange}
-                      fullWidth
-                      style={{ marginRight: '20px' }}
-                      InputProps={{
-                        style: {
-                          height: '40px',
-                        },
-                      }}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#550000',
-                          },
-                          '&:hover fieldset': {
-                            borderColor: '#ff0000',
-                          },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#550000',
-                          },
-                        },
-                      }}
-                    />
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={handleClearSearch}
-                      startIcon={<SearchOffIcon sx={{ color: '#550000' }} />}
-                      sx={{
-                        height: '40px',
-                        backgroundColor: 'white',
-                        border: '1px solid #550000',
-                        color: '#550000',
-                        '&:hover': {
-                          backgroundColor: 'white',
-                          border: '1px solid #ff0000',
-                          color: '#ff0000',
-                        },
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  </Box>
-                  <TableContainer component={Paper} style={{ maxHeight: 400 }}>
-                    <Table stickyHeader>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>
-                            <TableSortLabel
-                              active={orderBy === 'user'}
-                              direction={orderBy === 'user' ? order : 'asc'}
-                              onClick={(event) => handleRequestSort(event, 'user')}
-                            >
-                              User
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell align="right">
-                            <TableSortLabel
-                              active={orderBy === 'age'}
-                              direction={orderBy === 'age' ? order : 'asc'}
-                              onClick={(event) => handleRequestSort(event, 'age')}
-                            >
-                              Age
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell align="right">
-                            <TableSortLabel
-                              active={orderBy === 'transactions'}
-                              direction={orderBy === 'transactions' ? order : 'asc'}
-                              onClick={(event) => handleRequestSort(event, 'transactions')}
-                            >
-                              Transactions
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell align="right">
-                            <TableSortLabel
-                              active={orderBy === 'totalAmount'}
-                              direction={orderBy === 'totalAmount' ? order : 'asc'}
-                              onClick={(event) => handleRequestSort(event, 'totalAmount')}
-                            >
-                              Total Amount ($)
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {paginatedData.map((row, index) => (
-                            <TableRow
-                            key={index}
-                            sx={{
-                                '&:hover': {
-                                backgroundColor: '#E4F2FF',
-                                },
-                            }}
-                            >
-                            <TableCell component="th" scope="row">
-                                {row.user}
-                            </TableCell>
-                            <TableCell align="right">{row.age}</TableCell>
-                            <TableCell align="right">{row.transactions}</TableCell>
-                            <TableCell align="right">{row.totalAmount}</TableCell>
-                            <TableCell align="right">
-                                <IconButton onClick={() => handleDownload(row,"DOCX")}>
-                                <FaRegFileWord />
-                                </IconButton>
-                            </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    component="div"
-                    count={filteredData.length}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    rowsPerPageOptions={[5, 10, 25]}
-                  />
+                  <Users />
                 </Box>
               }
             />
-        </Grid> */}
+        </Grid>
       </Grid>
 
       <DialogForm

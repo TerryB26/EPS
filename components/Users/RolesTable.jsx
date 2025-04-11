@@ -8,6 +8,7 @@ import { IoPencil } from "react-icons/io5";
 import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
 import RolesForm from './RolesForm';
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -41,13 +42,17 @@ const RolesTable = () => {
   const [roles, setRoles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchRoles = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('/api/Roles');
       setRoles(response.data);
     } catch (error) {
       console.error('Error fetching roles:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -85,6 +90,14 @@ const RolesTable = () => {
     setIsDialogOpen(false);
     fetchRoles();
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+        <CircularProgressWithLabel />
+      </Box>
+    );
+  }
 
   const handleDeleteRole = async (roleID) => {
     const result = await Swal.fire({

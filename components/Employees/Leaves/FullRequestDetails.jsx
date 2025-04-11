@@ -5,6 +5,9 @@ import { styled } from '@mui/material/styles';
 import { FaUser, FaCalendarAlt } from 'react-icons/fa';
 import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
 import { IoCloudDownloadOutline } from "react-icons/io5";
+import DialogForm from '@/components/General/DialogForm';
+import { BsThreeDots } from "react-icons/bs";
+import LeaveResponseForm from '@/components/Employees/Leaves/LeaveResponseForm';
 
 const DetailPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -17,7 +20,7 @@ const DetailPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Header = styled(Box)(({ theme }) => ({
-    backgroundColor: '#ECEBF9',
+  backgroundColor: '#ECEBF9',
   padding: theme.spacing(2),
   borderRadius: '12px 12px 0 0',
   margin: '-32px -32px 32px -32px',
@@ -54,6 +57,11 @@ const DetailValue = styled(Typography)(({ theme }) => ({
 
 const FullRequestDetails = ({ requestID }) => {
   const [request, setRequest] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogWidth, setDialogWidth] = useState('md');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetchRequests = async () => {
     try {
@@ -69,18 +77,18 @@ const FullRequestDetails = ({ requestID }) => {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.post('/api/Leaves/Requests/download-attatchment', {
+      const response = await axios.post('/api/Leaves/Requests/download-attachment', {
         leaverequestid: request.leaverequestid,
         attachment_filename: request.attachment_filename,
         employeenumber: request.employeenumber,
       }, {
-        responseType: 'blob', 
+        responseType: 'blob',
       });
   
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${request.employeenumber}_${request.attachment_filename}` || 'document.pdf'); 
+      link.setAttribute('download', `${request.employeenumber}_${request.attachment_filename}` || 'document.pdf');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -88,7 +96,20 @@ const FullRequestDetails = ({ requestID }) => {
       console.error('Error downloading the document:', error);
     }
   };
-  
+
+  const handleDialogOpen = (content, title, width = 'md') => {
+    setDialogContent(content);
+    setDialogTitle(title);
+    setDialogWidth(width);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setDialogContent(null);
+    setDialogTitle('');
+    setDialogWidth('md');
+  };
 
   useEffect(() => {
     fetchRequests();
@@ -96,16 +117,16 @@ const FullRequestDetails = ({ requestID }) => {
 
   if (!request) {
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height: '20vh' }}>
-            <CircularProgressWithLabel />
-        </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+        <CircularProgressWithLabel />
+      </Box>
     );
   }
 
   return (
     <DetailPaper elevation={0}>
       <Header>
-        <Typography variant="h5" sx={{ color: '#black', fontWeight: 'bold' }}>
+        <Typography variant="h5" sx={{ color: '#000000', fontWeight: 'bold' }}>
           Leave Request Overview
         </Typography>
       </Header>
@@ -161,26 +182,25 @@ const FullRequestDetails = ({ requestID }) => {
           </DetailItem>
         </Grid>
 
-        {/* Attatchment Details */}
+        {/* Attachment Details */}
         <Grid item xs={12} sm={6}>
-        <DetailItem
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            border: '2px solid #D0B0DA',
-            backgroundColor: 'rgba(236, 235, 249, 0.4)',
-            borderRadius: '8px',
-            padding: '8px 12px',
-            cursor: 'pointer',
-          }}
-          onClick={handleDownload}
-        >
-          <IoCloudDownloadOutline size={20} style={{ marginRight: '8px' }} />
-          <Typography variant="body1" sx={{ color: '#1F2937', fontWeight: '600' }}>
-            {request.attachment_filename || 'No attachment available'}
-          </Typography>
-        </DetailItem>
-
+          <DetailItem
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '2px solid #D0B0DA',
+              backgroundColor: 'rgba(236, 235, 249, 0.4)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              cursor: 'pointer',
+            }}
+            onClick={handleDownload}
+          >
+            <IoCloudDownloadOutline size={20} style={{ marginRight: '8px' }} />
+            <Typography variant="body1" sx={{ color: '#1F2937', fontWeight: '600' }}>
+              {request.attachment_filename || 'No attachment available'}
+            </Typography>
+          </DetailItem>
         </Grid>
       </Grid>
   
@@ -193,6 +213,23 @@ const FullRequestDetails = ({ requestID }) => {
           </DetailValue>
         </DetailItem>
       </Box>
+
+      {/* Three Dots Icon and Dialog */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}>
+        <BsThreeDots
+          size={24}
+          style={{ cursor: 'pointer', color: '#1F2937' }}
+          onClick={() => handleDialogOpen(<LeaveResponseForm requestID={requestID} handleClose={handleDialogClose} fetchRequests={fetchRequests}/>, 'Leave Response')}
+        />
+      </Box>
+
+      <DialogForm
+        title={dialogTitle}
+        content={dialogContent}
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+        width={dialogWidth}
+      />
     </DetailPaper>
   );
 };

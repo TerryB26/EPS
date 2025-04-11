@@ -6,6 +6,8 @@ import DialogForm from '@/components/General/DialogForm';
 import FullRequestDetails from '@/components/Employees/Leaves/FullRequestDetails';
 import axios from 'axios';
 import { MdOutlineExpandCircleDown } from "react-icons/md";
+import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -39,14 +41,18 @@ const RequestsTable = ({ Status }) => {
   const [requests, setRequests] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
+    const [loading, setLoading] = useState(true);
 
   const fetchRequests = async () => {
+    setLoading(true); 
     try {
       const response = await axios.get('/api/Leaves/LeaveRequests');
       const filteredData = response.data.filter(request => request.leave_status === Status);
       setRequests(filteredData);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -84,10 +90,17 @@ const RequestsTable = ({ Status }) => {
     setIsDialogOpen(false);
   };
 
-  // Handle row expansion
   const handleExpandRow = (leaverequestid) => {
-    setExpandedRow(expandedRow === leaverequestid ? null : leaverequestid); // Toggle expansion
+    setExpandedRow(expandedRow === leaverequestid ? null : leaverequestid); 
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+        <CircularProgressWithLabel />
+      </Box>
+    );
+  }
 
   return (
     <div style={{ padding: "20px" }}>
