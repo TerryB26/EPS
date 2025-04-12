@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { TextField, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
-import axios from 'axios';
-import MySwal from 'sweetalert2';
-import RequiredField from "@/components/General/RequiredField";
-import FormButtons from "@/components/General/FormButtons";
 import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
+import FormButtons from "@/components/General/FormButtons";
+import RequiredField from "@/components/General/RequiredField";
+import { Box, FormControl, MenuItem, Select, TextField } from '@mui/material';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import MySwal from 'sweetalert2';
+import * as yup from 'yup';
 
 const validationSchema = yup.object({
   leaveStatus: yup.string().required("Leave status is required"),

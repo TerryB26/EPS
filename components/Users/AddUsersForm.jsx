@@ -426,7 +426,7 @@ const AddUsersForm = ({ handleClose,fetchUsers }) => {
                 <TextField
                   {...params}
                   fullWidth
-                  sx={{ width: "100%" }} // Ensure it expands
+                  sx={{ width: "100%" }}
                   onBlur={handleBlur}
                   error={touched.startDate && Boolean(errors.startDate)}
                   helperText={touched.startDate && errors.startDate}
@@ -480,19 +480,6 @@ const AddUsersForm = ({ handleClose,fetchUsers }) => {
           helperText={touched.salary && errors.salary}
         />
       </Grid>
-      {/* <Grid item xs={6}>
-        <TextField
-          fullWidth
-          id="bonus"
-          name="bonus"
-          label={<RequiredField title="Bonus" boldTitle={true}/>}
-          value={values.bonus}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.bonus && Boolean(errors.bonus)}
-          helperText={touched.bonus && errors.bonus}
-        />
-      </Grid> */}
     </Grid>
 
     </Box>
