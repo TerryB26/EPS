@@ -4,6 +4,7 @@ import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RequestsTable from '@/components/Employees/Leaves/RequestsTable';
 import { FaRegQuestionCircle, FaRegTimesCircle, FaRegCheckCircle } from "react-icons/fa";
+import withAuth from '@/auth/withAuth';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -87,4 +88,4 @@ const EmployeeLeaves = () => {
   );
 };
 
-export default EmployeeLeaves;
+export default withAuth(EmployeeLeaves);

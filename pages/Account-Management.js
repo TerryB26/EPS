@@ -4,6 +4,7 @@ import Users from '@/components/Users/UsersTable';
 import { Box, Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import withAuth from '@/auth/withAuth';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -81,4 +82,4 @@ const AccountManagement = () => {
   );
 };
 
-export default AccountManagement;
+export default withAuth(AccountManagement);

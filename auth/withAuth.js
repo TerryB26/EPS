@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { isAuthenticated, getCurrentUser, logout } from "@/auth/session";
 import CircularLoader from "@/components/General/CircularLoader";
+import { useRouter } from "next/router";
 
 const withAuth = (WrappedComponent) => {
   class AuthenticatedComponent extends Component {
@@ -12,6 +13,7 @@ const withAuth = (WrappedComponent) => {
         loading: true,
       };
     }
+
     componentDidMount() {
       this.checkAuthentication();
     }
@@ -25,6 +27,11 @@ const withAuth = (WrappedComponent) => {
         user: user,
         loading: false,
       });
+
+      if (!authenticated) {
+        const router = this.props.router;
+        router.push("/Login");
+      }
     };
 
     handleLogout = () => {
@@ -33,20 +40,18 @@ const withAuth = (WrappedComponent) => {
         isAuthenticated: false,
         user: null,
       });
-      if (this.props.history) {
-        this.props.history.push("/login");
-      }
+      const router = this.props.router;
+      router.push("/Login");
     };
 
     render() {
-      if (this.state.loading) {
+      const { loading, isAuthenticated } = this.state;
+
+      if (loading) {
         return <CircularLoader />;
       }
 
-      if (!this.state.isAuthenticated) {
-        if (this.props.history) {
-          this.props.history.push("/login");
-        }
+      if (!isAuthenticated) {
         return null;
       }
 
@@ -61,7 +66,12 @@ const withAuth = (WrappedComponent) => {
     }
   }
 
-  return AuthenticatedComponent;
+  const WithRouter = (props) => {
+    const router = useRouter();
+    return <AuthenticatedComponent {...props} router={router} />;
+  };
+
+  return WithRouter;
 };
 
 export default withAuth;

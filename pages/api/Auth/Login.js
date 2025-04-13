@@ -53,27 +53,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
-
-/*
-add a loading button on login
-a loader while redirecting
-and a success message on login
-fix the error message on login frontend
-implement with auth
-fix password bycrypt
-
-
-// Example usage of withAuth
-import withAuth from '@/auth/withAuth';
-
-const Dashboard = ({ user }) => {
-  return (
-    <div>
-      <h1>Welcome, {user.name}!</h1>
-      <p>Your role: {user.rolename}</p>
-    </div>
-  );
-};
-
-export default withAuth(Dashboard);
-*/

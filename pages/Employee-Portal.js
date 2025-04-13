@@ -4,6 +4,7 @@ import { Tabs, Tab, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LeaveApplicationsDashboard from '@/components/Employees/Leaves/LeaveApplicationsDashboard';
 import PayslipsTable from '@/components/Employees/Payslips/PayslipsTable';
+import withAuth from '@/auth/withAuth';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -84,4 +85,4 @@ const EmployeePortal = () => {
   );
 };
 
-export default EmployeePortal;
+export default withAuth(EmployeePortal);

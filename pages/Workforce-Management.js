@@ -5,6 +5,7 @@ import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItles
 import { Box, Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
+import withAuth from '@/auth/withAuth';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -83,4 +84,4 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default withAuth(Library);

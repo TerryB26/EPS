@@ -30,3 +30,12 @@ export const clearSession = () => {
   clearToken();
   clearUser();
 };
+
+export const isAuthenticated = () => {
+  const token = getToken();
+  return !!token; 
+};
+
+export const getCurrentUser = () => {
+  return getUser(); 
+};

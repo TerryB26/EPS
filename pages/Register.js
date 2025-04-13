@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import RegisterForm from '@/components/Auth/RegisterForm';
+import withAuth from '@/auth/withAuth';
 
 const Register = () => {
 
@@ -11,4 +12,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withAuth(Register);

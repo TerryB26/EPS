@@ -3,6 +3,7 @@ import { Box, Avatar, TextField, Container, Typography, Tabs, Tab, IconButton, B
 import { styled } from '@mui/material/styles';
 import PageHeader from "@/components/General/PageHeader";
 import EditIcon from '@mui/icons-material/Edit';
+import withAuth from '@/auth/withAuth';
 
 const ProfileContainer = styled(Container)(({ theme }) => ({
   display: 'flex',
@@ -203,4 +204,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default withAuth(Profile);

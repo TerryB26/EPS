@@ -1,13 +1,14 @@
 import React from 'react';
 import DashboardView from '@/components/Dashboard/DashboardView';
+import withAuth from '@/auth/withAuth';
 
 const Dashboard = () => {
 
   return (
     <>
-    <DashboardView />
+      <DashboardView />
     </>
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard);

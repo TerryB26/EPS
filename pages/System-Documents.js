@@ -4,6 +4,7 @@ import { Box, Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import SystemDocsTable from '@/components/SystemDocumentation/SystemDocsTable';
+import withAuth from '@/auth/withAuth';
 
 const Root = styled('div')(({ theme }) => ({
     padding: "20px",
@@ -80,4 +81,4 @@ const SystemDocuments = () => {
   )
 }
 
-export default SystemDocuments
+export default withAuth(SystemDocuments)
