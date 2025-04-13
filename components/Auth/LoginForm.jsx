@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, TextField, Button, Typography, IconButton, InputAdornment, Link } from "@mui/material";
+import { Box, Grid, TextField, Button, Typography, IconButton, InputAdornment, Link, CircularProgress } from "@mui/material";
 import PageHeader from "@/components/General/PageHeader";
 import RequiredField from "@/components/General/RequiredField";
 import { GoEye, GoEyeClosed } from "react-icons/go";
@@ -8,10 +8,12 @@ import * as yup from 'yup';
 import axios from 'axios';
 import { storeToken, storeUser } from '@/auth/session';
 import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const router = useRouter();
 
   const handleClickShowPassword = () => {
@@ -34,23 +36,47 @@ const LoginForm = () => {
       try {
         const response = await axios.post('/api/Auth/Login', values);
         const { token, user } = response.data;
-        console.log("🚀 ~ onSubmit: ~ token:", token)
-        console.log("🚀 ~ onSubmit: ~ user:", user)
 
         // Store token and user details
         storeToken(token);
         storeUser(user);
 
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successful',
+          text: `Welcome, ${user.name}!`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        // Redirect to the dashboard
+        setRedirecting(true);
         router.push('/Dashboard');
       } catch (error) {
         console.error('Login error:', error);
-        alert(error.response?.data?.error || 'An error occurred during login');
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: error.response?.data?.error || 'An error occurred during login',
+        });
       } finally {
         setSubmitting(false);
         resetForm();
       }
     },
   });
+
+  if (redirecting) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+        <Typography variant="h6" sx={{ ml: 2 }}>
+          Redirecting to Dashboard...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Grid container style={{ height: '100vh' }} alignItems="center">
@@ -104,8 +130,9 @@ const LoginForm = () => {
                 fullWidth
                 style={{ marginTop: '16px' }}
                 disabled={submitting}
+                startIcon={submitting && <CircularProgress size={20} color="inherit" />}
               >
-                Login
+                {submitting ? 'Logging In...' : 'Login'}
               </Button>
             </form>
             <Typography variant="body2" align="center" style={{ marginTop: '16px' }}>

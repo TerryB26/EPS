@@ -19,32 +19,31 @@ export default async function handler(req, res) {
        WHERE us.email = $1`,
       [email]
     );
-    console.log("🚀 ~ handler ~ result:", result)
 
-    if (result.length === 0) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+    // Check if the user exists
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'User does not exist' });
     }
 
     const user = result.rows[0];
-    console.log("🚀 ~ handler ~ user:", user)
-
 
     // Verify the password
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    // if (!isPasswordValid) {
-    //   return res.status(401).json({ error: 'Invalid email or password' });
-    // }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
     // Generate JWT
     const token = jwt.sign(
-        {
-          userid: user.userid,
-          email: user.email,
-          role: user.rolename,
-        },
-        process.env.JWT_SECRET, // Ensure this is set in your .env file
-        { expiresIn: '1h' }
-      );
+      {
+        userid: user.userid,
+        email: user.email,
+        role: user.rolename,
+      },
+      process.env.JWT_SECRET, // Ensure this is set in your .env file
+      { expiresIn: '1h' }
+    );
+
     // Remove sensitive data before sending the response
     delete user.password;
 
@@ -61,6 +60,7 @@ a loader while redirecting
 and a success message on login
 fix the error message on login frontend
 implement with auth
+fix password bycrypt
 
 
 // Example usage of withAuth

@@ -1,5 +1,6 @@
 import { query } from '@/library/database';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -11,7 +12,7 @@ export default async function handler(req, res) {
     department, division, employmentType, startDate, endDate, salary: basicsalary, bonus, role,fileName: empcontractname, EmployeeNumber: employeenumber, leavetypes
   } = req.body;
 
-  const password = 'password1234';
+  const plainPassword = '1234';
 
   try {
     switch (action) {
@@ -20,12 +21,15 @@ export default async function handler(req, res) {
           try {
             await query('BEGIN');
 
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+
             const insertUserQuery = `
               INSERT INTO public.users ("userid", "name", surname, email, "password", phone, dateofbirth, gender, createdon, updatedon, idnumber)
-              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(),  $8)
+              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8)
               RETURNING userid;
             `;
-            const userResult = await query(insertUserQuery, [firstName, lastName, email, password, phoneNumber, DOB, gender, IDNumber]);
+            const userResult = await query(insertUserQuery, [firstName, lastName, email, hashedPassword, phoneNumber, DOB, gender, IDNumber]);
             const userId = userResult.rows[0].userid;
 
             const insertEmployeeQuery = `
