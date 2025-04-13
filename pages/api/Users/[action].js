@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   let status = 200;
   let response = {};
   const {
-    firstName, lastName, email, phoneNumber, IDNumber, DOB, gender, jobTitle,
+    firstName, lastName, email, phoneNumber, IDNumber, DOB, gender, jobTitle, user,
     department, division, employmentType, startDate, endDate, salary: basicsalary, bonus, role,fileName: empcontractname, EmployeeNumber: employeenumber, leavetypes
   } = req.body;
 
@@ -25,28 +25,28 @@ export default async function handler(req, res) {
             const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
 
             const insertUserQuery = `
-              INSERT INTO public.users ("userid", "name", surname, email, "password", phone, dateofbirth, gender, createdon, updatedon, idnumber)
-              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8)
+              INSERT INTO public.users ("userid", "name", surname, email, "password", phone, dateofbirth, gender, createdon, updatedon, idnumber,createdby,updatedby)
+              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8, '${user.userid}', '${user.userid}')
               RETURNING userid;
             `;
             const userResult = await query(insertUserQuery, [firstName, lastName, email, hashedPassword, phoneNumber, DOB, gender, IDNumber]);
             const userId = userResult.rows[0].userid;
 
             const insertEmployeeQuery = `
-              INSERT INTO public.employees (employeeid, userid, departmentid, depdivisionid, jobtitleid, employmenttypeid, employedon, employmentenddate, createdon, updatedon, empcontractname, employeenumber)
-              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8, $9);
+              INSERT INTO public.employees (employeeid, userid, departmentid, depdivisionid, jobtitleid, employmenttypeid, employedon, employmentenddate, createdon, updatedon, empcontractname, employeenumber,createdby,updatedby)
+              VALUES ('${uuidv4()}', $1, $2, $3, $4, $5, $6, $7, NOW(), NOW(), $8, $9, '${user.userid}', '${user.userid}');
             `;
             await query(insertEmployeeQuery, [userId, department, division, jobTitle, employmentType, startDate, endDate, empcontractname, employeenumber]);
 
             const insertUserRoleQuery = `
-              INSERT INTO public.userroles (userroleid, userid, roleid, createdon, updatedon)
-              VALUES ('${uuidv4()}', $1, $2, NOW(), NOW());
+              INSERT INTO public.userroles (userroleid, userid, roleid, createdon, updatedon,createdby,updatedby)
+              VALUES ('${uuidv4()}', $1, $2, NOW(), NOW(), '${user.userid}', '${user.userid}');
             `;
             await query(insertUserRoleQuery, [userId, role]);
 
             const insertEmployeeSalaryQuery = `
-              INSERT INTO public.salaries (empsalaryid, employeeid, basicsalary, createdon, updatedon)
-              VALUES ('${uuidv4()}', $1, $2, NOW(), NOW());
+              INSERT INTO public.salaries (empsalaryid, employeeid, basicsalary, createdon, updatedon,createdby,updatedby)
+              VALUES ('${uuidv4()}', $1, $2, NOW(), NOW(), '${user.userid}', '${user.userid}');
             `;
             await query(insertEmployeeSalaryQuery, [userId, basicsalary]);
 

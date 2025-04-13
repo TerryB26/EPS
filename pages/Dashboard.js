@@ -2,11 +2,12 @@ import React from 'react';
 import DashboardView from '@/components/Dashboard/DashboardView';
 import withAuth from '@/auth/withAuth';
 
-const Dashboard = () => {
+const Dashboard = ({ user }) => {
+console.log("🚀 ~ Dashboard ~ user:", user)
 
   return (
     <>
-      <DashboardView />
+      <DashboardView user={user}/>
     </>
   );
 };

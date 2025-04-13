@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { MdOutlineAdsClick } from "react-icons/md";
 
 
-const DashboardView = () => {
+const DashboardView = ({user}) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');  
     const [loading, setLoading] = useState(true);
@@ -139,7 +139,7 @@ const DashboardView = () => {
               header="Users"
               innerText={
                 <Box p={2}>
-                  <Users />
+                  <Users user={user}/>
                 </Box>
               }
             />

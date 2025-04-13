@@ -37,7 +37,7 @@ const AddUserButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const Users = () => {
+const Users = ({ user }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -163,7 +163,7 @@ const Users = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddUserButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<UsersForm handleClose={handleDialogClose} fetchUsers={fetchUsers} />, 'Add User')}>
+        <AddUserButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<UsersForm handleClose={handleDialogClose} fetchUsers={fetchUsers} user={user}/>, 'Add User')}>
           Add User
         </AddUserButton>
       </Box>

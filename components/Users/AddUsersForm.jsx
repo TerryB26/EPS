@@ -34,7 +34,7 @@ const validationObj = {
 
 const validationSchema = yup.object(validationObj);
 
-const AddUsersForm = ({ handleClose,fetchUsers }) => {
+const AddUsersForm = ({ handleClose,fetchUsers, user }) => {
   const [submitting, setSubmitting] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [jobTitles, setJobTitles] = useState([]);
@@ -93,6 +93,7 @@ const AddUsersForm = ({ handleClose,fetchUsers }) => {
       role: "",
       fileName: "",
       EmployeeNumber: "",
+      user: user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
