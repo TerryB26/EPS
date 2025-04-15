@@ -45,21 +45,22 @@ export default async function handler(req, res) {
           tillDate,
           leaveType: requestTypeID,
           reason,
+          user
         } = normalizedFields;
 
         const leaveRequestID = uuidv4();
 
         await query(
-          `INSERT INTO public.leaverequests (leaverequestid, employeeid, statusid, leaveduration, fromdate, tilldate, createdon, requesttypeid, updatedon)
-           VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, NOW())`,
-          [leaveRequestID, employeeID, statusID, leaveDuration, fromDate, tillDate, requestTypeID]
+          `INSERT INTO public.leaverequests (leaverequestid, employeeid, statusid, leaveduration, fromdate, tilldate, createdon, requesttypeid, updatedon, createdby, updatedby)
+           VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, NOW(),'${user.userid}', '${user.userid}')`,
+          [leaveRequestID, employeeID, statusID, leaveDuration, fromDate, tillDate, requestTypeID, user.userid, user.userid]
         );
 
         if (reason) {
           await query(
-            `INSERT INTO public.leavereasons (leavereasonid, leaverequestid, employeereason, createdon, updatedon)
-             VALUES ($1, $2, $3, NOW(), NOW())`,
-            [uuidv4(), leaveRequestID, reason]
+            `INSERT INTO public.leavereasons (leavereasonid, leaverequestid, employeereason, createdon, updatedon, createdby, updatedby)
+             VALUES ($1, $2, $3, NOW(), NOW(), '${user.userid}', '${user.userid}')`,
+            [uuidv4(), leaveRequestID, reason, user.userid, user.userid]
           );
         }
 
@@ -80,9 +81,9 @@ export default async function handler(req, res) {
             try {
               fs.renameSync(file.filepath, filePath);
               await query(
-                `INSERT INTO public.leaveattatchments (leaveattatchmentid, leaverequestid, filename, createdon, updatedon)
-                 VALUES ($1, $2, $3, NOW(), NOW())`,
-                [attachmentID, leaveRequestID, fileName]
+                `INSERT INTO public.leaveattatchments (leaveattatchmentid, leaverequestid, filename, createdon, updatedon, createdby, updatedby)
+                 VALUES ($1, $2, $3, NOW(), NOW(), '${user.userid}', '${user.userid}')`,
+                [attachmentID, leaveRequestID, fileName, user.userid, user.userid]
               );
             } catch (err) {
               console.error("Error moving file:", err);
@@ -121,13 +122,13 @@ export default async function handler(req, res) {
           body = req.body; 
         }
       
-        const { requestID, leaveStatus, reason } = body;
+        const { requestID, leaveStatus, reason, user } = body;
             
         await query(
           `UPDATE public.leaverequests
-           SET statusid = $1, updatedon = NOW()
+           SET statusid = $1, updatedon = NOW(), updatedby = '${user.userid}'
            WHERE leaverequestid = $2`,
-          [leaveStatus, requestID]
+          [leaveStatus, requestID, user.userid]
         );
       
         if (reason) {

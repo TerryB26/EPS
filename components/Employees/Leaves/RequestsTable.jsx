@@ -201,7 +201,7 @@ const RequestsTable = ({ Status, user }) => {
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
                     <Collapse in={expandedRow === request.leaverequestid} timeout="auto" unmountOnExit>
                       <Box sx={{ margin: 2, maxHeight: '440px', overflowY: 'auto', border: '1px solid #ECEBF9', borderRadius: '8px', padding: '8px' }}>
-                        <FullRequestDetails requestID={request.leaverequestid} />
+                        <FullRequestDetails requestID={request.leaverequestid} user={user}/>
                       </Box>
                     </Collapse>
                     </TableCell>

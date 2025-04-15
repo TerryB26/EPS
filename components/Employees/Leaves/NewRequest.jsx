@@ -110,7 +110,7 @@ const ApplyButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const NewRequest = () => {
+const NewRequest = ({user}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -278,6 +278,7 @@ const NewRequest = () => {
               Date={[startDate, endDate]}
               NumberOfDays={calculateNumberOfDays(startDate, endDate)}
               handleClose={handleDialogClose}
+              user={user}
             />
           </Box>
         }

@@ -55,7 +55,7 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-const LeaveRequestForm = ({ handleClose, Date, NumberOfDays }) => {
+const LeaveRequestForm = ({ handleClose, Date, NumberOfDays, user }) => {
   const [submitting, setSubmitting] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leaveStatus, setLeaveStatus] = useState([]);
@@ -123,6 +123,7 @@ const LeaveRequestForm = ({ handleClose, Date, NumberOfDays }) => {
       reason: '',
       leaveStatus: '',
       filename: '',
+      user:user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
