@@ -17,12 +17,13 @@ const handleClearForm = () => {
   resetForm();
 };
 
-const EmploymentTypeForm = ({ handleClose, employmentTypeId, employmentTypeName }) => {
+const EmploymentTypeForm = ({ handleClose, employmentTypeId, employmentTypeName,user }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
       employmentType: employmentTypeName || "",
+      user: user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {

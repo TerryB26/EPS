@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { jobtitleid, jobTitle: jobtitlename } = req.body;
+  const { jobtitleid, jobTitle: jobtitlename, user } = req.body;
 
   const table = 'public."jobtitles"';
 
@@ -15,8 +15,8 @@ export default async function handler(req, res) {
       case 'add-jobTitle':
         if (method === 'POST') {
           const insertjobTitleQuery = `
-            INSERT INTO ${table} ("jobtitleid", "jobtitlename", "createdon", "updatedon")
-            VALUES ('${uuidv4()}', $1, NOW(), NOW())
+            INSERT INTO ${table} ("jobtitleid", "jobtitlename", "createdon", "updatedon", "createdby", "updatedby")
+            VALUES ('${uuidv4()}', $1, NOW(), NOW()), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertjobTitleQuery, [jobtitlename]);
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const updatejobTitleQuery = `
             UPDATE ${table}
-            SET "jobtitlename" = $1, "updatedon" = NOW()
+            SET "jobtitlename" = $1, "updatedon" = NOW(), "updatedby" = '${user.userid}'
             WHERE "jobtitleid" = $2
             RETURNING *;
           `;

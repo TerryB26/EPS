@@ -6,15 +6,15 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { departmentID, departmentName, description } = req.body;
+  const { departmentID, departmentName, description, user } = req.body;
 
   try {
     switch (action) {
       case 'add-department':
         if (method === 'POST') {
           const insertDepartmentQuery = `
-            INSERT INTO public."departments" ("departmentid", "departmentname", "description", "createdon", "updatedon")
-            VALUES ('${uuidv4()}', $1, $2, NOW(), NOW())
+            INSERT INTO public."departments" ("departmentid", "departmentname", "description", "createdon", "updatedon", "createdby","updatedby")
+            VALUES ('${uuidv4()}', $1, $2, NOW(), NOW(),'${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertDepartmentQuery, [departmentName, description]);
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const updateDepartmentQuery = `
             UPDATE public."departments"
-            SET "departmentname" = $1, "description" = $2, "updatedon" = NOW()
+            SET "departmentname" = $1, "description" = $2, "updatedon" = NOW(), "updatedby" = '${user.userid}'
             WHERE "departmentid" = $3
             RETURNING *;
           `;

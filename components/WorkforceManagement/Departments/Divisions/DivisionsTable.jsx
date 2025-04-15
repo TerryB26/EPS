@@ -34,7 +34,7 @@ const AddDepartmentsButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const DivisionsTable = ({ DepartmentID }) => {
+const DivisionsTable = ({ DepartmentID, user }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -177,7 +177,7 @@ const DivisionsTable = ({ DepartmentID }) => {
       </Box>
       <DialogForm
         title={selectedDivision ? "Edit Division" : "Add Division"}
-        content={<DivisionsForm handleClose={handleDialogClose} divisionData={selectedDivision} DepartmentID={DepartmentID} />}
+        content={<DivisionsForm handleClose={handleDialogClose} divisionData={selectedDivision} DepartmentID={DepartmentID} user={user}/>}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />

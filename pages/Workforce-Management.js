@@ -44,13 +44,14 @@ const TabPanel = styled('div')(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-const tabContents = [
-  { label: "Departments", title: "Content for Tab 1", content: <DepartmentsTable /> },
-  { label: "Employment Types", title: "Content for Tab 3",content: <EmploymentTypeTable /> },
-  { label: "Job Titles", title: "Content for Tab 3",content: <JobTitlesTable /> },
-];
+;
 
-const Library = () => {
+const Library = ({user}) => {
+  const tabContents = [
+    { label: "Departments", title: "Content for Tab 1", content: <DepartmentsTable user={user}/> },
+    { label: "Employment Types", title: "Content for Tab 3",content: <EmploymentTypeTable user={user}/> },
+    { label: "Job Titles", title: "Content for Tab 3",content: <JobTitlesTable user={user}/> },
+  ]
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

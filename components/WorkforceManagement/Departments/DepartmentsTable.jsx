@@ -35,7 +35,7 @@ const AddDepartmentsButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const DepartmentsTable = () => {
+const DepartmentsTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -184,7 +184,7 @@ const DepartmentsTable = () => {
       </Box>
       <DialogForm
         title={selectedDepartment ? "Edit Department" : "Add Department"}
-        content={<DepartmentsForm handleClose={handleDialogClose} departmentData={selectedDepartment} />}
+        content={<DepartmentsForm handleClose={handleDialogClose} departmentData={selectedDepartment} user={user}/>}
         open={isDialogOpen}
         onClose={handleDialogClose}
       />
@@ -232,7 +232,7 @@ const DepartmentsTable = () => {
                       <Collapse in={expandedRows[department.departmentid]} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                           <Paper style={{ fontFamily: 'Roboto', padding: '20px', margin: '20px', boxShadow: '2px 4px 6px rgba(0, 0, 0, 0.5)' }}>
-                            <DivisionsTable DepartmentID={department.departmentid} />
+                            <DivisionsTable DepartmentID={department.departmentid} user={user}/>
                           </Paper>
                         </Box>
                       </Collapse>

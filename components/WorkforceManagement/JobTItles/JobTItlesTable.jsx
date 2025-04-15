@@ -35,7 +35,7 @@ const AddJobTitlesButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const JobTitlesTable = () => {
+const JobTitlesTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -175,7 +175,7 @@ const JobTitlesTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddJobTitlesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<JobTitlesForm handleClose={handleDialogClose} />, 'Add Job Title')}>
+        <AddJobTitlesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<JobTitlesForm handleClose={handleDialogClose} user={user}/>, 'Add Job Title')}>
           Add Job Title
         </AddJobTitlesButton>
       </Box>
@@ -210,6 +210,7 @@ const JobTitlesTable = () => {
                           handleClose={handleDialogClose} 
                           jobTitleId={jobTitle.jobtitleid} 
                           jobTitleName={jobTitle.jobtitlename} 
+                          user={user}
                         />, 
                         'Edit Job Title', 
                         'lg'

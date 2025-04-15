@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { employmenttypeid, employmentType: employmenttypename  } = req.body;
+  const { employmenttypeid, employmentType: employmenttypename,user  } = req.body;
   const table = 'public."employmenttypes"';
 
   try {
@@ -14,8 +14,8 @@ export default async function handler(req, res) {
       case 'add-employmentType':
         if (method === 'POST') {
           const insertemploymentTypeQuery = `
-            INSERT INTO ${table} ("employmenttypeid", "employmenttypename", "createdon", "updatedon")
-            VALUES ('${uuidv4()}', $1, NOW(), NOW())
+            INSERT INTO ${table} ("employmenttypeid", "employmenttypename", "createdon", "updatedon","createdby","updatedby")
+            VALUES ('${uuidv4()}', $1, NOW(), NOW()), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertemploymentTypeQuery, [employmenttypename]);
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const updateemploymentTypeQuery = `
             UPDATE ${table}
-            SET "employmenttypename" = $1, "updatedon" = NOW()
+            SET "employmenttypename" = $1, "updatedon" = NOW(), "updatedby" = '${user.userid}'
             WHERE "employmenttypeid" = $2
             RETURNING *;
           `;

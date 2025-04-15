@@ -18,7 +18,7 @@ const handleClearForm = () => {
   resetForm();
 };
 
-const DivisionsForm = ({ handleClose, divisionData, DepartmentID }) => {
+const DivisionsForm = ({ handleClose, divisionData, DepartmentID, user }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
@@ -26,6 +26,7 @@ const DivisionsForm = ({ handleClose, divisionData, DepartmentID }) => {
       depdivisionid: divisionData ? divisionData.depdivisionid : "",
       divisionName: divisionData ? divisionData.depdivisioname : "",
       departmentid: DepartmentID,
+      user: user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {

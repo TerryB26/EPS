@@ -61,9 +61,9 @@ const RequestsTable = ({ Status }) => {
   }, []);
 
   const filteredRequests = requests.filter(request =>
-    request.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    request.employeenumber.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    (request.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (request.employeenumber?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

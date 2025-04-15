@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
-import EmploymentTypeForm from './EmploymentTypeForm';
-import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
-import { IoPencil, IoEyeOutline } from "react-icons/io5";
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Tooltip, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { IoPencil } from "react-icons/io5";
+import { MdDelete, MdFormatListBulletedAdd } from "react-icons/md";
 import Swal from 'sweetalert2';
+import EmploymentTypeForm from './EmploymentTypeForm';
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -34,7 +34,7 @@ const AddEmpTypesButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const EmploymentTypeTable = () => {
+const EmploymentTypeTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -174,7 +174,7 @@ const EmploymentTypeTable = () => {
         </Button>
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddEmpTypesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<EmploymentTypeForm handleClose={handleDialogClose} />, 'Add Employment Type')}>
+        <AddEmpTypesButton variant="contained" endIcon={<MdFormatListBulletedAdd />} onClick={() => handleDialogOpen(<EmploymentTypeForm handleClose={handleDialogClose} user={user}/>, 'Add Employment Type')}>
           Add Employment Type
         </AddEmpTypesButton>
       </Box>
@@ -203,7 +203,7 @@ const EmploymentTypeTable = () => {
                 }}>
                   <TableCell>{empType.employmenttypename}</TableCell>
                   <TableCell sx={{ width: '150px' }}>
-                  <Tooltip title="Edit">
+                  {/* <Tooltip title="Edit">
                     <IconButton onClick={() => handleDialogOpen(
                       <EmploymentTypeForm 
                         handleClose={handleDialogClose} 
@@ -215,7 +215,7 @@ const EmploymentTypeTable = () => {
                     )}>
                       <IoPencil />
                     </IconButton>
-                  </Tooltip>
+                  </Tooltip> */}
                     <Tooltip title="Delete">
                       <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteEmploymentType(empType.employmenttypeid)}>
                         <MdDelete />

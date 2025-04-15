@@ -18,13 +18,14 @@ const handleClearForm = () => {
   resetForm();
 };
 
-const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName }) => {
+const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName, user }) => {
   const [submitting, setSubmitting] = useState(false);
 
 
   const formik = useFormik({
     initialValues: {
       jobTitle: jobTitleName || "",
+      user: user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
