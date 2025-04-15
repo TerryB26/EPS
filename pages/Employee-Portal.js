@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import PageHeader from "@/components/General/PageHeader";
-import { Tabs, Tab, Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import withAuth from '@/auth/withAuth';
 import LeaveApplicationsDashboard from '@/components/Employees/Leaves/LeaveApplicationsDashboard';
 import PayslipsTable from '@/components/Employees/Payslips/PayslipsTable';
-import withAuth from '@/auth/withAuth';
+import PageHeader from "@/components/General/PageHeader";
+import { Box, Tab, Tabs } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 
 const Root = styled('div')(({ theme }) => ({
   padding: "20px",
@@ -42,12 +42,13 @@ const TabPanel = styled('div')(({ theme }) => ({
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   marginTop: theme.spacing(2),
 }));
-const tabContents = [
-  { label: "Leave",  content: <LeaveApplicationsDashboard /> },
-  { label: "Payslips",  content: <PayslipsTable /> },
-];
 
-const EmployeePortal = () => {
+
+const EmployeePortal = ({user}) => {
+  const tabContents = [
+    { label: "Leave",  content: <LeaveApplicationsDashboard user={user}/> },
+    { label: "Payslips",  content: <PayslipsTable user={user}/> },
+  ];
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

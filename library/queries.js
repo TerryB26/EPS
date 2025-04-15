@@ -73,6 +73,7 @@ export const queryKeys = {
   GET_LEAVE_BALANCE: `
     SELECT 
       elb.empleavebalanceid, 
+      elb.employeeid,
       elb.leavetypeid, 
       elb.remainingbalance, 
       lrt.requesttype, 

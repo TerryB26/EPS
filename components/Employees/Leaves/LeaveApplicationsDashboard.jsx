@@ -42,14 +42,15 @@ const TabPanel = styled('div')(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-const tabContents = [
-  { label: "Balances", content: <LeaveBalance />},
-  { label: "Pending Requests", content: <RequestsTable Status="Pending"/> },
-  { label: "Approved Requests", content: <RequestsTable Status="Approved"/> },
-  { label: "Rejected Requests", content: <RequestsTable Status="Rejected"/> },
-  { label: "New Application", content: <NewRequest /> },
-];
-const LeaveApplicationsDashboard = () => {
+
+const LeaveApplicationsDashboard = ({user}) => {
+  const tabContents = [
+    { label: "Balances", content: <LeaveBalance user={user}/>},
+    { label: "Pending Requests", content: <RequestsTable Status="Pending" user={user}/> },
+    { label: "Approved Requests", content: <RequestsTable Status="Approved" user={user}/> },
+    { label: "Rejected Requests", content: <RequestsTable Status="Rejected" user={user}/> },
+    { label: "New Application", content: <NewRequest user={user}/> },
+  ];
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

@@ -19,7 +19,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
   backgroundColor: '#ECEBF9',
 }));
 
-const LeaveBalance = () => {
+const LeaveBalance = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -29,8 +29,9 @@ const LeaveBalance = () => {
   const fetchLeaveBalances = async () => {
     setLoading(true); 
     try {
-      const response = await axios.get('/api/Leaves/LeaveBalance');
-      setLeaveBalances(response.data);
+      const response = await axios.get(`/api/Leaves/LeaveBalance?employeeid=${user.employeeid}`);
+      const filteredData = response.data.filter(leaveBalance => leaveBalance.employeeid === user.employeeid);
+      setLeaveBalances(filteredData);
     } catch (error) {
       console.error('Error fetching leave balances:', error);
     } finally {

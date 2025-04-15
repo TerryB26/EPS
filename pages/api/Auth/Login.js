@@ -12,10 +12,11 @@ export default async function handler(req, res) {
   try {
     // Fetch user details from the database
     const result = await query(
-      `SELECT us.userid, name, surname, email, password, phone, idnumber, rl.rolename 
+      `SELECT us.userid, e.employeeid, name, surname, email, password, phone, idnumber, rl.rolename 
        FROM public.users us
        LEFT JOIN public.userroles ur ON us.userid = ur.userid
        LEFT JOIN public.roles rl ON ur.roleid = rl.roleid
+       LEFT JOIN public.employees e ON e.userid = us.userid
        WHERE us.email = $1`,
       [email]
     );
