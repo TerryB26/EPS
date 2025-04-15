@@ -43,12 +43,13 @@ const TabPanel = styled('div')(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-const tabContents = [
-  { label: "Users", title: "Content for Tab 1", content: <Users /> },
-  { label: "User Roles", title: "Content for Tab 2", content: <RolesTable /> },
-];
 
-const AccountManagement = () => {
+
+const AccountManagement = ({user}) => {
+  const tabContents = [
+    { label: "Users", title: "Content for Tab 1", content: <Users user={user}/> },
+    { label: "User Roles", title: "Content for Tab 2", content: <RolesTable user={user}/> },
+  ];
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

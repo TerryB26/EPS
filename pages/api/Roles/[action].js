@@ -6,15 +6,15 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { roleID, roleName } = req.body;
+  const { roleID, roleName, user } = req.body;
 
   try {
     switch (action) {
       case 'add-role':
         if (method === 'POST') {
           const insertRoleQuery = `
-            INSERT INTO public."roles" ("roleid", "rolename", "createdon", "updatedon")
-            VALUES ('${uuidv4()}', $1, NOW(), NOW())
+            INSERT INTO public."roles" ("roleid", "rolename", "createdon", "updatedon", "createdby", "updatedby")
+            VALUES ('${uuidv4()}', $1, NOW(), NOW(), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertRoleQuery, [roleName]);
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const updateRoleQuery = `
             UPDATE public."roles"
-            SET "rolename" = $1, "updatedon" = NOW()
+            SET "rolename" = $1, "updatedon" = NOW(), "updatedby" = '${user.userid}'
             WHERE "roleid" = $2
             RETURNING *;
           `;

@@ -11,7 +11,7 @@ const validationSchema = yup.object({
   roleName: yup.string().typeError("Please enter a valid role name.").required("Role name is required"),
 });
 
-const RolesForm = ({ handleClose, roleData }) => {
+const RolesForm = ({ handleClose, roleData , user}) => {
   const [submitting, setSubmitting] = useState(false);
   
   const handleClearForm = () => {
@@ -21,6 +21,7 @@ const RolesForm = ({ handleClose, roleData }) => {
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
       roleName: "",
+      user: user,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {

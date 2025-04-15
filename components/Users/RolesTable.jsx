@@ -35,7 +35,7 @@ const AddUserButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RolesTable = () => {
+const RolesTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -189,7 +189,7 @@ const RolesTable = () => {
       </Box>
       <DialogForm
         title={selectedRole ? "Edit Role" : "Add Role"}
-        content={<RolesForm handleClose={handleDialogClose} roleData={selectedRole} />}
+        content={<RolesForm handleClose={handleDialogClose} roleData={selectedRole} user={user}/>}
         open={isDialogOpen}
         onClose={handleDialogClose}
         width ='sm'
