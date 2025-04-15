@@ -43,13 +43,12 @@ const TabPanel = styled('div')(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-const tabContents = [
-  { label: "Leave Requests", Status: "Pending", icon: <FaRegQuestionCircle size={20} />, content: <RequestsTable Status="Pending"/> },
-  { label: "Approved Requests", Status: "Approved", icon: <FaRegCheckCircle size={20} color="green" />, content: <RequestsTable Status="Approved"/> },
-  { label: "Rejected Requests", Status: "Rejected", icon: <FaRegTimesCircle size={20} color="red" />, content: <RequestsTable Status="Rejected"/> },
-];
-
-const EmployeeLeaves = () => {
+const EmployeeLeaves = ({user}) => {
+  const tabContents = [
+    { label: "Leave Requests", Status: "Pending", icon: <FaRegQuestionCircle size={20} />, content: <RequestsTable Status="Pending" user={user}/> },
+    { label: "Approved Requests", Status: "Approved", icon: <FaRegCheckCircle size={20} color="green" />, content: <RequestsTable Status="Approved" user={user}/> },
+    { label: "Rejected Requests", Status: "Rejected", icon: <FaRegTimesCircle size={20} color="red" />, content: <RequestsTable Status="Rejected" user={user}/> },
+  ];
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {

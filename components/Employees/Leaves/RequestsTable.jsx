@@ -34,7 +34,7 @@ const AddRequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const RequestsTable = ({ Status }) => {
+const RequestsTable = ({ Status, user }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -155,17 +155,6 @@ const RequestsTable = ({ Status }) => {
           Clear
         </Button>
       </Box>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <AddRequestButton variant="contained" onClick={handleDialogOpen}>
-          Add Request
-        </AddRequestButton>
-      </Box>
-      <DialogForm
-        title="Add Request"
-        content={<div>Add Request Form</div>}
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-      />
       <TableContainer component={Paper} sx={{ maxHeight: '600px', overflowY: 'auto' }}>
         <Table>
           <CustomTableHead>
