@@ -1,7 +1,7 @@
 import PageHeader from "@/components/General/PageHeader";
 import DepartmentsTable from '@/components/WorkforceManagement/Departments/DepartmentsTable';
 import EmploymentTypeTable from '@/components/WorkforceManagement/EmploymentType/EmploymentTypeTable';
-import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTItlesTable';
+import JobTitlesTable from '@/components/WorkforceManagement/JobTitles/JobTitlesTable';
 import { Box, Tab, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
