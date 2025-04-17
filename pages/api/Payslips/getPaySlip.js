@@ -9,9 +9,11 @@ export default async function handler(req, res) {
   }
 
   const { month,year,takeHomePayDetails,User, Type } = req.body;
+  console.log("🚀 ~ handler ~ req.body:", req.body)
 
   try {
     const templatePath = path.resolve(process.cwd(), 'public/Templates', 'Payslip1.docx');
+    console.log("🚀 ~ handler ~ templatePath:", templatePath)
     const content = fs.readFileSync(templatePath, 'binary');
 
     const zip = new PizZip(content);
