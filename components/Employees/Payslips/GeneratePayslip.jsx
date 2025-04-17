@@ -90,7 +90,7 @@ const PayslipTable = ({ User }) => {
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
   
-        console.log("Payslip downloaded successfully.");
+        console.log("🚀 ~ Payslip downloaded successfully.");
       } else {
         console.error("Failed to download payslip:", response);
       }
