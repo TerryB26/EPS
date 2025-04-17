@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { isAuthenticated, getCurrentUser, logout } from "@/auth/session";
+import { isAuthenticated, getCurrentUser } from "@/auth/session";
 import CircularLoader from "@/components/General/CircularLoader";
 import { useRouter } from "next/router";
 
@@ -34,16 +34,6 @@ const withAuth = (WrappedComponent) => {
       }
     };
 
-    handleLogout = () => {
-      logout();
-      this.setState({
-        isAuthenticated: false,
-        user: null,
-      });
-      const router = this.props.router;
-      router.push("/Login");
-    };
-
     render() {
       const { loading, isAuthenticated } = this.state;
 
@@ -60,7 +50,6 @@ const withAuth = (WrappedComponent) => {
           {...this.props}
           user={this.state.user}
           isAuthenticated={this.state.isAuthenticated}
-          logout={this.handleLogout}
         />
       );
     }
