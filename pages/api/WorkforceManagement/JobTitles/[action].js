@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const insertjobTitleQuery = `
             INSERT INTO ${table} ("jobtitleid", "jobtitlename", "createdon", "updatedon", "createdby", "updatedby")
-            VALUES ('${uuidv4()}', $1, NOW(), NOW()), '${user.userid}', '${user.userid}')
+            VALUES ('${uuidv4()}', $1, NOW(), NOW(), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertjobTitleQuery, [jobtitlename]);

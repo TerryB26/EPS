@@ -14,7 +14,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const insertDivisionQuery = `
             INSERT INTO public."depdivision" ("depdivisionid", "departmentid", "depdivisioname", "createdon", "updatedon", "createdby", "updatedby")
-            VALUES ('${uuidv4()}', $1, $2, NOW(), NOW()), '${user.userid}', '${user.userid}')
+            VALUES ('${uuidv4()}', $1, $2, NOW(), NOW(),'${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertDivisionQuery, [departmentid, divisionName]);

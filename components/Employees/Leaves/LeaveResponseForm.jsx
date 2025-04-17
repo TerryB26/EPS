@@ -13,7 +13,7 @@ const validationSchema = yup.object({
   reason: yup.string().nullable(), 
 });
 
-const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, user }) => {
+const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, fetchAllRequests, user }) => {
   const [LeaveStatus, setLeaveStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -58,6 +58,7 @@ const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, user }) => {
         setSubmitting(false);
         handleClose();
         fetchRequests();
+        fetchAllRequests();
         MySwal.fire({
           icon: 'success',
           title: 'Success',

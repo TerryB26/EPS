@@ -38,28 +38,30 @@ export default async function handler(req, res) {
         );
 
         const {
-          employeeID = '17e507f3-9311-4149-ae0b-fea95573bf13',
           leaveStatus: statusID,
           numberOfDays: leaveDuration,
           fromDate,
           tillDate,
           leaveType: requestTypeID,
           reason,
-          user
+          user: userString,
         } = normalizedFields;
+        const user = JSON.parse(userString);        
+        const employeeID = user.employeeid;
+
 
         const leaveRequestID = uuidv4();
 
         await query(
           `INSERT INTO public.leaverequests (leaverequestid, employeeid, statusid, leaveduration, fromdate, tilldate, createdon, requesttypeid, updatedon, createdby, updatedby)
-           VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, NOW(),'${user.userid}', '${user.userid}')`,
+           VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, NOW(), $8, $9)`,
           [leaveRequestID, employeeID, statusID, leaveDuration, fromDate, tillDate, requestTypeID, user.userid, user.userid]
         );
 
         if (reason) {
           await query(
             `INSERT INTO public.leavereasons (leavereasonid, leaverequestid, employeereason, createdon, updatedon, createdby, updatedby)
-             VALUES ($1, $2, $3, NOW(), NOW(), '${user.userid}', '${user.userid}')`,
+             VALUES ($1, $2, $3, NOW(), NOW(), $4, $5)`,
             [uuidv4(), leaveRequestID, reason, user.userid, user.userid]
           );
         }
@@ -82,7 +84,7 @@ export default async function handler(req, res) {
               fs.renameSync(file.filepath, filePath);
               await query(
                 `INSERT INTO public.leaveattatchments (leaveattatchmentid, leaverequestid, filename, createdon, updatedon, createdby, updatedby)
-                 VALUES ($1, $2, $3, NOW(), NOW(), '${user.userid}', '${user.userid}')`,
+                 VALUES ($1, $2, $3, NOW(), NOW(), $4, $5)`,
                 [attachmentID, leaveRequestID, fileName, user.userid, user.userid]
               );
             } catch (err) {
@@ -126,7 +128,7 @@ export default async function handler(req, res) {
             
         await query(
           `UPDATE public.leaverequests
-           SET statusid = $1, updatedon = NOW(), updatedby = '${user.userid}'
+           SET statusid = $1, updatedon = NOW(), updatedby = $3
            WHERE leaverequestid = $2`,
           [leaveStatus, requestID, user.userid]
         );

@@ -6,18 +6,18 @@ export default async function handler(req, res) {
   const { action } = req.query;
   let status = 200;
   let response = {};
-  const { departmentID, departmentName, description, user } = req.body;
+  const { departmentID, departmentName, user } = req.body;
 
   try {
     switch (action) {
       case 'add-department':
         if (method === 'POST') {
           const insertDepartmentQuery = `
-            INSERT INTO public."departments" ("departmentid", "departmentname", "description", "createdon", "updatedon", "createdby","updatedby")
-            VALUES ('${uuidv4()}', $1, $2, NOW(), NOW(),'${user.userid}', '${user.userid}')
+            INSERT INTO public."departments" ("departmentid", "departmentname", "createdon", "updatedon", "createdby", "updatedby")
+            VALUES ('${uuidv4()}', $1, NOW(), NOW(), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
-          const result = await query(insertDepartmentQuery, [departmentName, description]);
+          const result = await query(insertDepartmentQuery, [departmentName]);
           response = { message: 'Department added successfully', department: result.rows[0] };
         } else {
           res.setHeader('Allow', ['POST']);
@@ -30,11 +30,11 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const updateDepartmentQuery = `
             UPDATE public."departments"
-            SET "departmentname" = $1, "description" = $2, "updatedon" = NOW(), "updatedby" = '${user.userid}'
-            WHERE "departmentid" = $3
+            SET "departmentname" = $1, "updatedon" = NOW(), "updatedby" = '${user.userid}'
+            WHERE "departmentid" = $2
             RETURNING *;
           `;
-          const result = await query(updateDepartmentQuery, [departmentName, description, departmentID]);
+          const result = await query(updateDepartmentQuery, [departmentName, departmentID]);
           response = { message: 'Department updated successfully', department: result.rows[0] };
         } else {
           res.setHeader('Allow', ['POST']);

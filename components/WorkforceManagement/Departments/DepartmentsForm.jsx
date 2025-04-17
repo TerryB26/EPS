@@ -10,7 +10,6 @@ import FormButtons from "@/components/General/FormButtons";
 
 const validationObj = {
   departmentName: yup.string().typeError("Please enter a valid department name.").required("Department name is required"),
-  description: yup.string().typeError("Please enter a valid description.").required("Description is required"),
 };
 
 const validationSchema = yup.object(validationObj);
@@ -25,7 +24,7 @@ const DepartmentsForm = ({ handleClose, departmentData, user }) => {
   const { handleBlur, handleChange, handleSubmit, values, errors, touched, resetForm, setValues } = useFormik({
     initialValues: {
       departmentName: "",
-      description: "",
+     
       user: user,
     },
     validationSchema: validationSchema,
@@ -88,7 +87,7 @@ const DepartmentsForm = ({ handleClose, departmentData, user }) => {
         />
       </Box>
       <Box mb={2}>
-        <TextField
+        {/* <TextField
           fullWidth
           id="description"
           name="description"
@@ -105,7 +104,7 @@ const DepartmentsForm = ({ handleClose, departmentData, user }) => {
               resize: 'vertical',
             },
           }}
-        />
+        /> */}
       </Box>
       <FormButtons handleClose={handleClose} handleClearForm={handleClearForm} submitting={submitting} />
     </form>

@@ -21,6 +21,7 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
 }));
 
 const PayslipTable = ({ User }) => {
+  console.log("🚀 ~ PayslipTable ~ User:", User)
   const [filteredYear, setFilteredYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([]);
   const [monthsSinceEmployment, setMonthsSinceEmployment] = useState([]);

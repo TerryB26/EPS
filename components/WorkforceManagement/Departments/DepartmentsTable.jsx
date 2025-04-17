@@ -194,7 +194,6 @@ const DepartmentsTable = ({user}) => {
             <TableRow>
               <TableCell />
               <TableCell>Department</TableCell>
-              <TableCell>Description</TableCell>
               <TableCell sx={{ width: '150px' }}>Actions</TableCell>
             </TableRow>
           </CustomTableHead>
@@ -213,7 +212,7 @@ const DepartmentsTable = ({user}) => {
                       </IconButton>
                     </TableCell>
                     <TableCell>{department.departmentname}</TableCell>
-                    <TableCell>{department.description}</TableCell>
+
                     <TableCell sx={{ width: '150px' }}>
                       <Tooltip title="Edit">
                         <IconButton onClick={() => handleDialogOpen(department)}>

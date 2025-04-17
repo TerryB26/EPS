@@ -55,7 +55,7 @@ const DetailValue = styled(Typography)(({ theme }) => ({
   fontSize: '1rem',
 }));
 
-const FullRequestDetails = ({ requestID, user }) => {
+const FullRequestDetails = ({ requestID, user, fetchAllRequests }) => {
   const [request, setRequest] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState(null);
@@ -219,7 +219,7 @@ const FullRequestDetails = ({ requestID, user }) => {
         <BsThreeDots
           size={24}
           style={{ cursor: 'pointer', color: '#1F2937' }}
-          onClick={() => handleDialogOpen(<LeaveResponseForm requestID={requestID} handleClose={handleDialogClose} fetchRequests={fetchRequests} user={user}/>, 'Leave Response')}
+          onClick={() => handleDialogOpen(<LeaveResponseForm requestID={requestID} handleClose={handleDialogClose} fetchRequests={fetchRequests}  fetchAllRequests={fetchAllRequests} user={user}/>, 'Leave Response')}
         />
       </Box>
 

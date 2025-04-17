@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         if (method === 'POST') {
           const insertemploymentTypeQuery = `
             INSERT INTO ${table} ("employmenttypeid", "employmenttypename", "createdon", "updatedon","createdby","updatedby")
-            VALUES ('${uuidv4()}', $1, NOW(), NOW()), '${user.userid}', '${user.userid}')
+            VALUES ('${uuidv4()}', $1, NOW(), NOW(), '${user.userid}', '${user.userid}')
             RETURNING *;
           `;
           const result = await query(insertemploymentTypeQuery, [employmenttypename]);

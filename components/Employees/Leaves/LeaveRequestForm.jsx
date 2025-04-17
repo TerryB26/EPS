@@ -56,6 +56,7 @@ const formatFileSize = (bytes) => {
 };
 
 const LeaveRequestForm = ({ handleClose, Date, NumberOfDays, user }) => {
+  console.log("🚀 ~ LeaveRequestForm ~ user:", user)
   const [submitting, setSubmitting] = useState(false);
   const [leaveTypes, setLeaveTypes] = useState([]);
   const [leaveStatus, setLeaveStatus] = useState([]);
@@ -136,6 +137,7 @@ const LeaveRequestForm = ({ handleClose, Date, NumberOfDays, user }) => {
       formData.append("reason", values.reason);
       formData.append("leaveStatus", values.leaveStatus);
       formData.append("filename", values.filename);
+      formData.append("user", JSON.stringify(user));
       if (values.file) formData.append("file", values.file);
 
       let url = "api/Leaves/Requests/new-request"; 

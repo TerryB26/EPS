@@ -29,7 +29,7 @@ const LeaveBalance = ({user}) => {
   const fetchLeaveBalances = async () => {
     setLoading(true); 
     try {
-      const response = await axios.get(`/api/Leaves/LeaveBalance?employeeid=${user.employeeid}`);
+      const response = await axios.get(`/api/Leaves/LeaveBalance`);
       const filteredData = response.data.filter(leaveBalance => leaveBalance.employeeid === user.employeeid);
       setLeaveBalances(filteredData);
     } catch (error) {

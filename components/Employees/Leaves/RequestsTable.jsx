@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, TablePagination, Box, IconButton, Tooltip, Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import DialogForm from '@/components/General/DialogForm';
 import FullRequestDetails from '@/components/Employees/Leaves/FullRequestDetails';
 import axios from 'axios';
 import { MdOutlineExpandCircleDown } from "react-icons/md";
@@ -201,7 +200,7 @@ const RequestsTable = ({ Status, user }) => {
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
                     <Collapse in={expandedRow === request.leaverequestid} timeout="auto" unmountOnExit>
                       <Box sx={{ margin: 2, maxHeight: '440px', overflowY: 'auto', border: '1px solid #ECEBF9', borderRadius: '8px', padding: '8px' }}>
-                        <FullRequestDetails requestID={request.leaverequestid} user={user}/>
+                        <FullRequestDetails requestID={request.leaverequestid} user={user} fetchAllRequests={fetchRequests}/>
                       </Box>
                     </Collapse>
                     </TableCell>

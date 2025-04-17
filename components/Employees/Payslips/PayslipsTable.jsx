@@ -6,10 +6,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 
-const PayslipsTable = () => {
+const PayslipsTable = ({user}) => {
+  console.log("🚀 ~ PayslipsTable ~ user:", user)
   const [User, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const userid = '02016688-52cb-4a48-874a-d78e4eaff7df';
+  const userid = user.userid;
+  console.log("🚀 ~ PayslipsTable ~ userid:", userid)
 
   const fetchRequests = async () => {
     setLoading(true); 
