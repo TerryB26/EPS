@@ -35,7 +35,7 @@ const AddJobTitlesButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const JobTitlesTable = ({user}) => {
+const JobTItlesTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -253,4 +253,4 @@ const JobTitlesTable = ({user}) => {
   );
 };
 
-export default JobTitlesTable;
+export default JobTItlesTable;
