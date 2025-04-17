@@ -3,7 +3,7 @@ import { Button, Table, TableBody, Typography, TableCell, TableContainer, TableH
 import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import DialogForm from '@/components/General/DialogForm';
-import JobTitlesForm from '@/components/WorkforceManagement/JobTitles/JobTItlesForm';
+import JobTitlesForm from '@/components/WorkforceManagement/JobTitles/JobTitlesForm';
 import { MdDelete } from "react-icons/md";
 import { IoPencil } from "react-icons/io5";
 import axios from 'axios';
@@ -35,7 +35,7 @@ const AddJobTitlesButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const JobTItlesTable = ({user}) => {
+const JobTitlesTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -253,4 +253,4 @@ const JobTItlesTable = ({user}) => {
   );
 };
 
-export default JobTItlesTable;
+export default JobTitlesTable;

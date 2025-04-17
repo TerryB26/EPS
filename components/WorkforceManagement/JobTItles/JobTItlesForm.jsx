@@ -18,7 +18,7 @@ const handleClearForm = () => {
   resetForm();
 };
 
-const JobTItlesForm = ({ handleClose, jobTitleId, jobTitleName, user }) => {
+const JobTitlesForm = ({ handleClose, jobTitleId, jobTitleName, user }) => {
   const [submitting, setSubmitting] = useState(false);
 
 
@@ -89,4 +89,4 @@ const JobTItlesForm = ({ handleClose, jobTitleId, jobTitleName, user }) => {
   );
 };
 
-export default JobTItlesForm;
+export default JobTitlesForm;
