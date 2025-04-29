@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, Box, IconButton, Tooltip, Typography, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, Box, IconButton, Tooltip, Typography, TablePagination, CircularProgress } from '@mui/material'; // Added CircularProgress
 import { styled } from '@mui/material/styles';
 import { IoDownloadOutline } from "react-icons/io5";
 import { calculateTakeHomePay } from '@/utils/IDChecker';
 import axios from 'axios';
-
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -21,13 +20,14 @@ const CustomTableHead = styled(TableHead)(({ theme }) => ({
 }));
 
 const PayslipTable = ({ User }) => {
-  console.log("🚀 ~ PayslipTable ~ User:", User)
+  console.log("🚀 ~ PayslipTable ~ User:", User);
   const [filteredYear, setFilteredYear] = useState(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState([]);
   const [monthsSinceEmployment, setMonthsSinceEmployment] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [takeHomePayDetails, setTakeHomePayDetails] = useState(null);
+  const [loadingRow, setLoadingRow] = useState(null); // State to track the loading row
 
   useEffect(() => {
     if (!User || !User.employedon) return;
@@ -43,9 +43,9 @@ const PayslipTable = ({ User }) => {
 
     const months = [];
     let current = new Date(employmentDate);
-    current.setDate(1); 
+    current.setDate(1);
     while (current <= currentDate) {
-      const lastDayOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0); 
+      const lastDayOfMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0);
       if (currentDate > lastDayOfMonth) {
         months.push({
           month: current.toLocaleString('default', { month: 'long' }),
@@ -58,15 +58,14 @@ const PayslipTable = ({ User }) => {
 
     const takeHomePayDetails = calculateTakeHomePay(User.idnumber, User.basicsalary);
     setTakeHomePayDetails(takeHomePayDetails);
-
-    
   }, [User]);
 
   const handleYearFilterChange = (event) => {
     setFilteredYear(event.target.value);
   };
 
-  const handleDownload = async (month, year) => {  
+  const handleDownload = async (month, year, index) => {
+    setLoadingRow(index); // Set the loading row
     try {
       const response = await axios.post('/api/Payslips/getPaySlip', {
         takeHomePayDetails,
@@ -76,26 +75,26 @@ const PayslipTable = ({ User }) => {
       }, {
         responseType: 'blob',
       });
-  
+
       if (response.status === 200) {
-        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const blob = new Blob([response.data], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
-  
+
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `Payslip_${month}_${year}.docx`);
+        link.setAttribute('download', `Payslip_${month}_${year}.pdf`);
         document.body.appendChild(link);
         link.click();
-  
+
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
-  
-        console.log("🚀 ~ Payslip downloaded successfully.");
       } else {
         console.error("Failed to download payslip:", response);
       }
     } catch (error) {
       console.error("Error downloading payslip:", error);
+    } finally {
+      setLoadingRow(null); // Reset the loading row
     }
   };
 
@@ -152,9 +151,14 @@ const PayslipTable = ({ User }) => {
                     <Tooltip title="Download Payslip">
                       <IconButton
                         sx={{ color: '#939FBD' }}
-                        onClick={() => handleDownload(entry.month, entry.year)}
+                        onClick={() => handleDownload(entry.month, entry.year, index)}
+                        disabled={loadingRow === index} // Disable button while loading
                       >
-                        <IoDownloadOutline />
+                        {loadingRow === index ? (
+                          <CircularProgress size={24} /> // Show loading spinner
+                        ) : (
+                          <IoDownloadOutline />
+                        )}
                       </IconButton>
                     </Tooltip>
                   </TableCell>
