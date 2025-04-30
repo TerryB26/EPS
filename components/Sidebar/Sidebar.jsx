@@ -15,7 +15,8 @@ const theme = createTheme({
   },
 });
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
+  console.log("🚀 ~ Sidebar ~ user:", user);
   const [open, setOpen] = useState(true);
   const router = useRouter();
 
@@ -26,6 +27,20 @@ const Sidebar = () => {
   const handleNavigation = (path) => {
     router.push(path);
   };
+
+  // Define menu items with role-based visibility
+  const menuItems = [
+    { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard', roles: ['Admin', 'User'] },
+    { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management', roles: ['Admin'] },
+    { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management', roles: ['Admin'] },
+    { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves', roles: ['User', 'Admin'] },
+    { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal', roles: ['User', 'Admin'] },
+    { text: 'System Docs', icon: <IoDocuments color="rgb(128, 0, 128)" />, path: '/System-Documents', roles: [] },
+  ];
+
+  const filteredMenuItems = menuItems.filter(
+    item => item.roles.length === 0 || (user?.rolename && item.roles.includes(user.rolename))
+  );
 
   return (
     <ThemeProvider theme={theme}>
@@ -49,15 +64,7 @@ const Sidebar = () => {
             <img src="/images/Earth.png" alt="System Logo" style={{ width: '80%' }} />
           </Box>
           <List sx={{ mt: 20 }}>
-            {[
-              { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard' },
-              { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management' },
-              { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management' },
-              { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves' },
-              { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal' },
-              // { text: 'Profile', icon: <IoPersonCircleOutline color="rgb(128, 0, 128)" />, path: '/Profile' },
-              { text: 'System Docs', icon: <IoDocuments color="rgb(128, 0, 128)" />, path: '/System-Documents' },
-            ].map((item, index) => (
+            {filteredMenuItems.map((item, index) => (
               <ListItem
                 button={true}
                 key={item.text}
