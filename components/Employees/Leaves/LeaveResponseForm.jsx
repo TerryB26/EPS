@@ -13,7 +13,8 @@ const validationSchema = yup.object({
   reason: yup.string().nullable(), 
 });
 
-const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, fetchAllRequests, user }) => {
+const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, fetchAllRequests, user, requestData }) => {
+  console.log("🚀 ~ LeaveResponseForm ~ requestData:", requestData)
   const [LeaveStatus, setLeaveStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -41,9 +42,13 @@ const LeaveResponseForm = ({ requestID, handleClose, fetchRequests, fetchAllRequ
       leaveStatus: '',
       reason: '',
       user: user,
+      requestTypeID: requestData?.requesttypeid || '', // Initialize directly from props
+      employeeID: requestData?.employeeid || '', // Initialize directly from props
+      leaveDuration: requestData?.leaveduration || '', // Initialize directly from props
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
+      console.log("🚀 ~ LeaveResponseForm ~ values:", values)
       setSubmitting(true);
       const url = "/api/Leaves/Requests/update-request";
 

@@ -4,9 +4,9 @@ import { styled } from '@mui/material/styles';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import FullRequestDetails from '@/components/Employees/Leaves/FullRequestDetails';
 import axios from 'axios';
-import { MdOutlineExpandCircleDown } from "react-icons/md";
 import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
-
+import DialogForm from '@/components/General/DialogForm';
+import { IoOpenOutline } from "react-icons/io5";
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -40,7 +40,10 @@ const RequestsTable = ({ Status, user }) => {
   const [requests, setRequests] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [dialogContent, setDialogContent] = useState(null);
+  const [dialogTitle, setDialogTitle] = useState('');
+
 
   const fetchRequests = async () => {
     setLoading(true); 
@@ -63,6 +66,7 @@ const RequestsTable = ({ Status, user }) => {
     (request.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (request.employeenumber?.toLowerCase() || '').includes(searchQuery.toLowerCase())
 );
+  console.log("🚀 ~ RequestsTable ~ filteredRequests:", filteredRequests)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -91,6 +95,25 @@ const RequestsTable = ({ Status, user }) => {
 
   const handleExpandRow = (leaverequestid) => {
     setExpandedRow(expandedRow === leaverequestid ? null : leaverequestid); 
+  };
+
+  const handleOpenDialog = (request) => {
+    setDialogContent(
+      <FullRequestDetails
+        requestID={request.leaverequestid}
+        user={user}
+        fetchAllRequests={fetchRequests}
+      />
+    );
+    setDialogTitle(`Leave Request Details`);    
+    setIsDialogOpen(true);
+  };
+  
+  // Function to close the dialog
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setDialogContent(null);
+    setDialogTitle('');
   };
 
   if (loading) {
@@ -181,28 +204,14 @@ const RequestsTable = ({ Status, user }) => {
                     <TableCell>{request.leave_status}</TableCell>
                     <TableCell>{request.request_createdon}</TableCell>
                     <TableCell sx={{ width: '150px' }}>
-                      <Tooltip title={expandedRow === request.leaverequestid ? "Collapse Details" : "Expand Details"}>
+                      <Tooltip title="View Details">
                         <IconButton
                           sx={{ color: '#black' }}
-                          onClick={() => handleExpandRow(request.leaverequestid)}
+                          onClick={() => handleOpenDialog(request)}
                         >
-                          <MdOutlineExpandCircleDown
-                            style={{
-                              transform: expandedRow === request.leaverequestid ? 'rotate(180deg)' : 'rotate(0deg)',
-                              transition: 'transform 0.3s',
-                            }}
-                          />
+                          <IoOpenOutline />
                         </IconButton>
                       </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
-                    <Collapse in={expandedRow === request.leaverequestid} timeout="auto" unmountOnExit>
-                      <Box sx={{ margin: 2, maxHeight: '440px', overflowY: 'auto', border: '1px solid #ECEBF9', borderRadius: '8px', padding: '8px' }}>
-                        <FullRequestDetails requestID={request.leaverequestid} user={user} fetchAllRequests={fetchRequests}/>
-                      </Box>
-                    </Collapse>
                     </TableCell>
                   </TableRow>
                 </React.Fragment>
@@ -230,7 +239,18 @@ const RequestsTable = ({ Status, user }) => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </PaginationContainer>
+
+      <DialogForm
+        title={dialogTitle}
+        content={dialogContent}
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        width="lg"
+      />
+
     </div>
+
+    
   );
 };
 

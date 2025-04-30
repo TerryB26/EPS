@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box, AppBar, Toolbar, useMediaQuery } from '@mui/material';
-import { MdMenu, MdHome, MdSettings, MdInfo } from 'react-icons/md';
+import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import { IoLibraryOutline,IoPersonCircleOutline } from "react-icons/io5";
-import { RiUserSettingsLine } from "react-icons/ri";
+import { useState } from 'react';
 import { FaRegCalendarPlus, FaUserCog } from "react-icons/fa";
-import { IoDocumentsOutline } from "react-icons/io5";
-import { IoDocuments } from "react-icons/io5";
+import { IoDocuments, IoLibraryOutline } from "react-icons/io5";
+import { MdHome } from 'react-icons/md';
+import { RiUserSettingsLine } from "react-icons/ri";
 
 const theme = createTheme({
   palette: {

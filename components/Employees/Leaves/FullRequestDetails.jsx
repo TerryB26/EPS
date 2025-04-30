@@ -215,21 +215,37 @@ const FullRequestDetails = ({ requestID, user, fetchAllRequests }) => {
       </Box>
 
       {/* Three Dots Icon and Dialog */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}>
-        <BsThreeDots
-          size={24}
-          style={{ cursor: 'pointer', color: '#1F2937' }}
-          onClick={() => handleDialogOpen(<LeaveResponseForm requestID={requestID} handleClose={handleDialogClose} fetchRequests={fetchRequests}  fetchAllRequests={fetchAllRequests} user={user}/>, 'Leave Response')}
-        />
-      </Box>
+      {request.statusid !== 'ed13daa8-6fbf-4828-b0d2-c3b0af4a7970' && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}>
+          <BsThreeDots
+            size={24}
+            style={{ cursor: 'pointer', color: '#1F2937' }}
+            onClick={() =>
+              handleDialogOpen(
+                <LeaveResponseForm
+                  requestID={requestID}
+                  handleClose={handleDialogClose}
+                  fetchRequests={fetchRequests}
+                  fetchAllRequests={fetchAllRequests}
+                  user={user}
+                  requestData={request}
+                />,
+                'Leave Response'
+              )
+            }
+          />
+        </Box>
+      )}
 
-      <DialogForm
-        title={dialogTitle}
-        content={dialogContent}
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        width={dialogWidth}
-      />
+      {request.statusid !== 'ed13daa8-6fbf-4828-b0d2-c3b0af4a7970' && (
+        <DialogForm
+          title={dialogTitle}
+          content={dialogContent}
+          open={isDialogOpen}
+          onClose={handleDialogClose}
+          width={dialogWidth}
+        />
+      )}
     </DetailPaper>
   );
 };

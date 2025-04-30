@@ -124,8 +124,8 @@ export default async function handler(req, res) {
           body = req.body; 
         }
       
-        const { requestID, leaveStatus, reason, user } = body;
-            
+        const { requestID, leaveStatus, reason, user, requestTypeID, employeeID, leaveDuration } = body;
+
         await query(
           `UPDATE public.leaverequests
            SET statusid = $1, updatedon = NOW(), updatedby = $3
@@ -139,6 +139,21 @@ export default async function handler(req, res) {
              SET leaveresponse = $1, updatedon = NOW()
              WHERE leaverequestid = $2`,
             [reason, requestID]
+          );
+        }
+
+        if (leaveStatus === 'ed13daa8-6fbf-4828-b0d2-c3b0af4a7970') {
+          const leaveDurationValue = parseFloat(leaveDuration);
+        
+          if (isNaN(leaveDurationValue) || leaveDurationValue <= 0) {
+            throw new Error('Invalid leave duration value');
+          }
+        
+          await query(
+            `UPDATE public.employeeleavebalance
+             SET remainingbalance = remainingbalance - $1
+             WHERE employeeid = $2 AND leavetypeid = $3`,
+            [leaveDurationValue, employeeID, requestTypeID]
           );
         }
       

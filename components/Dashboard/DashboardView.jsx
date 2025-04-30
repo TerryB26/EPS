@@ -12,6 +12,7 @@ import { MdOutlineAdsClick } from "react-icons/md";
 
 
 const DashboardView = ({user}) => {
+    console.log("🚀 ~ DashboardView ~ user:", user)
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');  
     const [loading, setLoading] = useState(true);
@@ -51,110 +52,118 @@ const DashboardView = ({user}) => {
         );
       }
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <PageHeader/>
+    if (user && user.rolename === 'Admin') {
+        return (
+          <div style={{ padding: "20px" }}>
+            <PageHeader/>
 
-      <Grid container spacing={3}>
-        {/* Info Cards */}
-        
-          <Grid item xs={12} md={3} key="Total1">
-            <InfoCard
-              header={
-                <>
-                  <MdOutlineAdsClick
-                    style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
-                    onClick={() => handleIconClick('Card 1')}
+            <Grid container spacing={3}>
+              {/* Info Cards */}
+              
+                <Grid item xs={12} md={3} key="Total1">
+                  <InfoCard
+                    header={
+                      <>
+                        Total Users
+                      </>
+                    }
+                    innerText={total_employees}
                   />
-                  Total Users
-                </>
-              }
-              innerText={total_employees}
-            />
-          </Grid>
-          <Grid item xs={12} md={3} key="Total2">
-            <InfoCard
-              header={
-                <>
-                  <MdOutlineAdsClick
-                    style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
-                    onClick={() => handleIconClick('Card 2')}
+                </Grid>
+                <Grid item xs={12} md={3} key="Total2">
+                  <InfoCard
+                    header={
+                      <>
+                        Pending Leave Requests
+                      </>
+                    }
+                    innerText={pending}
                   />
-                  Pending Leave Requests
-                </>
-              }
-              innerText={pending}
-            />
-          </Grid>
-          <Grid item xs={12} md={3} key="Total3">
-            <InfoCard
-              header={
-                <>
-                  <MdOutlineAdsClick
-                    style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
-                    onClick={() => handleIconClick('Card 3')}
+                </Grid>
+                <Grid item xs={12} md={3} key="Total3">
+                  <InfoCard
+                    header={
+                      <>
+                        Rejected Leave Requests
+                      </>
+                    }
+                    innerText={rejected}
                   />
-                  Rejected Leave Requests
-                </>
-              }
-              innerText={rejected}
-            />
-          </Grid>
-          <Grid item xs={12} md={3} key="Total4">
-            <InfoCard
-              header={
-                <>
-                  <MdOutlineAdsClick
-                    style={{ marginRight: "8px", verticalAlign: 'middle', position: 'relative', top: '-2px', cursor: 'pointer' }}
-                    onClick={() => handleIconClick('Card 4')}
+                </Grid>
+                <Grid item xs={12} md={3} key="Total4">
+                  <InfoCard
+                    header={
+                      <>
+                        All Leave Requests
+                      </>
+                    }
+                    innerText={all_requests}
                   />
-                  All Leave Requests
-                </>
-              }
-              innerText={all_requests}
-            />
-          </Grid>
+                </Grid>
 
-        {/* Charts */}
-        <Grid item xs={12} md={6}>
-          <InfoCard
-            header="Organization Data"
-            innerText={
-              <BarGraph Data={DashboardData[0]} />
-            }
-          />
-        </Grid>
+              {/* Charts */}
+              <Grid item xs={12} md={6}>
+                <InfoCard
+                  header="Organization Data"
+                  innerText={
+                    <BarGraph Data={DashboardData[0]} />
+                  }
+                />
+              </Grid>
 
-        <Grid item xs={12} md={6}>
-          <InfoCard
-            header="Leave Requests"
-            innerText={
-                <PieChart Data={DashboardData[0]} />
-              }
-          />
-        </Grid>
+              <Grid item xs={12} md={6}>
+                <InfoCard
+                  header="Leave Requests"
+                  innerText={
+                      <PieChart Data={DashboardData[0]} />
+                    }
+                />
+              </Grid>
 
-        <Grid item xs={12} md={12}>
-            <InfoCard
-              header="Users"
-              innerText={
-                <Box p={2}>
-                  <Users user={user}/>
-                </Box>
-              }
-            />
-        </Grid>
-      </Grid>
+              <Grid item xs={12} md={12}>
+                  <InfoCard
+                    header="Users"
+                    innerText={
+                      <Box p={2}>
+                        <Users user={user}/>
+                      </Box>
+                    }
+                  />
+              </Grid>
+            </Grid>
+          </div>
+      );
+    } else {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              mt: 2,
+            }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <img
+                src="Animations/welcome-animate.svg"
+                alt="Welcome Animation"
+                style={{ width: "600px", height: "auto" }}
+              />
+            </div>
+          </Box>
+            <PageHeader routeName="Dashboard" />
+          </Box>
 
-      <DialogForm
-        title={dialogTitle}
-        content=""
-        open={dialogOpen}
-        onClose={handleClose}
-      />
-
-    </div>
-  )
+      );
+}
 }
 
 export default DashboardView
