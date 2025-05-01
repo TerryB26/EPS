@@ -43,12 +43,13 @@ const Root = styled('div')(({ theme }) => ({
     marginTop: theme.spacing(2),
   }));
   
-  const tabContents = [
-    { label: "Manuals", title: "Content for Tab 1", content:<SystemDocsTable /> },
-  ];
+
   
 
-const SystemDocuments = () => {
+const SystemDocuments = ({ user }) => {
+  const tabContents = [
+    { label: "Manuals", title: "Content for Tab 1", content:<SystemDocsTable user={user} /> },
+  ];
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {

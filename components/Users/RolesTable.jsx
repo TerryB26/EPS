@@ -223,15 +223,17 @@ const RolesTable = ({user}) => {
                       </span>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <span>
-                        <IconButton 
-                          sx={{ color: '#E7858B' }} 
-                          onClick={() => handleDeleteRole(role.roleid)} 
-                          disabled={role.rolename === "Developer" || role.rolename === "System Administrator"}
-                        >
-                          <MdDelete />
-                        </IconButton>
-                      </span>
+                      {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
+                        <span>
+                          <IconButton 
+                            sx={{ color: '#E7858B' }} 
+                            onClick={() => handleDeleteRole(role.roleid)} 
+                            disabled={role.rolename === "Developer" || role.rolename === "System Administrator"}
+                          >
+                            <MdDelete />
+                          </IconButton>
+                        </span>
+                      ) : null}
                     </Tooltip>
                   </TableCell>
                 </TableRow>

@@ -106,7 +106,7 @@ const DepartmentsTable = ({user}) => {
             'Department has been deleted.',
             'success'
           );
-          fetchDepartments(); // Refetch departments after deletion
+          fetchDepartments(); 
         } catch (error) {
           Swal.fire(
             'Error!',
@@ -220,9 +220,11 @@ const DepartmentsTable = ({user}) => {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete">
-                        <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteDepartment(department.departmentid)}>
-                          <MdDelete />
-                        </IconButton>
+                        {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
+                          <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteDepartment(department.departmentid)}>
+                            <MdDelete />
+                          </IconButton>
+                        ) : null}
                       </Tooltip>
                     </TableCell>
                   </TableRow>

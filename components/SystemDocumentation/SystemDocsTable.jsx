@@ -35,7 +35,7 @@ const AddUserButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const SystemDocsTable = () => {
+const SystemDocsTable = ({user}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -235,9 +235,11 @@ const SystemDocsTable = () => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteRole(doc.documentuuid)}>
-                        <MdDelete />
-                      </IconButton>
+                      {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
+                        <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteRole(doc.documentuuid)}>
+                          <MdDelete />
+                        </IconButton>
+                      ) : null}
                     </Tooltip>
                   </TableCell>
                 </TableRow>

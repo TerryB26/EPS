@@ -205,9 +205,11 @@ const Users = ({ user }) => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }}>
-                        <MdDelete />
-                      </IconButton>
+                      {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
+                        <IconButton sx={{ color: '#E7858B' }}>
+                          <MdDelete />
+                        </IconButton>
+                      ) : null}
                     </Tooltip>
                   </TableCell>
                 </TableRow>

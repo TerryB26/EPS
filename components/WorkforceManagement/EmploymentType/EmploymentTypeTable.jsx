@@ -217,9 +217,11 @@ const EmploymentTypeTable = ({user}) => {
                     </IconButton>
                   </Tooltip> */}
                     <Tooltip title="Delete">
-                      <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteEmploymentType(empType.employmenttypeid)}>
-                        <MdDelete />
-                      </IconButton>
+                      {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
+                        <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteEmploymentType(empType.employmenttypeid)}>
+                          <MdDelete />
+                        </IconButton>
+                      ) : null}
                     </Tooltip>
                   </TableCell>
                 </TableRow>
