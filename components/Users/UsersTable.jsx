@@ -199,11 +199,11 @@ const Users = ({ user }) => {
                       <IoEyeOutline />
                     </IconButton>
                   </Tooltip>
-                    <Tooltip title="Edit">
+                    {/* <Tooltip title="Edit">
                       <IconButton onClick={() => handleDialogOpen(<UpdateUserSalaries userId={user.id} />, 'Edit User', 'lg')}>
                         <RxUpdate />
                       </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip title="Delete">
                       {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
                         <IconButton sx={{ color: '#E7858B' }}>
