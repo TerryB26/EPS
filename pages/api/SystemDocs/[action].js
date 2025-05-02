@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-console.log("🚀 ~ handler ~ DocUUID:", "DocUUID")
 
 export const config = {
   api: {
-    bodyParser: false, // Disable default body parsing since we're handling multipart/form-data
+    bodyParser: false,
   },
 };
 

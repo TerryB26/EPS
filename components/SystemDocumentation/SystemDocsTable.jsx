@@ -4,11 +4,12 @@ import { Box, Button, IconButton, Paper, Table, TableBody, TableCell, TableConta
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { IoPencil } from "react-icons/io5";
 import { MdFormatListBulletedAdd, MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
 import SystemDocsForm from './SystemDocsForm';
 import { TbCloudDownload } from "react-icons/tb";
+import CircularProgress from '@mui/material/CircularProgress'; 
+
 
 const PaginationContainer = styled('div')(({ theme }) => ({
   '& .MuiTablePagination-selectRoot': {
@@ -42,6 +43,8 @@ const SystemDocsTable = ({user}) => {
   const [roles, setRoles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [loadingDocs, setLoadingDocs] = useState({}); 
+
 
   const fetchDocs = async () => {
     try {
@@ -118,11 +121,14 @@ const SystemDocsTable = ({user}) => {
   };
 
   const handleDownloadDoc = async (documentuuid, documentname) => {
+    setLoadingDocs((prev) => ({ ...prev, [documentuuid]: true })); 
     try {
-      const response = await axios.get(`/api/SystemDocs/Download-doc?documentuuid=${encodeURIComponent(documentuuid)}&documentname=${encodeURIComponent(documentname)}`, 
-      {
-        responseType: 'blob',
-      });
+      const response = await axios.get(
+        `/api/SystemDocs/Download-doc?documentuuid=${encodeURIComponent(documentuuid)}&documentname=${encodeURIComponent(documentname)}`,
+        {
+          responseType: 'blob',
+        }
+      );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -139,6 +145,8 @@ const SystemDocsTable = ({user}) => {
         text: 'Failed to download the document.',
       });
       console.error('Download error:', error);
+    } finally {
+      setLoadingDocs((prev) => ({ ...prev, [documentuuid]: false }));
     }
   };
 
@@ -219,24 +227,44 @@ const SystemDocsTable = ({user}) => {
           </CustomTableHead>
           <TableBody>
             {filteredDocs.length > 0 ? (
-              filteredDocs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(doc => (
-                <TableRow key={doc.documentuuid} sx={{
-                  '&:hover': {
-                    backgroundColor: '#E4F2FF',
-                  },
-                }}>
+              filteredDocs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((doc) => (
+                <TableRow
+                  key={doc.documentuuid}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: '#E4F2FF',
+                    },
+                  }}
+                >
                   <TableCell>{doc.documenttitle}</TableCell>
                   <TableCell>{doc.documenttype}</TableCell>
-                  <TableCell>{new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(doc.createdon))}</TableCell>
+                  <TableCell>
+                    {new Intl.DateTimeFormat('en-GB', {
+                      day: '2-digit',
+                      month: 'long',
+                      year: 'numeric',
+                    }).format(new Date(doc.createdon))}
+                  </TableCell>
                   <TableCell sx={{ width: '150px' }}>
                     <Tooltip title="Download Document">
-                      <IconButton sx={{ color: '#939FBD' }} onClick={() => handleDownloadDoc(doc.documentuuid, doc.documentname)}>
-                        <TbCloudDownload />
+                      <IconButton
+                        sx={{ color: '#939FBD' }}
+                        onClick={() => handleDownloadDoc(doc.documentuuid, doc.documentname)}
+                        disabled={loadingDocs[doc.documentuuid]} 
+                      >
+                        {loadingDocs[doc.documentuuid] ? (
+                          <CircularProgress size={24} /> 
+                        ) : (
+                          <TbCloudDownload />
+                        )}
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
                       {user?.roleName === 'Dev' || user?.roleName === 'Developer' ? (
-                        <IconButton sx={{ color: '#E7858B' }} onClick={() => handleDeleteRole(doc.documentuuid)}>
+                        <IconButton
+                          sx={{ color: '#E7858B' }}
+                          onClick={() => handleDeleteRole(doc.documentuuid)}
+                        >
                           <MdDelete />
                         </IconButton>
                       ) : null}
