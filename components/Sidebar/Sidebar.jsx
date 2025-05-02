@@ -30,11 +30,11 @@ const Sidebar = ({ user }) => {
 
   // Define menu items with role-based visibility
   const menuItems = [
-    { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard', roles: ['Admin', 'User'] },
-    { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management', roles: ['Admin'] },
-    { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management', roles: ['Admin'] },
-    { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves', roles: ['User', 'Admin'] },
-    { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal', roles: ['User', 'Admin'] },
+    { text: 'Dashboard', icon: <MdHome color="rgb(128, 0, 128)" />, path: '/Dashboard', roles: [] },
+    { text: 'Workforce Management', icon: <IoLibraryOutline color="rgb(128, 0, 128)" />, path: '/Workforce-Management', roles: ['Admin', 'Developer', 'System Administratior'] },
+    { text: 'Account Management', icon: <RiUserSettingsLine color="rgb(128, 0, 128)" />, path: '/Account-Management', roles: ['Admin', 'Developer', 'System Administratior'] },
+    { text: 'Employee Leaves', icon: <FaRegCalendarPlus color="rgb(128, 0, 128)" />, path: '/Employee-Leaves', roles: [ 'Admin', 'Developer', 'System Administratior'] },
+    { text: 'Employee Self-Service', icon: <FaUserCog color="rgb(128, 0, 128)" />, path: '/Employee-Portal', roles: ['User', 'Admin', 'Developer', 'System Administratior'] },
     { text: 'System Docs', icon: <IoDocuments color="rgb(128, 0, 128)" />, path: '/System-Documents', roles: [] },
   ];
 
