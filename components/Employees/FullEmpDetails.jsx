@@ -5,11 +5,12 @@ import PageHeader from '@/components/General/PageHeader';
 import { MdOutlineBadge, MdOutlineWorkOutline, MdDateRange, MdOutlineModeEdit, MdAttachMoney, MdBusiness, MdSupervisorAccount, MdHistory, MdAccountBalance, MdFilePresent, MdDownloading  } from "react-icons/md";
 import { GrMoney } from "react-icons/gr";
 import CircularProgressWithLabel from '@/components/General/CircularProgressWithLabel';
-
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 const FullEmpDetails = ({ UserID }) => {
   const [userDetails, setUserDetails] = useState(null); 
   const [loading, setLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false); 
 
   const fetchDetails = async () => {
     setLoading(true); 
@@ -40,6 +41,28 @@ const FullEmpDetails = ({ UserID }) => {
     console.log('Edit icon clicked');
   };
 
+  const handleDownloadContract = async () => {
+    setIsDownloading(true); 
+    try {
+      const response = await axios.post(
+        '/api/EmpContracts/downloadContract', 
+        { employeeNumber: userDetails.employeenumber, contractName: userDetails.empcontractname },
+        { responseType: 'blob' } 
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Employment_Contract_${userDetails.employeenumber}.pdf`); 
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading contract:', error);
+    } finally {
+      setIsDownloading(false); 
+    }
+  };
+
   return (
     <>
       <Box>
@@ -67,26 +90,14 @@ const FullEmpDetails = ({ UserID }) => {
                   alignItems: 'center',
                   cursor: 'pointer', 
                 }}
-                onClick={async () => {
-                  try {
-                    const response = await axios.post(
-                      '/api/EmpContracts/downloadContract', 
-                      { employeeNumber: userDetails.employeenumber, contractName: userDetails.empcontractname },
-                      { responseType: 'blob' } 
-                    );
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', `Employment_Contract_${userDetails.employeenumber}.pdf`); 
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                  } catch (error) {
-                    console.error('Error downloading contract:', error);
-                  }
-                }}
+                onClick={handleDownloadContract}
               >
-                <MdDownloading style={{ marginRight: '8px' }} /> Employment Contract
+                {isDownloading ? (
+                  <CircularProgress size={20} sx={{ marginRight: '8px' }} /> 
+                ) : (
+                  <MdDownloading style={{ marginRight: '8px' }} />
+                )}
+                Employment Contract
               </Typography>
             </Tooltip>
           </Box>

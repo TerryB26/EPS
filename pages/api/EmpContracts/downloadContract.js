@@ -17,9 +17,6 @@ export default function handler(req, res) {
       employeeNumber,
       contractName // Include the contractName in the path
     );
-    console.log("🚀 ~ handler ~ filePath:", filePath)
-    console.log("🚀 ~ handler ~ filePath:", filePath);
-
     // Check if the file exists
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'File not found' });
