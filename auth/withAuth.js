@@ -28,9 +28,8 @@ const withAuth = (WrappedComponent) => {
         loading: false,
       });
 
-      if (!authenticated) {
-        const router = this.props.router;
-        router.push("/Login");
+      if (!authenticated && this.props.router.pathname !== "/Login") {
+        this.props.router.replace("/Login");
       }
     };
 

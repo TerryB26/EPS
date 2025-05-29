@@ -1,18 +1,19 @@
 import '@/styles/globals.css';
 import '@/styles/CalendarStyles.css';
 import Layout from '@/components/General/Layout';
-import { SessionProvider } from 'next-auth/react';
 import withAuth from '@/auth/withAuth';
 
-function App({ Component, pageProps: { session, ...pageProps }, user }) {
-  const AuthenticatedLayout = withAuth(Layout); // Wrap Layout with withAuth
+function App({ Component, pageProps, router }) {
+  const publicRoutes = ['/Login', '/Register', '/'];
+
+  const isPublic = publicRoutes.includes(router.pathname);
+
+  const PageLayout = isPublic ? Layout : withAuth(Layout);
 
   return (
-    <SessionProvider session={session}>
-      <AuthenticatedLayout user={user}>
-        <Component {...pageProps} />
-      </AuthenticatedLayout>
-    </SessionProvider>
+    <PageLayout>
+      <Component {...pageProps} />
+    </PageLayout>
   );
 }
 
